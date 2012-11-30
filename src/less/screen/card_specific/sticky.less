@@ -1,0 +1,380 @@
+
+
+/** Colours */
+    [data-carddeck="sticky"][data-cardtype="blue"] {
+        background-color:               #a3ebff;
+
+        &[data-cardsize="preview"] {
+            background-color:           #d0f4ff;
+
+            &:hover {
+                background-color:       #a3ebff;
+            }
+        }
+    }
+
+
+    [data-carddeck="sticky"][data-cardtype="green"] {
+        background-color:               #d4ffad;
+
+        &[data-cardsize="preview"] {
+            background-color:           #e9ffd5;
+
+            &:hover {
+                background-color:       #d4ffad;
+            }
+        }
+    }
+
+
+    [data-carddeck="sticky"][data-cardtype="yellow"] {
+        background-color:               #fff5aa;
+
+        &[data-cardsize="preview"] {
+            background-color:           #fff9d4;
+
+            &:hover {
+                background-color:       #fff5aa;
+            }
+        }
+    }
+
+
+    [data-carddeck="sticky"][data-cardtype="orange"] {
+        background-color:               #ffc75b;
+
+        &[data-cardsize="preview"] {
+            background-color:           #ffe2ac;
+
+            &:hover {
+                background-color:       #ffc75b;
+            }
+        }
+    }
+
+
+    [data-carddeck="sticky"][data-cardtype="red"] {
+        background-color:               #ff9d8d;
+
+        &[data-cardsize="preview"] {
+            background-color:           #ffcdc5;
+
+            &:hover {
+                background-color:       #ff9d8d;
+            }
+        }
+    }
+
+
+    [data-carddeck="sticky"][data-cardtype="pink"] {
+        background-color:               #ffb7f7;
+
+        &[data-cardsize="preview"] {
+            background-color:           #ffdafa;
+
+            &:hover {
+                background-color:       #ffb7f7;
+            }
+        }
+    }
+
+
+    [data-carddeck="sticky"][data-cardtype="lilac"] {
+        background-color:               #d69aff;
+
+        &[data-cardsize="preview"] {
+            background-color:           #eaccff;
+
+            &:hover {
+                background-color:       #d69aff;
+            }
+        }
+    }
+
+
+    [data-carddeck="sticky"][data-cardtype="purple"] {
+        background-color:               #9ba8ff;
+
+        &[data-cardsize="preview"] {
+            background-color:           #ccd3ff;
+
+            &:hover {
+                background-color:       #9ba8ff;
+            }
+        }
+    }
+
+
+
+
+//  General card styling
+
+    [data-carddeck="sticky"] {
+        position:               relative;
+        border:                 2px solid #000;
+
+        .content {
+            white-space:        pre-wrap;
+        }
+    }
+
+
+
+
+//  Small Cards
+
+    [data-carddeck="sticky"][data-cardsize="small"] {
+        cursor:                 pointer;
+        display:                block;
+        width:                  68px;
+        height:                 68px;
+
+        &[data-prefix="deck"] {
+            cursor:             move;
+            background-image:   url('../../../images/card_specific/sticky/sticky_icon_68x68.png');
+        }
+    }
+
+
+
+
+//  Preview Cards
+
+    [data-carddeck="sticky"][data-cardsize="preview"] {
+        cursor:                 pointer;
+        display:                block;
+        width:                  86px;
+        height:                 86px;
+    }
+
+
+
+
+
+/** Medium Cards */
+
+    [data-carddeck="sticky"][data-cardsize="medium"] {
+        cursor:                 move;
+        position:               absolute;
+        width:                  234px;
+        height:                 234px;
+        padding:                5px;
+
+        .title {
+            margin-left:        5px;
+            width:              194px;
+            font-weight:        bold;
+            height:             1.3em;
+            overflow:           hidden;
+        }
+
+        .content {
+            margin:             7px 5px 0 5px;
+            width:              220px;
+            height:             197px;
+            font-size:          0.75em;
+            border-width:       0;
+            overflow:           hidden;
+        }
+
+        .menu_icon {
+            top:                0px !important;
+            right:              3px !important;
+        }
+
+
+        // Zooming
+        &[data-scalefactor="0.875"] {
+            width:              204px;
+            height:             204px;
+
+            .title {
+                margin-left:    4px;
+                width:          160px;
+            }
+
+            .content {
+                margin:         6px 4px 0 4px;
+                width:          192px;
+                height:         169px;
+            }
+        }
+
+        &[data-scalefactor="0.75"] {
+            width:              173px;
+            height:             173px;
+
+            .title {
+                margin-left:    3px;
+                width:          130px;
+            }
+
+            .content {
+                margin:         6px 3px 0 3px;
+                width:          164px;
+                height:         137px;
+            }
+        }
+
+        &[data-scalefactor="0.625"] {
+            width:              143px;
+            height:             143px;
+
+            .title {
+                margin-left:    2px;
+                width:          66px;
+            }
+
+            .content {
+                margin:         6px 2px 0 2px;
+                width:          135px;
+                height:         110px;
+            }
+        }
+
+        &[data-scalefactor="0.5"] {
+            width:              112px;
+            height:             112px;
+
+            .title {
+                left:           10px;
+                width:          112px;
+                height:         112px;
+            }
+
+            .content {
+                display:        none;
+            }
+        }
+
+        &[data-scalefactor="0.375"] {
+            width:              82px;
+            height:             82px;
+
+            .title {
+                left:           10px;
+                width:          82px;
+                height:         82px;
+            }
+
+            .content {
+                display:        none;
+            }
+        }
+
+        &[data-scalefactor="0.25"] {
+            width:              50px;
+            height:             50px;
+
+            .title {
+                left:           10px;
+                width:          50px;
+                height:         50px;
+            }
+
+            .content {
+                display:        none;
+            }
+        }
+    }
+
+
+
+
+/** Large Cards */
+
+    [data-carddeck="sticky"][data-cardsize="large"] {
+        width:              476px;
+        height:             476px;
+
+        .input_container {
+            .text_entry();
+            width:              358px;
+            margin:             15px 0 0 15px;
+            height:             28px;
+            overflow:           hidden;
+
+            .title {
+              border-width:       0;
+              background-color:   transparent;
+            }
+        }
+
+        .dialog_dismiss {
+            top:                15px;
+            right:              15px;
+        }
+
+        .colour_picker_button {
+            top:                15px;
+            right:              57px;
+        }
+
+        .textarea_container {
+            .text_entry();
+            margin:             15px;
+
+            .content {
+                border-width:       0;
+                background-color:   transparent;
+                width:              437px;
+                height:             385px;
+                margin:             0 0 0 5px;
+                padding:            5px 0 5px 0;
+                display:            block;
+            }
+        }
+    }
+
+
+
+
+//  Hint cards
+    [data-carddeck="sticky"].hint, [data-carddeck="sticky"].deck_hint {
+        position:               absolute;
+        left:                   188px !important;
+        top:                    188px !important;
+        cursor:                 default;
+        padding:                10px;
+
+        .title {
+            font-weight:        bold;
+        }
+
+        .description {
+            margin:             10px 0 0 0;
+        }
+    }
+
+    [data-carddeck="sticky"][data-cardsize="medium"].deck_hint {
+        background-color:       #fff;
+    }
+
+
+
+
+/** Sticky colour picker */
+
+    #colour_picker_container {
+        .dialog {
+            height:                 362px;
+            width:                  310px;
+        }
+
+        .dialog_title {
+            margin-top:             10px;
+            margin-left:            10px;
+            font-size:              1.25em;
+            width:                  228px;
+        }
+
+        ul {
+            margin-top:10px;
+
+            li {
+                display: block;
+                margin: 10px 0 0 10px;
+                float: left;
+            }
+        }
+    }

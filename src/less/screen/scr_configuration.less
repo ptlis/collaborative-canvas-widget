@@ -1,0 +1,195 @@
+
+
+
+.selection_container {
+    margin:             10px;
+    padding:            10px;
+    background-color:   @dialog_fg;
+    height:             446px;
+    overflow-x:         hidden;
+    overflow-y:         scroll;
+
+
+
+    #field_selector, #container_selector {
+
+        li:first-child {
+            margin-top:             0;
+        }
+
+        li {
+            margin-top:             10px;
+            height:                 34px;
+
+            .input_container {
+                .text_entry();
+                padding:            2px 5px;
+                border-color:       #126889;
+                border-right:       0;
+                background-color:   white;
+                display:            inline-block;
+                float:              left;
+
+                input[type="text"] {
+                    height:         24px;
+                    width:          379px;
+                    border:         0;
+                }
+            }
+
+            .remove {
+                float:              left;
+            }
+
+            #add_button {
+                width:              100px;
+                height:             20px;
+                padding:            6px;
+                background-color:   white;
+                border:             2px solid black;
+                text-align:         center;
+                cursor:             pointer;
+                margin:             0 auto;
+
+                &:hover {
+                    .box-shadow(0 0 3px rgba(0,0,0,0.5));
+                }
+            }
+        }
+    }
+}
+
+.create_header_fields {
+    width:                  480px;
+    height:                 640px;
+
+    .dialog_title {
+        margin:             10px;
+    }
+
+    .instructions {
+        margin:             10px;
+        padding:            10px;
+        background-color:   @dialog_fg;
+    }
+}
+
+.dialog.select_active_cards {
+    width:                  540px;
+    height:                 640px;
+
+    &.first_run {
+        .dialog_title {
+            width:          432px;
+        }
+    }
+
+    #actions {
+        position:           absolute;
+        bottom:             10px;
+        width:              100%;
+    }
+
+    .dialog_title {
+        margin:             10px;
+        width:              458px;
+    }
+
+    &.first_run {
+        .dialog_title {
+            width:          500px;
+        }
+    }
+
+    .instructions {
+        margin:             10px;
+        padding:            10px;
+        background-color:   @dialog_fg;
+    }
+
+    #add_arrow, #rem_arrow {
+        position:           absolute;
+        left:               116px;
+        width:              308px;
+        height:             18px;
+        padding:            23px 0;
+        text-align:         center;
+    }
+
+    #add_arrow {
+        top:                194px;
+        background-image:   url('../../images/layout/arrow_add_308x64.png');
+    }
+
+    #rem_arrow {
+        bottom:             50px;
+        background-image:   url('../../images/layout/arrow_rem_308x64.png');
+    }
+
+    #inactive_cards, #active_cards {
+        width:              92px;
+        height:             506px;
+        overflow:           hidden;
+
+        li {
+            margin:         10px;
+        }
+    }
+
+    #inactive_cards {
+        background-color:   #ED9595;
+        border:             2px solid #B0453D;
+        float:              left;
+        margin-left:        10px;
+    }
+
+    #active_cards {
+        background-color:   #A9D7A1;
+        border:             2px solid #5e9e68;
+        float:              right;
+        margin-right:       10px;
+    }
+}
+
+
+.dialog.select_time_periods {
+    width:              480px;
+    height:             640px;
+
+    .dialog_title {
+        margin:             10px;
+    }
+
+    .instructions {
+        margin:             10px;
+        padding:            10px;
+        background-color:   @dialog_fg;
+    }
+}
+
+
+#actions {
+
+    text-align: center;
+
+    #next_button, #back_button {
+        display: inline-block;
+        margin:     0 5px;
+    }
+}
+
+#next_button, #back_button {
+    width:              72px;
+    height:             20px;
+    padding:            6px;
+    background-color:   white;
+    border:             2px solid #1c7ea5;
+    text-align:         center;
+    cursor:             pointer;
+
+    border:             2px solid #1c7ea5;
+    &:hover {
+        border-color:   #3ab0de;
+        .box-shadow(0 0 3px rgba(0,0,0,0.5));
+    }
+}

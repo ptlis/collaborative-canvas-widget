@@ -1,0 +1,38 @@
+
+
+
+
+
+//  Radial card selector
+
+
+        .card_selector_box {
+            width:                      450px;
+            height:                     450px;
+            padding:                    75px;
+            position:                   relative;
+
+            .deck_hint {
+                position:               absolute;
+            }
+
+            #card_selector {
+                margin:                 0 auto;
+                position:               relative;
+
+                width:                  450px;
+                height:                 450px;
+                background-image:       url('../../images/layout/card_selector_bg.png');
+
+                li {
+                    position:           absolute;
+
+                    &:hover span {
+                        cursor:         pointer;
+                        .box-shadow(0 0 10px 5px white);
+                    }
+                }
+            }
+        }
+
+

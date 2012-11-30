@@ -1,0 +1,208 @@
+
+
+//  Deck Selection Area
+
+    #deck_bar {
+        position:                       fixed;
+        left:                           10px;
+        height:                         100%;
+        width:                          92px;
+        z-index:                        99999;  // Fixes weird webkit bug
+
+        background-color:               #E9E0FF;
+
+        border-width:                   0 2px 0 2px;
+        border-style:                   solid;
+        border-color:                   #C5B8EF;
+
+        #additional_features {
+            border-width:               0 0 2px 0;
+            border-color:               #C5B8EF;
+            border-style:               solid;
+        }
+
+        #additional_features, #deck_selector {
+            list-style-type:            none;
+            display:                    block;
+            width:                      72px;
+            padding:                    10px;
+
+            .zoom {
+                height:                     28px;
+            }
+
+            &>li {
+                width: 72px;
+                margin: 0 0 5px 0;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            .deck_tooltip {
+                background-color:       white;
+                background-image:       none;
+                display:                none;
+                width:                  240px;
+                height:                 auto;
+                padding:                .5em;
+                border:                 2px solid black;
+                position:               absolute;
+                left:                   95px;
+                font-size:              0.75em;
+                z-index:                99999;
+                .box-shadow(none);
+                .border-radius(5px, 5px, 5px, 5px);
+
+                .title {
+                    position:           static;
+                    font-weight:        bold;
+                    margin-bottom:      .5em;
+                }
+
+                .description {
+                    position:           static;
+                }
+            }
+        }
+    }
+
+//  Main card placing canvas
+
+    #canvas {
+        position:                       absolute;
+        top:                            0;
+        left:                           0;
+        background-color:               #fff;
+        display:                        block;
+        width:                          100%;
+        height:                         100%;
+        overflow-y:                     scroll;
+
+
+        #canvas_editable {
+            margin-left:                            106px;
+
+            #course_details {
+                background-color:                   #E0D9F7;
+                border:                             2px solid #C5B8EF;
+                margin:                             10px 10px 0 10px;
+                overflow:                           hidden;
+
+
+                #field_container {
+
+                    li {
+                        position:               relative;
+                        overflow:               hidden;
+                        float: left;
+                        width:  33.33%;
+
+                        .input_container {
+                            width:              67%;
+                            display:            block;
+                            float:              left;
+                        }
+
+                        .label_container {
+                            padding-left:       1.25%;
+                            width:              31.75%;
+                            display:            block;
+                            float:              left;
+                        }
+
+                        input {
+//                            background-color:   red;
+
+                            display:            block;
+                            height:             24px;
+                            width:              100%;
+                            border-width:       0;
+                        }
+
+                        label {
+//                            background-color:   blue;
+
+                            display:            block;
+                            line-height:        24px;
+                            height:             24px;
+                            width:              100%;
+                        }
+                    }
+                }
+            }
+
+
+
+            #contain_drag {
+                margin:                             0 10px 10px 10px;
+                position:                           relative;
+
+                svg {
+                    position:                       absolute !important;
+                    display:                        block;
+                    width:                          100%;
+                    top:                            0;
+                    left:                           0;
+                    height:                         100%;
+                }
+
+                .cell_container {
+
+                    .label_container {
+                        border:                     0;
+                        margin-top:                 10px;
+                        padding:                    5px;
+                        background-color:           rgba(212, 234, 236, 0.75);
+                        border-style:               solid;
+                        border-color:               #c8dcde;
+                        border-width:               2px 2px 0 2px;
+                        position:                   relative;
+                    }
+
+                    .cell_label {
+                        height:                     22px;
+                        position:                   relative;
+                        background-color:           transparent;
+                        border-width:               0;
+                        width:                      80%;
+                        width:                      -moz-calc(~"100% - 32px");
+                        width:                      -webkit-calc(~"100% - 32px");
+                        width:                      calc(~"100% - 32px");
+                    }
+
+                    .cell_outer {
+                        display:                    block;
+                        background-color:           #d4eaec;
+                        border:                     2px solid #c8dcde;
+
+                        &.active {
+                            background-color:       #A5CDD1;
+                        }
+
+                        .cell_inner {
+                            position:               relative;
+                            top:                    0;
+                            left:                   0;
+                            display:                block;
+                        }
+                    }
+
+                    .container_menu {
+                        position:                   absolute;
+                        right:                      5px;
+                        top:                        0;
+                    }
+                }
+            }
+        }
+    }
+
+
+    // Resize dialog for when window is too small
+    #fullscreen_background .dialog {
+        padding:    10px;
+        max-width:  380px;
+        width:      80%;
+    }

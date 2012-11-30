@@ -1,0 +1,124 @@
+
+
+List of HTML5 custom 'data-' attributes:
+----------------------------------------
+
+	These attributes are used in the markup generated for cards to simplify
+	the boundary by the card 'deck' code which deals with the generation of card
+	markup and the 'canvasStorage' code which abstracts the storage mechanism.
+
+	Using this technique canvasStorage can determine which elements contain
+	user-editable data and automatically propagate that data to cards as well
+	as automatically add events to propagate changes into the storage mechanism.
+
+	Shared:
+	-------
+
+		single instance per item:
+		-------------------------
+
+			data-prefix:            Prefix used for storage of data.
+			data-instanceid:		The unique identifier for an instance of a
+			                        card from a deck.
+
+
+		single instance per card:
+		-------------------------
+
+			These attributes identify the card the deck was from and the
+			specific card type from within that deck.
+
+			data-cardsize:			The size of the card (small, medium, large),
+									not actually serialised - used as hook only.
+			data-carddeck:			The identifier for the card deck from which the
+									card was selected.
+			data-cardtype:			The identifier that identifies which type of
+									card from a deck was selected.
+			data-scalefactor        The scaling factor to apply to the card.
+			data-template           (Optional) The card template used.
+
+
+		multiple instances per card:
+		----------------------------
+
+			Multiple elements within a card can have these attributes; used to
+			seperate the creation of cards from the handling of storage, data
+			propegation etc.
+
+			data-defaultvalue:		Default value for a user-editable element, used
+									only for elements that do not have a placeholder
+									attribute.
+			data-headingid:			Used on widgets that when 'clicked' allows
+									selection of elements to be displayed.
+			data-inputname:         Along with prefix & instanceid from parent
+			                        elems specifies a particular data entry.
+
+
+
+		paired instances:
+		-----------------
+
+			These attributes must exist as pairs, and are used in contexts where
+			either a checkbox or radio button toggles the display of another
+			element.
+
+			data-paired_master:		The checkbox or radio button that toggles the
+									visibility of another entry.
+			data-paired_slave:		The element that has toggled visibility
+									dependant upon the value of it's
+									data-paired_master element.
+
+
+		card-specific attributes:
+		-------------------------
+
+		    data-orig_width:        The original (unscaled) width of an image -
+		                            used for multimedia::images
+		    data-orig_height:       The original (unscaled) height of an image -
+		                            used for multimedia::images
+
+
+        one-off attributes:
+        -------------------
+            data-orig_z_index:      Used when connecting cards; saves a data
+                                    lookup by caching the old z-index value.
+
+
+ROLE appdata namespace:
+-----------------------
+
+    ptlis.net:base                      -   Top level resource for canvas
+        (version)                       -   The storage version use
+        (z_index)                       -   Counter for z-indexes
+
+      > ptlis.net:card_list             -   Resource containing stored cards
+            (firstItemId)               -   Stored in resource, uri for first card
+          > ptlis.net:card              -
+
+      > ptlis.net:connection_list       -   Resource containing stored connections
+            (firstItemId)               -   Stored in resource, uri for first connection
+          > ptlis.net:connection        -
+
+      > ptlis.net:container_list        -   Resource containing stored containers
+            (firstItemId)               -   Stored in resource, uri for first container
+          > ptlis.net:container         -
+
+      > ptlis.net:deck_list             -   Resource containing stored decks
+            (firstItemId)               -   Stored in resource, uri for first deck
+
+      > ptlis.net:field_list            -   Resource containing stored header fields,
+            (firstItemId)               -   Stored in resource, uri for first field
+          > ptlis.net:field             -
+
+
+
+ROLE IWC namespace:
+-------------------
+
+    Five actions:
+
+        ADD                 : Add a new entry to list
+        UPDATE              : Update an entry in list
+        REMOVE              : Delete an entry from list
+        CHANGE_FIRST_ID     : Change the first id of list
+        UPDATE_Z_INDEX      : Update incrementing z-index value

@@ -1,0 +1,585 @@
+
+
+// Icons
+    [data-carddeck="multimedia"][data-cardtype="youtube"] .card_icon.icon_32x32 {
+        background-image:       url('../../../images/card_specific/multimedia/youtube_icon_32x32.png');
+    }
+    [data-carddeck="multimedia"][data-cardtype="youtube"] .card_icon.icon_48x48 {
+        background-image:       url('../../../images/card_specific/multimedia/youtube_icon_48x48.png');
+    }
+
+    [data-carddeck="multimedia"][data-cardtype="vimeo"] .card_icon.icon_32x32 {
+        background-image:       url('../../../images/card_specific/multimedia/vimeo_icon_32x32.png');
+    }
+
+    [data-carddeck="multimedia"][data-cardtype="vimeo"] .card_icon.icon_48x48 {
+        background-image:       url('../../../images/card_specific/multimedia/vimeo_icon_48x48.png');
+    }
+
+
+
+//  Multimedia Deck
+    [data-carddeck="multimedia"][data-cardsize="small"][data-prefix="deck"] {
+        display:                    block;
+        width:                      68px;
+        height:                     48px;
+        cursor:                     move;
+        background:                 #fff url('../../../images/card_specific/multimedia/multimedia_32x32.png') center center no-repeat;
+        border:                     2px solid black;
+    }
+
+
+
+
+//  Styling for small selector cards
+    [data-carddeck="multimedia"][data-cardsize="preview"] {
+        background-position:        0 0;
+        background-color:           transparent;
+        display:                    block;
+        cursor:                     pointer;
+        width:                      90px;
+        height:                     90px;
+
+        &:hover {
+            background-position:    0 -90px;
+        }
+
+        background-image:           url('../../../images/card_specific/multimedia/multimedia_270x180.png');
+
+        &[data-cardtype="image"] {
+            background-position:        0 0;
+
+            &:hover {
+                background-position:    0 -90px;
+            }
+        }
+
+        &[data-cardtype="vimeo"] {
+            background-position:        -90px 0;
+
+            &:hover {
+                background-position:    -90px -90px;
+            }
+        }
+
+        &[data-cardtype="youtube"] {
+            background-position:        -180px 0;
+
+            &:hover {
+                background-position:    -180px -90px;
+            }
+        }
+    }
+
+
+
+
+//  Styling for hints
+
+    [data-carddeck="multimedia"].hint {
+        border-width:               0 !important;
+        position:                   absolute;
+
+        width:                  248px !important;
+        height:                 248px !important;
+
+        left:                   176px;
+        top:                    176px;
+
+        background-image:       url('../../../images/card_specific/multimedia/multimedia_744x248.png');
+
+        &[data-cardtype="image"] {
+            background-position:        0 0;
+        }
+
+        &[data-cardtype="vimeo"] {
+            background-position:        -248px 0;
+        }
+
+        &[data-cardtype="youtube"] {
+            background-position:        -496px 0;
+        }
+
+        .description {
+            text-align: center;
+            margin:         120px 10px 0 10px;
+        }
+    }
+
+    [data-carddeck="multimedia"].deck_hint {
+        width:                      224px;
+        height:                     224px;
+        left:                       176px;
+        top:                        176px;
+
+        background-color:           white;
+        border:                     2px solid #000;
+        padding:                    10px;
+
+        .title {
+            font-weight:            bold;
+            display:                block;
+            padding-bottom:         10px;
+        }
+    }
+
+
+
+
+//  Styling for image Cards
+    [data-carddeck="multimedia"][data-cardtype="image"] {
+
+        &[data-cardsize="medium"] {
+            .card_std_base();
+            width:                  244px;
+            height:                 280px;
+
+            .image_block {
+                width:              220px;
+                height:             220px;
+                margin:             10px;
+                overflow:           hidden;
+            }
+
+            .image_caption {
+                font-size:          0.75em;
+                height:             1.5em;
+            }
+
+            .menu_icon {
+                top:                10px;
+                right:              10px;
+            }
+
+            // Zooming
+            &[data-scalefactor="0.875"] {
+                width:              214px;
+                height:             245px;
+                background-size:    100% 100%;
+
+                .image_block {
+                    width:          190px;
+                    height:         190px;
+                }
+            }
+
+            &[data-scalefactor="0.75"] {
+                width:              183px;
+                height:             210px;
+                background-size:    100% 100%;
+
+                .image_block {
+                    width:          159px;
+                    height:         159px;
+                    margin-bottom:  8px;
+                }
+            }
+
+            &[data-scalefactor="0.625"] {
+                width:              153px;
+                height:             175px;
+                background-size:    100% 100%;
+
+                .image_block {
+                    width:          129px;
+                    height:         129px;
+                    margin-bottom:  6px;
+                }
+            }
+
+            &[data-scalefactor="0.5"] {
+                width:              122px;
+                height:             140px;
+                background-size:    100% 100%;
+
+                .image_block {
+                    margin:         5px;
+                    width:          108px;
+                    height:         108px;
+                }
+
+                .menu_icon {
+                    top:            5px;
+                    right:          5px;
+                }
+
+                .image_caption {
+                    display:        none;
+                }
+            }
+
+            &[data-scalefactor="0.375"] {
+                width:              92px;
+                height:             105px;
+                background-size:    100% 100%;
+
+                .image_block {
+                    margin:         5px;
+                    width:          78px;
+                    height:         78px;
+                }
+
+                .menu_icon {
+                    top:            5px;
+                    right:          5px;
+                }
+
+                .image_caption {
+                    display:        none;
+                }
+            }
+
+            &[data-scalefactor="0.25"] {
+                width:              61px;
+                height:             70px;
+                background-size:    100% 100%;
+
+                .image_block {
+                    margin:         5px;
+                    width:          47px;
+                    height:         47px;
+                }
+
+                .menu_icon {
+                    top:            5px;
+                    right:          5px;
+                }
+
+                .image_caption {
+                    display:        none;
+                }
+            }
+        }
+
+        &[data-cardsize="large"] {
+            .card_std_base();
+            width:                  484px;
+            height:                 560px;
+            position:               relative;
+
+            .image_block {
+                width:              440px;
+                height:             440px;
+                margin:             20px;
+
+                .message_container {
+                    margin-top:     100px;
+
+                    .drop_message {
+                        color:          #888888;
+                        font-weight:    bold;
+                    }
+                }
+            }
+
+            .image_caption {
+                border:             2px solid #bbb;
+            }
+
+            .dialog_dismiss {
+                z-index:            1;
+            }
+        }
+
+        .image_block {
+            border:                 2px solid #CCC5AF;
+            position:               relative;
+            text-align:             center;
+        }
+
+        .user_image {
+            position:               absolute;
+            display:                block;
+        }
+
+        .image_caption {
+            display:                block;
+            height:                 1.3em;
+            text-align:             center;
+            overflow:               hidden;
+            width:                  80%;
+            margin:                 0 auto;
+        }
+    }
+
+
+
+
+//  Styling for youtube & vimeo cards
+    [data-carddeck="multimedia"][data-cardtype="youtube"],
+    [data-carddeck="multimedia"][data-cardtype="vimeo"] {
+        &[data-cardsize="medium"] {
+            .card_std_medium();
+
+            .card_content {
+                overflow:               hidden;
+
+                .play_button {
+                    width:              64px;
+                    height:             64px;
+                    margin:             68px auto 0 auto;
+                    background:         transparent url('../../../images/card_specific/multimedia/play_64x64.png') 0 0 no-repeat;
+                    cursor:             pointer;
+                    .transform-origin(top);
+
+                    &.no_video {
+                        background-position:        0 -192px;
+                        cursor:                     move;
+
+                        &:hover {
+                            background-position:    0 -192px;
+                        }
+
+                        &:active {
+                            background-position:    0 -192px;
+                        }
+                    }
+
+                    &:hover {
+                        background-position:    0 -64px;
+                    }
+
+                    &:active {
+                        background-position:    0 -128px;
+                    }
+                }
+            }
+
+            // Zooming
+            &[data-scalefactor="0.875"] {
+                .card_content {
+                    .play_button {
+                        margin-top:         53px
+                    }
+                }
+            }
+
+            &[data-scalefactor="0.75"] {
+                .card_content {
+                    .play_button {
+                        margin-top:         38px
+                    }
+                }
+            }
+
+            &[data-scalefactor="0.625"] {
+                .card_content {
+                    .play_button {
+                        margin-top:         23px;
+                    }
+                }
+            }
+
+            &[data-scalefactor="0.5"] {
+
+                .card_content {
+                    display:        block;
+                    height:         112px;
+                    width:          152px;
+
+                    .play_button {
+                        background:         transparent url('../../../images/card_specific/multimedia/play_32x32.png') 0 0 no-repeat;
+                        margin-top:         36px;
+                        width:              32px;
+                        height:             32px;
+
+                        &.no_video {
+                            background-position:        0 -96px;
+                            cursor:                     move;
+
+                            &:hover {
+                                background-position:    0 -96px;
+                            }
+
+                            &:active {
+                                background-position:    0 -96px;
+                            }
+                        }
+
+                        &:hover {
+                            background-position:    0 -32px;
+                        }
+
+                        &:active {
+                            background-position:    0 -64px;
+                        }
+                    }
+                }
+
+                .card_header {
+                    display:        none;
+                }
+            }
+
+            &[data-scalefactor="0.375"] {
+
+                .card_content {
+                    display:        block;
+                    height:         82px;
+                    width:          112px;
+
+                    .play_button {
+                        background:         transparent url('../../../images/card_specific/multimedia/play_32x32.png') 0 0 no-repeat;
+                        margin-top:         25px;
+                        width:              32px;
+                        height:             32px;
+
+                        &.no_video {
+                            background-position:        0 -96px;
+                            cursor:                     move;
+
+                            &:hover {
+                                background-position:    0 -96px;
+                            }
+
+                            &:active {
+                                background-position:    0 -96px;
+                            }
+                        }
+
+                        &:hover {
+                            background-position:    0 -32px;
+                        }
+
+                        &:active {
+                            background-position:    0 -64px;
+                        }
+                    }
+                }
+
+                .card_header {
+                    display:        none;
+                }
+            }
+
+            &[data-scalefactor="0.25"] {
+
+                .card_content {
+                    display:        block;
+                    height:         51px;
+                    width:          71px;
+
+                    .play_button {
+                        background:         transparent url('../../../images/card_specific/multimedia/play_32x32.png') 0 0 no-repeat;
+                        margin-top:         10px;
+                        width:              32px;
+                        height:             32px;
+
+                        &.no_video {
+                            background-position:        0 -96px;
+                            cursor:                     move;
+
+                            &:hover {
+                                background-position:    0 -96px;
+                            }
+
+                            &:active {
+                                background-position:    0 -96px;
+                            }
+                        }
+
+                        &:hover {
+                            background-position:    0 -32px;
+                        }
+
+                        &:active {
+                            background-position:    0 -64px;
+                        }
+                    }
+                }
+
+                .card_header {
+                    display:        none;
+                }
+            }
+        }
+
+
+
+        &[data-cardsize="large"] {
+            .card_std_large();
+
+            iframe {
+                width:              644px;
+                height:             389px;
+            }
+
+            .card_header label{
+                margin-top:         10px;
+            }
+
+            #url_container {
+                border-width:       0 0 2px 0;
+                border-color:       #000;
+                border-style:       solid;
+                padding:            10px 10px 5px 10px;
+                height:             28px;
+
+                label {
+                    margin-left:    55px;
+                }
+
+                #get_video {
+                    float:                  right;
+                    margin-top:             -5px;
+                }
+            }
+        }
+
+        label {
+            display:                block;
+            float:                  left;
+            font-weight:            bold;
+            margin-top:             2px;
+        }
+
+        #raw_entry, #title_entry {
+            display:                block;
+            width:                  320px;
+            margin-top:             5px;
+            padding:                5px;
+            float:                  right;
+        }
+
+        #raw_entry {
+            margin-top:             -5px;
+            margin-right:           10px;
+        }
+
+        #title_entry {
+            margin-top:             5px;
+        }
+    }
+
+    [data-carddeck="multimedia"][data-cardtype="youtube"] {
+        .card_header, #url_container {
+            background-color: #E86D6D;
+        }
+    }
+
+    [data-carddeck="multimedia"][data-cardtype="vimeo"] {
+        .card_header, #url_container {
+            background-color: #62A0AD;
+        }
+    }
+
+    #video_bg {
+
+        .dialog {
+            width:                      620px;
+            height:                     394px;
+            padding:                    10px;
+
+            .dialog_title {
+                width:                  560px;
+            }
+        }
+
+        #video_container {
+
+            iframe {
+                margin-top:             20px;
+            }
+
+        }
+    }

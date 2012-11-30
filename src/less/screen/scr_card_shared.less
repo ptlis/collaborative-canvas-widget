@@ -1,0 +1,377 @@
+
+
+    hr {
+        background-color:   #000;
+        border-width:       0;
+        height:             2px;
+    }
+
+//  Shared Card styling
+    [data-prefix="card"] {
+        .box-shadow(0 0 3px #000);
+
+        &.to_cut {
+            opacity:                0.75;
+        }
+
+        &.dragging {
+            opacity:                0.75;
+        }
+
+        // Font sizes when scaling
+        &[data-scalefactor="0.375"] {
+            font-size:              0.8em;
+        }
+
+        &[data-scalefactor="0.25"] {
+            font-size:              0.6em;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight:            bold;
+        }
+
+        .text_input {
+            .text_entry();
+        }
+
+        .menu_icon, .colour_picker_button {
+            position:               absolute;
+            z-index:                20;
+            cursor:                 pointer;
+        }
+
+
+        // Header
+        .card_header {
+            border-width:           0 0 2px 0;
+            border-color:           #000;
+            border-style:           solid;
+
+            text-align:             center;
+
+            .header {
+                resize:             none;
+            }
+
+            p {
+                display:            inline;
+            }
+
+            em {
+                font-style:         italic;
+            }
+        }
+
+        //  Content
+        .card_content {
+            overflow:                hidden;
+
+            .group h5, .group .text_input {
+                margin:             0.25em 0 0.25em 1em;
+            }
+
+            .group h5 {
+                margin-top:         .5em;
+                display:            inline-block;
+            }
+
+            .no_items {
+                margin-top:         0 !important;
+            }
+
+            .edit_selections {
+                padding:            2px 5px;
+                margin-top:         -2px;
+                background-color:   white;
+                cursor:             pointer;
+                float:              right;
+                font-size:          0.75em;
+
+                border:             2px solid #1c7ea5;
+                &:hover {
+                    border-color:   #3ab0de;
+                    .box-shadow(0 0 3px rgba(0,0,0,0.5));
+                }
+            }
+
+            li {
+                margin-top:             .5em;
+            }
+
+            li:first-child {
+                margin-top:             0;
+            }
+        }
+    }
+
+
+
+
+//  Medium Card styling
+    [data-cardsize="medium"] {
+        cursor:                     move;
+
+        &:hover .menu_icon {
+            display:                block;
+        }
+
+        h3 {
+            height:                 1.2em;
+            overflow:               hidden;
+        }
+
+        .text_input {
+            padding:                2px;
+        }
+
+        .menu_icon {
+            top:                    0;
+            right:                  3px;
+        }
+
+        //  Header
+        .card_header {
+            height:                 28px;
+            margin:                 0;
+            padding:                4px 45px 0 45px;
+
+            .card_icon {
+                position:           absolute;
+                top:                0;
+                left:               0;
+                width:              32px;
+                height:             32px;
+                border-width:       0 2px 0 0;
+                border-style:       solid;
+                border-color:       #000;
+                background-color:   #fff;
+            }
+        }
+
+        //  Content
+        .card_content {
+            font-size:              0.75em;
+            margin:                 0;
+            padding:                5px;
+            height:                 200px;
+            resize:                 none;
+
+            .text_input {
+                width:              278px;
+                border-width:       0;
+                height:             20px;
+            }
+
+            .icon-info {
+                display:            none;
+            }
+        }
+    }
+
+
+
+
+//  Large Card styling
+    [data-cardsize="large"] {
+
+        h5 {
+            padding-top:            10px;
+        }
+
+        .text_input {
+            padding:                5px;
+        }
+
+        .remove {
+            float:                      right;
+        }
+
+        //  Header
+        .card_header {
+            height:                 44px;
+            padding:                2px 52px 2px 65px;
+
+            h3 {
+                height:             1.2em;
+                overflow:           hidden;
+            }
+
+            .card_icon {
+                position:           absolute;
+                top:                0;
+                left:               0;
+                width:              48px;
+                height:             48px;
+                background-color:   #fff;
+
+                border-style:       solid;
+                border-color:       black;
+                border-width:       0 2px 0 0;
+            }
+        }
+
+        //  Activity Entry
+        .card_activity {
+            position:               relative;
+            margin:                 0;
+            padding:                9px 5px 1px 5px;
+            height:                 28px;
+            border-style:           solid;
+            border-color:           #000;
+            border-width:           0 0 2px 0;
+
+            .user_activity_label {
+                display:            block;
+                float:              left;
+                font-weight:        bold;
+                margin-top:         2px;
+                padding:            0 10px;
+            }
+
+            .activity_entry {
+                float:              right;
+                padding:            5px;
+                margin-top:         -6px;
+                width:              450px;
+            }
+        }
+
+        //  Content
+        .card_content {
+            padding:                10px;
+            height:                 374px;
+
+
+            .input_container {
+                .text_entry();
+                width:              564px;
+                height:             28px;
+                overflow:           hidden;
+                border-right-width: 0;
+
+                input[type="text"] {
+                    border:           0;
+                    background-color:transparent;
+                    height:             18px;
+                    min-height:         18px;
+                }
+            }
+
+            .remove {
+                margin:             4px 0 4px 0;
+            }
+
+            .icon-info {
+                display:            inline-block;
+                position:           relative;
+
+                .card_tooltip {
+                    background-color:       white;
+                    background-image:       none;
+                    display:                none;
+                    width:                  240px;
+                    height:                 auto;
+                    padding:                .5em;
+                    border:                 2px solid black;
+                    position:               absolute;
+                    font-size:              0.75em;
+                    z-index:                99999;
+                    .border-radius(5px, 5px, 5px, 5px);
+
+                    left:                   24px;
+                }
+            }
+        }
+    }
+
+
+
+    // New standard card dialogs
+
+    .dialog_background {
+
+        display:                    table;
+        position:                   fixed;
+        top:                        0;
+        left:                       0;
+        width:                      100%;
+        height:                     100%;
+        background-color:           rgba(0, 0, 0, 0.75);
+        z-index:                    99999999;
+
+        .dialog_container {
+            display:                table-cell;
+            vertical-align:         middle;
+
+            .dialog, [data-prefix="card"] {
+                margin:             0 auto;
+            }
+
+            .dialog {
+                background-color:           @dialog_bg;
+                border:                     2px solid @dialog_border;
+                margin:                     0 auto;
+                position:                   relative;
+
+                .dialog_title {
+                    min-height:         18px;
+                    padding:            7px 10px;
+                    font-weight:        bold;
+                    background-color:   @dialog_fg;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+//  Card Selection Dialog
+    #selections_card_container .dialog {
+        width:                      480px;
+        height:                     640px;
+        padding:                    10px;
+
+        hr {
+            margin-top:             15px;
+        }
+
+        ul {
+            overflow-y:             scroll;
+            height:                 568px;
+            background-color:       @dialog_fg;
+            padding:                10px 0 0 10px;
+        }
+
+        li {
+            clear:                  both;
+            padding-bottom:         10px;
+        }
+
+        em {
+            font-weight:            bold;
+        }
+
+        label {
+            padding-top:            4px;
+            display:                inline-block;
+            width:                  90%;
+            margin-left:            0.5em;
+        }
+
+        .dialog_title {
+            margin-bottom:          10px;
+            margin-right:           42px;
+        }
+    }
+
+
+
+
+//  Standard Add / Remove buttons (currently used for making selections)
+    input[type="button"].add {
+        float:                      left;
+    }

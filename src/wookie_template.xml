@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget	xmlns			= "http://www.w3.org/ns/widgets"
+		version			= "@@VERSION@@"
+		id				= "http://ptlis.net/8LEM"
+		height			= "768"
+		width			= "1024"
+		viewmodes		= "fullscreen"
+		defaultlocale	= "en-GB"
+		xml:lang		= "en-GB"
+		dir				= "ltr">
+
+
+	<name short		= "8LEM Widget">
+        Collaborative Canvas Widget
+	</name>
+
+
+	<author	href	= "http://ptlis.net">
+		Brian Ridley
+	</author>
+
+
+	<description>
+		A widget to help reduce the complexity of (re-)designing of Units of Learning.
+	</description>
+
+
+	<content	src			= "index.htm"
+				type		= "text/html"
+				encoding	= "utf8" />
+
+
+<!-- Pre-resized icon set -->
+
+	<icon		src			= "images/icon_80.png"
+				width		= "80"
+				height		= "80" />
+
+	<icon		src			= "images/icon_225.png"
+				width		= "225"
+				height		= "225" />
+
+	<icon		src			= "images/icon_450.png"
+				width		= "450"
+				height		= "450" />
+
+	<icon		src			= "images/icon_20.png"
+				width		= "20"
+				height		= "20" />
+
+
+	<preference	name		= "test"
+				value		= "17"
+				readonly	= "false" />
+
+
+	<feature	name		= "http://wave.google.com"
+				required	= "true" />
+
+<!--
+	<license>
+
+	</licence>
+-->
+
+
+
+
+
+
+
+<!--
+
+  <feature name="http://example.com/camera">
+    <param name="autofocus" value="true"/>
+  </feature>
+
+  <preference name     = "apikey"
+              value    = "ea31ad3a23fd2f"
+              readonly = "true" />
+
+  <icon src="icons/example.png"/>
+  <icon src="icons/boo.png"/>
+  <content src="myWidget.html"/>
+-->
+
+</widget>

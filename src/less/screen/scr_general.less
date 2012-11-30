@@ -1,0 +1,127 @@
+
+/* Apply to all elems. */
+    body {
+        font-family:            sans-serif;
+        line-height:            1.2em;
+        height:                 100%;
+        margin:                 0;
+    }
+
+/* Disable text selection (prevents drag & drop breakages)*/
+    * {
+        .user_select_none();
+
+        outline:                none;
+    }
+
+/* Enable text selection only for text entry elements*/
+    textarea, input[type=text] {
+        .user_select_text();
+    }
+
+    textarea {
+        overflow-y:             scroll !important;
+    }
+
+/* Browser-specific code to set appropriate placeholder colour.. */
+    ::-webkit-input-placeholder {
+        color:                  #666;
+    }
+
+    :-moz-placeholder {
+        color:                  #666;
+    }
+
+    .default_text {
+        color:                  #666;
+    }
+
+    .loading_anim {
+        background-image:       url('../../images/layout/loading_anim.gif');
+        width:                  32px;
+        height:                 32px;
+    }
+
+    // ROLE oauth dialogs
+    #oauthPersonalize,
+    #oauthPersonalizeDone,
+    #oauthPersonalizeComplete {
+        z-index:            999999999;
+        background-color:   white;
+        border:             2px solid black;
+        position:           absolute;
+        margin:             5px;
+        padding:             5px;
+    }
+
+    // Loading screen
+    #loading_dialog {
+        width:                  200px;
+
+        .loading_anim {
+            margin:             10px auto;
+        }
+
+        .loading_msg {
+            margin:             10px 0;
+            text-align:         center;
+        }
+    }
+
+    .dialog_dismiss {
+        position:               absolute;
+        top:                    10px;
+        right:                  10px;
+    }
+
+    #import_container, #export_container {
+        width:      480px;
+        height:     360px;
+
+        .dialog_title {
+            margin:             10px 52px 10px 10px;
+        }
+
+        .download_file, .upload_file, .copy_data, .paste_data {
+            text-align:         center;
+            margin:             10px;
+            padding:            10px;
+            background-color:   @dialog_fg;
+        }
+
+        .download_file, .upload_file {
+            height:             62px;
+        }
+
+        .copy_data, .paste_data {
+            height:             174px;
+
+            textarea {
+                margin-top:     10px;
+                width:          434px;
+                height:         138px;
+            }
+        }
+
+        #download_button {
+            display:            inline-block;
+            margin:             10px auto 0 auto;
+            text-decoration:    none;
+            color:              black;
+            padding:            3px 6px;
+            background-color:   #6CAA0D;
+            border:             2px solid black;
+            cursor:             pointer;
+
+            &:hover {
+                .box-shadow(0 0 3px rgba(0,0,0,0.5));
+            }
+        }
+    }
+
+
+    .feature_unsupported {
+        border:                     2px solid rgb(160, 0, 0);
+        background-color:           #EF8F8F;
+        padding:                    10px;
+    }

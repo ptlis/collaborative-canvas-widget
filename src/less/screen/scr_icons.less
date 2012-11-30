@@ -1,0 +1,334 @@
+
+/* Sprited buttons 32x32 */
+
+    .done_button_32x32, .remove_button_32x32, .add_button_32x32, .picker_button_32x32, .dismiss_button_32x32, .menu_button_32x32 {
+        background-image:           url('../../images/layout/icons/sprite_strip_256x64.png');
+        display:                    block;
+        width:                      32px;
+        height:                     32px;
+        border-width:               0;
+        cursor:                     pointer;
+    }
+
+
+    .done_button_32x32 {
+        background-position:        -160px 0;
+
+        &:hover {
+            background-position:    -160px -32px;
+        }
+    }
+
+
+    .remove_button_32x32 {
+        background-position:        -128px 0;
+
+        &:hover {
+            background-position:    -128px -32px;
+        }
+    }
+
+
+    .add_button_32x32 {
+        background-position:        -96px 0;
+
+        &:hover {
+            background-position:    -96px -32px;
+        }
+    }
+
+
+    .picker_button_32x32 {
+        background-position:        -64px 0;
+
+        &:hover {
+            background-position:    -64px -32px;
+        }
+    }
+
+
+    .dismiss_button_32x32 {
+        background-position:        -32px 0;
+
+        &:hover {
+            background-position:    -32px -32px;
+        }
+    }
+
+
+    .menu_button_32x32 {
+        background-position:        0 0;
+
+        &:hover {
+            background-position:    0 -32px;
+        }
+    }
+
+
+
+
+/* Zoom in / zoom out */
+
+    .zoom_in, .zoom_out {
+        background-image:           url('../../images/layout/icons/zoom_72x56.png');
+        width:                      36px;
+        height:                     28px;
+        float:                      left;
+        cursor:                     pointer;
+    }
+
+
+    .zoom_in {
+        background-position:        0 0;
+
+        &:hover {
+            background-position:    0 -28px;
+        }
+    }
+
+
+    .zoom_out {
+        background-position:        -36px 0;
+
+        &:hover {
+            background-position:    -36px -28px;
+        }
+    }
+
+
+
+
+/*  Sprited options icon, 72x56 */
+
+    #options_icon {
+        background-repeat:          no-repeat;
+        background-image:           url("../../images/layout/icons/menu_72x112.png");
+        background-position:        0 0;
+        width:                      72px;
+        height:                     56px;
+        cursor:                     pointer;
+
+        &:hover {
+            background-position:    0 -56px;
+        }
+    }
+
+
+
+
+/* Sprited context menu icons, 24x24 */
+
+    .icon-cut, .icon-copy, .icon-paste, .icon-delete, .icon-edit, .icon-close, .icon-create_connection, .icon-remove_connection, .icon-add_container_above, .icon-add_container_below, .icon-change_decks, .icon-export, .icon-import, .icon-edit_field, .icon-info, .icon-customise_decks {
+        height:                     24px;
+        min-width:                  24px;
+        background-repeat:          no-repeat;
+        background-image:           url('../../images/layout/icons/sprite_strip_384x72.png');
+    }
+
+
+    .icon-cut {
+        background-position:        0 0;
+
+        &.hover {
+            background-position:    0 -24px;
+        }
+
+        &.disabled {
+            background-position:    0 -48px;
+        }
+    }
+
+
+    .icon-copy {
+        background-position:        -24px 0;
+
+        &.hover {
+            background-position:    -24px -24px;
+        }
+
+        &.disabled {
+            background-position:    -24px -48px;
+        }
+    }
+
+
+    .icon-paste {
+        background-position:        -48px 0;
+
+        &.hover {
+            background-position:    -48px -24px;
+        }
+
+        &.disabled {
+            background-position:    -48px -48px;
+        }
+    }
+
+
+    .icon-delete {
+        background-position:        -72px 0;
+
+        &.hover {
+            background-position:    -72px -24px;
+        }
+
+        &.disabled {
+            background-position:    -72px -48px;
+        }
+    }
+
+
+    .icon-edit {
+        background-position:        -96px 0;
+
+        &.hover {
+            background-position:    -96px -24px;
+        }
+
+        &.disabled {
+            background-position:    -96px -48px;
+        }
+    }
+
+
+    .icon-close {
+        background-position:        -120px 0;
+
+        &.hover {
+            background-position:    -120px -24px;
+        }
+
+        &.disabled {
+            background-position:    -120px -48px;
+        }
+    }
+
+
+    .icon-create_connection {
+        background-position:        -144px 0;
+
+        &.hover {
+            background-position:    -144px -24px;
+        }
+
+        &.disabled {
+            background-position:    -144px -48px;
+        }
+    }
+
+
+    .icon-remove_connection {
+        background-position:        -168px 0;
+
+        &.hover {
+            background-position:    -168px -24px;
+        }
+
+        &.disabled {
+            background-position:    -168px -48px;
+        }
+    }
+
+
+    .icon-add_container_above {
+        background-position:        -192px 0;
+
+        &.hover {
+            background-position:    -192px -24px;
+        }
+
+        &.disabled {
+            background-position:    -192px -48px;
+        }
+    }
+
+
+    .icon-add_container_below {
+        background-position:        -216px 0;
+
+        &.hover {
+            background-position:    -216px -24px;
+        }
+
+        &.disabled {
+            background-position:    -216px -48px;
+        }
+    }
+
+
+    .icon-change_decks {
+        background-position:        -240px 0;
+
+        &.hover {
+            background-position:    -240px -24px;
+        }
+
+        &.disabled {
+            background-position:    -240px -48px;
+        }
+    }
+
+
+    .icon-export {
+        background-position:        -264px 0;
+
+        &.hover {
+            background-position:    -264px -24px;
+        }
+
+        &.disabled {
+            background-position:    -264px -48px;
+        }
+    }
+
+
+    .icon-import {
+        background-position:        -288px 0;
+
+        &.hover {
+            background-position:    -288px -24px;
+        }
+
+        &.disabled {
+            background-position:    -288px -48px;
+        }
+    }
+
+
+    .icon-edit_field {
+        background-position:        -312px 0;
+
+        &.hover {
+            background-position:    -312px -24px;
+        }
+
+        &.disabled {
+            background-position:    -312px -48px;
+        }
+    }
+
+
+    .icon-info {
+        background-position:        -336px 0;
+
+        &.hover {
+            background-position:    -336px -24px;
+        }
+
+        &.disabled {
+            background-position:    -336px -48px;
+        }
+    }
+
+
+    .icon-customise_decks {
+        background-position:        -360px 0;
+
+        &.hover {
+            background-position:    -360px -24px;
+        }
+
+        &.disabled {
+            background-position:    -360px -48px;
+        }
+    }

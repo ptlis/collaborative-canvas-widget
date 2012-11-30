@@ -1,0 +1,31 @@
+
+
+// Standard styling for cards created with selectable_prompts template
+
+    [data-template="selectable_prompts"] {
+
+    // Small Cards
+        &[data-cardsize="small"] {
+            .card_std_small();
+        }
+
+    // Medium Cards
+        &[data-cardsize="medium"] {
+            .card_std_medium();
+        }
+
+    // Large Cards
+        &[data-cardsize="large"] {
+            .card_std_large();
+        }
+
+    // Preview Cards
+        &[data-cardsize="preview"] {
+            .card_std_preview();
+        }
+
+    // Hint Cards
+        &.hint, &.deck_hint {
+            .card_std_hint();
+        }
+    }

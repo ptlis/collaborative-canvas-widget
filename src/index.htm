@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html lang="en-GB">
+	<head>
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale = 1.0, user-scalable = no">
+
+		<title>8LEM Widget</title>
+
+		<meta http-equiv="Content-Type" content = "text/html; charset=UTF-8">
+
+
+		<!-- Library CSS & JS Files -->
+
+            <link rel="stylesheet" type="text/css" href="css/yui-2.9.0/reset-min.css">
+
+            <script type="text/javascript" src="js/library/jquery-1.8.3.min.js"></script>
+            <script type="text/javascript" src="js/library/jquery.base64.js"></script>
+            <script type="text/javascript" src="js/library/jquery.contextMenu-1.5.25.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drag-2.2.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drag.live-2.2.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drop-2.2.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drop.live-2.2.js"></script>
+            <script type="text/javascript" src="js/library/jquery.ui.position-1.9.0-RC1.js"></script>
+
+            <script type="text/javascript" src="js/library/raphael-2.1.1.js"></script>
+
+
+		<!-- Our CSS & JS Files -->
+
+			<!-- Shared -->
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_general.css">
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_card_selector.css">
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_card_shared.css">
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_canvas.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_configuration.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_context_menu.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_connections.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_icons.css">
+
+            <script type="text/javascript" src="js/canvasStorage.js"></script>
+			<script type="text/javascript" src="js/cards.js"></script>
+            <script type="text/javascript" src="js/connections.js"></script>
+            <script type="text/javascript" src="js/containers.js"></script>
+            <script type="text/javascript" src="js/decks.js"></script>
+			<script type="text/javascript" src="js/fields.js"></script>
+			<script type="text/javascript" src="js/util.js"></script>
+
+
+        <!-- Deck templates -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/templates/selectable_prompts.css">
+            <script type="text/javascript" src="js/card_specific/templates/selectable_prompts.js"></script>
+
+
+        <!-- Decks -->
+			<!-- Multimedia -->
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/multimedia.css">
+			<script type="text/javascript" src="js/card_specific/multimedia.js"></script>
+
+			<!-- Sticky notes -->
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/sticky.css">
+			<script type="text/javascript" src="js/card_specific/sticky.js"></script>
+
+			<!-- Learning Design -->
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/ld.css">
+			<script type="text/javascript" src="js/card_specific/ld.js"></script>
+
+			<!-- HLM -->
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/hlm.css">
+			<script type="text/javascript" src="js/card_specific/hlm.js"></script>
+
+			<!-- Information Skill -->
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/information_skills.css">
+			<script type="text/javascript" src="js/card_specific/information_skills.js"></script>
+
+			<!-- Assessment -->
+			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/assessment.css">
+			<script type="text/javascript" src="js/card_specific/assessment.js"></script>
+
+	</head>
+
+
+	<body>
+
+		<div id="canvas">
+
+			<div id="deck_bar">
+                <ul id="additional_features">
+                    <li>
+                        <div id="options_icon"></div>
+                    </li>
+
+                    <li class="zoom">
+                        <div class="zoom_in"></div>
+                        <div class="deck_tooltip" style="display: none;">
+                            <div class="title dark_bg">Zoom In</div>
+                            <div class="description">Zoom canvas in</div>
+                        </div>
+                        <div class="zoom_out"></div>
+                        <div class="deck_tooltip">
+                            <div class="title dark_bg">Zoom Out</div>
+                            <div class="description">Zoom canvas out</div>
+                        </div>
+                    </li>
+                </ul>
+
+				<ul id="deck_selector">
+				</ul>
+			</div>
+
+			<div id="canvas_editable">
+				<div id="course_details">
+                    <ul id="field_container">
+                    </ul>
+				</div>
+
+				<div id="contain_drag">
+				</div>
+
+			</div>
+		</div>
+
+	</body>
+</html>

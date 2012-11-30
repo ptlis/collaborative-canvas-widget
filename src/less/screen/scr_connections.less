@@ -1,0 +1,91 @@
+
+
+    .dialog_dismiss.dismiss_connection {
+        position:               fixed;
+        z-index:                9999999;
+        top:                    20px;
+        right:                  20px;
+    }
+
+    .connection_container {
+        position:               absolute;
+        padding:                5px 52px 5px 2px;
+        background-color:       white;
+        border:                 2px solid black;
+        height:                 18px;
+
+        .connection_label {
+            margin:             0 8px 0 3px;
+            .user_select_none();
+            cursor:             default;
+        }
+
+        .edit_button, .remove_button {
+            position:           absolute;
+            top:                2px;
+            height:             24px;
+            width:              24px;
+            cursor:             pointer;
+
+            &:hover {
+                background-color:   #39F;
+            }
+        }
+
+        .edit_button {
+            right:                  28px;
+
+            &.disabled {
+                cursor:             default;
+            }
+        }
+
+        .remove_button {
+            right:                  2px;
+
+            &.disabled {
+                cursor:             default;
+            }
+        }
+    }
+
+
+
+
+    //  Creating connections between cards
+
+
+    #card_connections_bg {
+        z-index:                            1;
+    }
+
+    #contain_drag {
+        .connections_dialog {
+            z-index:                    999999;
+            position:                   fixed;
+            bottom:                     10px;
+            margin:                     0 auto;
+            width:                      300px;
+            height:                     104px;
+            padding:                    10px;
+
+            background-color:           @dialog_bg;
+            border:                     2px solid @dialog_border;
+
+            label {
+                display:                block;
+            }
+
+            input {
+                .text_entry();
+                display:                block;
+                padding:                2px 5px;
+                width:                  288px;
+                margin-top:             10px;
+            }
+
+            #next_button, #back_button {
+                margin: 10px auto 0 auto;
+            }
+        }
+    }
