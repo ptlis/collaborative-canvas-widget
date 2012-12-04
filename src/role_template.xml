@@ -35,14 +35,14 @@
 
             <script type="text/javascript" src="js/library/jquery-1.8.3.min.js"></script>
             <script type="text/javascript" src="js/library/jquery.base64.js"></script>
-            <script type="text/javascript" src="js/library/jquery.contextMenu-1.5.25.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drag-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drag.live-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drop-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drop.live-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.ui.position-1.9.0-RC1.js"></script>
+            <script type="text/javascript" src="js/library/jquery.contextMenu.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drag.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drag.live.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drop.js"></script>
+            <script type="text/javascript" src="js/library/jquery.event.drop.live.js"></script>
+            <script type="text/javascript" src="js/library/jquery.ui.position.js"></script>
 
-            <script type="text/javascript" src="js/library/raphael-2.1.1.js"></script>
+            <script type="text/javascript" src="js/library/raphael.js"></script>
 
 		<!-- Our CSS & JS Files -->
 

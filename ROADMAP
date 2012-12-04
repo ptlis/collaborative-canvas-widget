@@ -1,0 +1,175 @@
+Roadmap:
+========
+
+Supported Features:
+===================
+
+* Drag-and-drop interface for placing cards onto a canvas.
+* Card removal.
+* Support for any number of time periods
+* Support for the following decks:
+    * Hybrid Learning Model Cards.
+    * Viewpoints Workshop Assessment Cards.
+    * ViewPoints Workshop Information Skills Cards.
+    * Internally-created learning design cards.
+    * Sticky note cards with selectable colours.
+    * Media cards (embed youtube, vimeo videos and images)
+* The user may seleect a subset of possible decks to use for the session.
+    * This selection may be changed at any time
+* Connecting Lines can be drawn between cards.
+    * Uses drag & drop interface for creation & removal.
+    * Dynamic line drawing means the user know what the connecting line will look like when the action completes.
+* Local persistence (the current browser) of card data.
+* Can be packaged as a w3 widget and hosted on a wookie server and embedded in moodle.
+* Collaborative use of the application, the tool can be deployed and used for real-time collaborative editing of cards (eg. from within moodle):
+    * Using the Wave API offered by the wookie server.
+    * Using the ROLE API offered by the ROLE server (sandbox @ http://role-sandbox.eu/ ).
+* Dynamic horizontal scaling of card positions making the widget usable for almost any combination of screen resolution.
+* Canvas zoom out for 'birds eye view'
+* Cut / Copy / Paste cards placed on the canvas.
+* Support for tablets such as the iPad.
+* Import & Export capability to allow transfer of canvas data.
+
+
+Partially Complete Features:
+============================
+
+* Card customisation
+    * In-application Card and deck creation / customization: much of the  code  is ready to support this feature, the difficult part is UI design.
+    * In cards edit view the 'activity' should be customisable; replace with eg description, title etc...
+* Improvements to first-run
+    * First page options:
+        * Import Existing workspace.
+        * Select preset (eg Ulster Viewpoints Workshop)
+        * Customised canvas options
+   * On first one display a (skippable) 'landing screen' with a 3-4 page quick tour, to get across:
+        a. you can use cards as you wish
+        b. you don’t have to use all the principles, but each as often as wanted
+        c. there’s no ‘right’ answer.
+    * Hint tooltips:
+        * On left bar, have an arrow pointing right with 'drag' text...
+* Import & Export broken on ROLE
+
+
+TODO List:
+==========
+
+* canvasStorage needs remMulti function
+    * Use for canvasStorage.list.removeAll()
+    * Use for connections.model.removeForCard()
+    * Use for cards on containers.model.remove()
+* Serious testing on wookie / wave!
+* Initialise function should fire create events?
+    * won't work, because cards depends on decks?
+    * if this is so, can probably remove this dependancy.
+* Connection edit dismiss takes a *long* time - due to events?.
+* Think about:
+    * Double-click to add cards?
+    * Tick to close cards?
+* Add entry for mind-maping to Explore card in HLM deck.
+* Reduce card sizes by 75%
+* Lighten time-period background color?
+* Cards should automatically resize vertically to display all entered content.
+* Sticky notes should have the ability to be resized
+    * width needs to use % of canvas
+    * Height need something fancy - ideally it should scale nicely if a new time period is added etc, this might mean anchoring edges via % height of the container the top / bottom edge is in.
+    * Need to update stored x & y coordinate of centerpoint as well as new width/height.
+* Edit on first drop
+* Temporary holding area for cards to keep (that have been filled out) but are not currently required.
+* Mechanism to indicate that activities take place across several time periods?
+
+
+Bug List
+========
+
+* Context menus can fall off the bottom (and maybe side) of the screen.
+* Connection rendering problems (on copy or over time periods?)
+* Rendering bug in inputs in selection cards (needs to be wider..).
+* Large cards do not scroll
+* When cards are the smallest size hide the menu button & only display on card hover-over.
+* Connections break when you delete a time period.
+* Inputs on template cards do not display correctly on ROLE.
+* ROLE desync handling...
+* (On ROLE / chrome?) Text entered into template cards has mini scroll
+* On ROLE starup options the data entered into header fields dos not correctly persist.
+* Youtube / Vimeo cards:
+    * Sometimes card loses video URL - possibly related to connections?
+* Dragging cards to bottom / top of screen doesn't scroll the canvas
+    * Difficult to manually handle because scrolling changes the internal offsets used by the drag & drop library used
+* Updates don't work on localStorage?
+* z-indexes don't work on localStorage
+* When creating a connection the green path that indicates a new connection is behind the background.
+* drag and drop off-canvas does not fire drop event
+* card spring-back undesirable behaviour, should remain where is closest to mitigate user mouse error
+
+
+Next Features:
+==============
+
+* Abilitity to select & move several cards at once.
+    * Perhaps a drag to select an area & grab all cards within?
+* 'Organise'/'Birds-eye View' Button - toogles between maximum & minimum zoom levvels.
+* Method of indictating priority?
+* Connections
+    * Add directional arrow capabilities
+* Performance enhancements
+    * add selector context when looking up elements with jquery (time consuming!!!)
+    * Card drag performance on firefox is appaling (may be only with connections)!!
+* Contextual card information (eg starring, '!' for high priority)
+* Support for flickr
+* Sharing of customised card decks.
+* Embeddable widgets from ITEC widget store?
+
+
+Future features (time-permitting):
+==================================
+
+* Flow chart deck?
+* Mind-mapping deck?
+* Search feature?
+* Customisation of time-period background (images, HTML5 canvas element for dynamic backdrops such as time-scales)
+* Creation of backdrops; titled frames, graphics.
+* Scalable / resizeable cards: user-testing suggests that this dimension can be used to indicate the importance of a card relative to others, indicate the duration of an activity etc.; by being non-prescriptive the hope is that we can support as many different uses as possible
+* Better print support: transform the data in the cards in a way that allows the results of a planning session to be printed in a more appropriate layout. (it is simple to display the cards in a format suitable for print - the difficulty part of this feature determining   card order due the canvas allowing card placement in any configuration)
+TESTING Process:
+----------------
+Actions to test to make sure no regressions have slipped in:
+    * importing & exporting
+    * Connections
+        * Create new
+            * With label
+            * Blank label
+        * Try and create new when a connection already exists
+        * Remove connection
+        * Edit label
+            * edit several
+            
+    * Containers
+        * Right-click menu
+        * Main menu
+        * Edit Title
+        * Delete
+            * When first item
+            * When last item
+            * When middle item
+            * When containing cards
+                * With connections
+    * Cards
+        * Cut
+        * Copy
+        * Paste
+        * Right-click menu
+        * Main menu
+        * Drag
+            * Drag after edit
+            * Drag to next container up
+            * Drag to next container down
+        * Delete
+            * With connections
+        * Multimedia deck:
+            * Add image
+            * Add youtube / vimeo videos
+            * Drag videos cards with video attachted; video should *not* play.
+        * Template cards - description tooltips
+            
+

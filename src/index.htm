@@ -1,118 +1,94 @@
 <!DOCTYPE HTML>
 <html lang="en-GB">
-	<head>
+    <head>
         <meta name="HandheldFriendly" content="True">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale = 1.0, user-scalable = no">
 
-		<title>8LEM Widget</title>
+        <title>8LEM Widget</title>
 
-		<meta http-equiv="Content-Type" content = "text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content = "text/html; charset=UTF-8">
 
-
-		<!-- Library CSS & JS Files -->
-
-            <link rel="stylesheet" type="text/css" href="css/yui-2.9.0/reset-min.css">
-
-            <script type="text/javascript" src="js/library/jquery-1.8.3.min.js"></script>
-            <script type="text/javascript" src="js/library/jquery.base64.js"></script>
-            <script type="text/javascript" src="js/library/jquery.contextMenu-1.5.25.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drag-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drag.live-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drop-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drop.live-2.2.js"></script>
-            <script type="text/javascript" src="js/library/jquery.ui.position-1.9.0-RC1.js"></script>
-
-            <script type="text/javascript" src="js/library/raphael-2.1.1.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/yui-2.9.0/reset-min.css">
+        <script type="text/javascript" src="requirejs/lib/raphael.js"></script>
 
 
-		<!-- Our CSS & JS Files -->
+        <!-- Our CSS & JS Files -->
 
-			<!-- Shared -->
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_general.css">
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_card_selector.css">
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_card_shared.css">
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_canvas.css">
+        <!-- Shared -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_general.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_card_selector.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_card_shared.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_canvas.css">
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_configuration.css">
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_context_menu.css">
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_connections.css">
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_icons.css">
 
 
-            <script type="text/javascript" src="js/library/require-2.1.2.js" data-main="js/main"></script>
+            <script type="text/javascript" src="requirejs/lib/require.js" data-main="requirejs/main"></script>
 
 
         <!-- Deck templates -->
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/templates/selectable_prompts.css">
-<!--            <script type="text/javascript" src="js/card_specific/templates/selectable_prompts.js"></script>-->
+
+        <!-- Multimedia -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/multimedia.css">
+
+        <!-- Sticky notes -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/sticky.css">
+
+        <!-- Learning Design -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/ld.css">
+
+        <!-- HLM -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/hlm.css">
+
+        <!-- Information Skill -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/information_skills.css">
+
+        <!-- Assessment -->
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/assessment.css">
+    </head>
 
 
-        <!-- Decks -->
-			<!-- Multimedia -->
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/multimedia.css">
-<!--			<script type="text/javascript" src="js/card_specific/multimedia.js"></script> -->
+    <body>
+        <div id="canvas">
 
-              <!-- Sticky notes -->
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/sticky.css">
-<!--			<script type="text/javascript" src="js/card_specific/sticky.js"></script> -->
+            <div id="deck_bar">
+                <ul id="additional_features">
+                    <li>
+                        <div id="options_icon"></div>
+                    </li>
 
-              <!-- Learning Design -->
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/ld.css">
-<!--			<script type="text/javascript" src="js/card_specific/ld.js"></script> -->
-
-              <!-- HLM -->
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/hlm.css">
-<!--			<script type="text/javascript" src="js/card_specific/hlm.js"></script> -->
-
-              <!-- Information Skill -->
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/information_skills.css">
-<!--			<script type="text/javascript" src="js/card_specific/information_skills.js"></script> -->
-
-              <!-- Assessment -->
-			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/assessment.css">
-<!--			<script type="text/javascript" src="js/card_specific/assessment.js"></script> -->
-
-            </head>
-
-
-            <body>
-
-                <div id="canvas">
-
-                    <div id="deck_bar">
-                        <ul id="additional_features">
-                            <li>
-                                <div id="options_icon"></div>
-                            </li>
-
-                            <li class="zoom">
-                                <div class="zoom_in"></div>
-                                <div class="deck_tooltip" style="display: none;">
-                                    <div class="title dark_bg">Zoom In</div>
-                                    <div class="description">Zoom canvas in</div>
-                                </div>
-                                <div class="zoom_out"></div>
-                                <div class="deck_tooltip">
-                                    <div class="title dark_bg">Zoom Out</div>
-                                    <div class="description">Zoom canvas out</div>
-                                </div>
-                            </li>
-                        </ul>
-
-                        <ul id="deck_selector">
-                        </ul>
-                    </div>
-
-                    <div id="canvas_editable">
-                        <div id="course_details">
-                            <ul id="field_container">
-                            </ul>
+                    <li class="zoom">
+                        <div class="zoom_in"></div>
+                        <div class="deck_tooltip" style="display: none;">
+                            <div class="title dark_bg">Zoom In</div>
+                            <div class="description">Zoom canvas in</div>
                         </div>
-
-                        <div id="contain_drag">
+                        <div class="zoom_out"></div>
+                        <div class="deck_tooltip">
+                            <div class="title dark_bg">Zoom Out</div>
+                            <div class="description">Zoom canvas out</div>
                         </div>
+                    </li>
+                </ul>
 
-                    </div>
+                <ul id="deck_selector">
+                </ul>
+            </div>
+
+            <div id="canvas_editable">
+                <div id="course_details">
+                    <ul id="field_container">
+                    </ul>
                 </div>
 
-            </body>
-        </html>
+                <div id="contain_drag">
+                </div>
+
+            </div>
+        </div>
+
+    </body>
+</html>
