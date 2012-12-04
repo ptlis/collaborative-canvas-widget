@@ -38,7 +38,6 @@ requirejs.config({
 });
 
 require([
-
             'lib/jquery',
             'lib/jquery.base64',
             'lib/jquery.contextMenu',
