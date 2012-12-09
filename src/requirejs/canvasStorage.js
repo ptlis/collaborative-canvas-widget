@@ -1768,6 +1768,8 @@ define( ['jquery', 'require'],
                         var itemData        = canvasStorage.list.cache.getCachedItemId(prefix, remItemData.id);
                         var prevData;
                         var nextData;
+                        
+                        var decks       = require('decks');
     
                         if(canvasStorage.method === 'wave' || canvasStorage.method === 'localStorage') {
                             var delta       = {};
@@ -1962,6 +1964,8 @@ define( ['jquery', 'require'],
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
                         }
+                        
+                        var decks       = require('decks');
     
                         var i;
     
