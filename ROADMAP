@@ -75,7 +75,6 @@ TODO List:
     * width needs to use % of canvas
     * Height need something fancy - ideally it should scale nicely if a new time period is added etc, this might mean anchoring edges via % height of the container the top / bottom edge is in.
     * Need to update stored x & y coordinate of centerpoint as well as new width/height.
-* Edit on first drop
 * Temporary holding area for cards to keep (that have been filled out) but are not currently required.
 * Mechanism to indicate that activities take place across several time periods?
 
