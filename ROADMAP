@@ -62,12 +62,12 @@ TODO List:
 * Serious testing on wookie / wave!
 * Initialise function should fire create events?
     * won't work, because cards depends on decks?
-    * if this is so, can probably remove this dependancy.
+    * if this is so, can probably remove this dependency.
 * Connection edit dismiss takes a *long* time - due to events?.
 * Think about:
     * Double-click to add cards?
     * Tick to close cards?
-* Add entry for mind-maping to Explore card in HLM deck.
+* Add entry for mind-mapping to Explore card in HLM deck.
 * Reduce card sizes by 75%
 * Lighten time-period background color?
 * Cards should automatically resize vertically to display all entered content.
@@ -83,25 +83,21 @@ TODO List:
 Bug List
 ========
 
+* Adding items to prompt template cards doesn't correctly save.
 * Context menus can fall off the bottom (and maybe side) of the screen.
 * Connection rendering problems (on copy or over time periods?)
 * Rendering bug in inputs in selection cards (needs to be wider..).
-* Large cards do not scroll
 * When cards are the smallest size hide the menu button & only display on card hover-over.
 * Connections break when you delete a time period.
 * Inputs on template cards do not display correctly on ROLE.
 * ROLE desync handling...
-* (On ROLE / chrome?) Text entered into template cards has mini scroll
-* On ROLE starup options the data entered into header fields dos not correctly persist.
+* (On ROLE / chrome?) Text entered into template cards has scroll-bar
 * Youtube / Vimeo cards:
     * Sometimes card loses video URL - possibly related to connections?
-* Dragging cards to bottom / top of screen doesn't scroll the canvas
-    * Difficult to manually handle because scrolling changes the internal offsets used by the drag & drop library used
 * Updates don't work on localStorage?
 * z-indexes don't work on localStorage
 * When creating a connection the green path that indicates a new connection is behind the background.
-* drag and drop off-canvas does not fire drop event
-* card spring-back undesirable behaviour, should remain where is closest to mitigate user mouse error
+* Resize containers after delete.
 
 
 Next Features:
@@ -132,6 +128,8 @@ Future features (time-permitting):
 * Creation of backdrops; titled frames, graphics.
 * Scalable / resizeable cards: user-testing suggests that this dimension can be used to indicate the importance of a card relative to others, indicate the duration of an activity etc.; by being non-prescriptive the hope is that we can support as many different uses as possible
 * Better print support: transform the data in the cards in a way that allows the results of a planning session to be printed in a more appropriate layout. (it is simple to display the cards in a format suitable for print - the difficulty part of this feature determining   card order due the canvas allowing card placement in any configuration)
+
+
 TESTING Process:
 ----------------
 Actions to test to make sure no regressions have slipped in:
