@@ -54,6 +54,7 @@ Partially Complete Features:
 TODO List:
 ==========
 
+* Deck selection requires the ability to re-order items in a list.
 * canvasStorage needs remMulti function
     * Use for canvasStorage.list.removeAll()
     * Use for connections.model.removeForCard()

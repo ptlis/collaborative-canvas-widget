@@ -194,7 +194,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
                     remove : function(event, deckData) {
                         'use strict';
         
-                        var deckElem    = $('[data-carddeck="' + deckData.id + '"]');
+                        var deckElem    = $('#deck_selector [data-carddeck="' + deckData.id + '"]');
         
                         deckElem.parents('li').remove();
                     },
@@ -202,8 +202,6 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
                     removeAll : function() {
                         'use strict';
-        
-        
                         var deckElems   = $('#deck_selector [data-prefix="deck"]');
         
                         for(var i = 0; i < deckElems.length; i++) {
@@ -303,14 +301,16 @@ define( ['jquery', 'containers', 'canvasStorage'],
             
                         // Drag & drop area for selecting cards
                         var inactiveCol =   $('<ul></ul>', {
-                            'id':       'inactive_cards'
+                            'id':       'inactive_cards',
+                            'class':    'connected'
                         });
                         inactiveCol.appendTo(dialog);
             
             
             
                         var activeCol   =   $('<ul></ul>', {
-                            'id':       'active_cards'
+                            'id':       'active_cards',
+                            'class':    'connected'
                         });
                         activeCol.appendTo(dialog);
             
@@ -325,16 +325,21 @@ define( ['jquery', 'containers', 'canvasStorage'],
                         });
                         remArrow.text('Stop Using Deck');
                         remArrow.appendTo(dialog);
-            
-                        inactiveCol
-                            .off('dropstart')   .on('dropstart', decks.handlers.dropStart)
-                            .off('drop')        .on('drop',      decks.handlers.drop)
-                            .off('dropend')     .on('dropend',   decks.handlers.dropEnd);
-            
-                        activeCol
-                            .off('dropstart')   .on('dropstart',   decks.handlers.dropStart)
-                            .off('drop')        .on('drop',        decks.handlers.drop)
-                            .off('dropend')     .on('dropend',     decks.handlers.dropEnd);
+
+                        inactiveCol.sortable({
+                            connectWith:    '.connected'
+                        });
+
+                        // Events to add and remove items.
+                        activeCol.sortable({
+                            connectWith:    '.connected',
+                            receive : function(event, ui) {
+                                $(window).trigger('widget:deck:model:new', [ui.item.find('span').data('carddeck')]);
+                            },
+                            remove : function(event, ui) {
+                                $(window).trigger('widget:deck:model:delete', [ui.item.find('span').data('carddeck')]);
+                            }
+                        });
             
             
                         var selectedDecks           = $('#deck_bar [data-prefix="deck"]');
@@ -362,11 +367,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
             
                             deckIcons[i]
                                 .off('mouseover')   .on('mouseover',    decks.handlers.mouseOverFunc)
-                                .off('mouseout')    .on('mouseout',     decks.handlers.mouseOutFunc)
-            
-                                .off('dragstart')   .on('dragstart',    decks.handlers.dragStart)
-                                .off('drag')        .on('drag',         decks.handlers.drag)
-                                .off('dragend')     .on('dragend',      decks.handlers.dragEnd);
+                                .off('mouseout')    .on('mouseout',     decks.handlers.mouseOutFunc);
                         }
             
                         if(firstRun) {
@@ -580,111 +581,6 @@ define( ['jquery', 'containers', 'canvasStorage'],
                         'use strict';
         
                         $('.dialog').find('.deck_hint').remove();
-                    },
-        
-        
-                    dragStart : function(event, dd) {
-                        'use strict';
-        
-                        var dialog      = $('.dialog');
-        
-                        dialog.find('.deck_hint').remove();
-                        $(this).css({   'position':    'absolute',
-                                        'z-index':      '9999'});
-        
-                        // Disable regular drops
-                        $('.cell_inner').off('dropstart');
-                        $('.cell_inner').off('drop');
-                        $('.cell_inner').off('dropend');
-        
-                        // Disable deck tooltips
-                        $('[data-prefix="deck"]').off('mouseout');
-                        $('[data-prefix="deck"]').off('mouseover');
-        
-        
-                        dd.limit        = dialog.offset();
-                        dd.limit.bottom = dd.limit.top + dialog.height() - $(this).outerHeight();
-                        dd.limit.right  = dd.limit.left + dialog.width() - $(this).outerWidth();
-                    },
-        
-        
-                    drag : function(event, dd) {
-                        'use strict';
-        
-                        var dialog      = $('.dialog');
-                        $(this).css({
-                            'top':  Math.min( dd.limit.bottom, Math.max( dd.limit.top, dd.offsetY ) ) - dialog.offset().top,
-                            'left': Math.min( dd.limit.right, Math.max( dd.limit.left, dd.offsetX ) ) - dialog.offset().left
-                        });
-                    },
-        
-        
-                    dragEnd : function(event, dd) {
-                        'use strict';
-        
-                        var dialog      = $('.dialog');
-        
-                        // Re-enable regular drops
-                        $('.cell_inner')
-                            .off('dropstart')   .on('dropstart',    containers.handlers.cardDropStart)
-                            .off('drop')        .on('drop',         containers.handlers.cardDrop)
-                            .off('dropend')     .on('dropend',      containers.handlers.cardDropEnd);
-        
-                        $(this).animate({
-                                'top':  dd.originalY - dialog.offset().top,
-                                'left': dd.originalX - dialog.offset().left
-                            },
-                            250,
-                            function() {
-                                $(this).css('position', 'static');
-                            });
-                    },
-        
-        
-                    dropStart : function(event, dd) {
-                        'use strict';
-        
-                    },
-        
-        
-                    drop : function(event, dd) {
-                        'use strict';
-        
-                        var deckElem    = $(event.target);
-                        var dropElem    = $(this);
-                        if(deckElem.data('prefix') === 'deck' && (dropElem.attr('id') === 'active_cards' || dropElem.attr('id') === 'inactive_cards')) {
-        
-                            // Deck from inactive into active column
-                            if(dropElem.attr('id') === 'active_cards' && deckElem.parents('#inactive_cards').length > 0) {
-                                $(window).trigger('widget:deck:model:new', [deckElem.data('carddeck')]);
-                            }
-        
-                            // Deck from active into inactive column
-                            else if(dropElem.attr('id') === 'inactive_cards' && deckElem.parents('#active_cards').length > 0) {
-                                $(window).trigger('widget:deck:model:delete', [deckElem.data('carddeck')]);
-                            }
-        
-                            var li          = deckElem.parent();
-                            li.remove();
-                            li.appendTo(dropElem);
-        
-                            deckElem.css('position', 'static');
-        
-                            $('[data-prefix="deck"]')
-                                .off('mouseover')   .on('mouseover',  decks.handlers.mouseOverFunc)
-                                .off('mouseout')    .on('mouseout',   decks.handlers.mouseOutFunc);
-        
-                            deckElem
-                                .off('dragstart')   .on('dragstart',    decks.handlers.dragStart)
-                                .off('drag')        .on('drag',         decks.handlers.drag)
-                                .off('dragend')     .on('dragend',      decks.handlers.dragEnd);
-                        }
-                    },
-        
-        
-                    dropEnd : function(event, dd) {
-                        'use strict';
-                        
                     }
                 }
             };

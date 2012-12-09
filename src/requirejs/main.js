@@ -8,6 +8,10 @@ requirejs.config({
             'exports':  'jquery.fn.base64'
         },
 
+        'jquery.ui': {
+            'deps':     ['jquery']
+        },
+
         'jquery.contextMenu': {
             'deps':     ['jquery'],
             'exports':  'jquery.fn.contextMenu'
@@ -44,7 +48,7 @@ require([
             'lib/jquery.event.drag.live',
             'lib/jquery.event.drop',
             'lib/jquery.event.drop.live',
-            'lib/jquery.ui.position',
+            'lib/jquery.ui',
 
             'card_specific/templates/selectable_prompts',
             'card_specific/multimedia',
