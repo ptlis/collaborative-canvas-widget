@@ -53,7 +53,8 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                         .off(   'widget:card:view:change_type')     .on('widget:card:view:change_type',         cards.view.changeType)
                         .off(   'widget:card:view:to_front')        .on('widget:card:view:to_front',            cards.view.toFront)
                         .off(   'widget:card:view:post_propagate')  .on('widget:card:view:post_propagate',      cards.view.postPropagate)
-                        .off(   'widget:card:view:update')          .on('widget:card:view:update',              cards.view.update);
+                        .off(   'widget:card:view:update')          .on('widget:card:view:update',              cards.view.update)
+                        .off(   'widget:card:view:edit')            .on('widget:card:view:edit',                cards.view.edit);
             
             
                     // Zooming in
@@ -161,7 +162,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                             callback:   function(key, options) {
                                 switch(key) {
                                     case 'edit':
-                                        cards.handlers.edit(cardElem);
+                                        $(window).trigger('widget:card:view:edit', [cardElem.data('instanceid')]);
                                         break;
                                     case 'copy':
                                         cards.handlers.copy(cardElem);
@@ -946,6 +947,45 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                                 }
                             }
                         }
+                    },
+                    
+                    
+                    edit : function(event, cardId) {
+
+                        // Create background & card
+                        var newBg   = false;
+                        var bgElem;
+                        var dialogCont;
+                        if($('.dialog_background').length) {
+                            bgElem      = $('.dialog_background');
+                            dialogCont  = $('.dialog_container');
+                        }
+            
+                        else {
+                            newBg   = true;
+                            bgElem  =           $('<div></div>',  {
+                                'class':       'dialog_background'
+                            });
+                            bgElem.css('display', 'none');
+                            bgElem.appendTo($('body'));
+            
+                            dialogCont  =       $('<div></div>', {
+                                'class':       'dialog_container'
+                            });
+                            dialogCont.appendTo(bgElem);
+                        }
+                        bgElem.attr('id', 'card_viewer');
+
+                        var cardData        = canvasStorage.list.get('card', cardId);
+                        cardData.size       = 'large';
+            
+                        $(window).trigger('widget:card:view:add', [cardData]);
+            
+                        if(newBg) {
+                            bgElem.fadeIn(250,  function() {
+                            });
+                        }
+                        
                     }
                 },
             
@@ -1187,38 +1227,6 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                                         bgElem.remove();
                                     });
                             });
-                    },
-            
-            
-                    edit : function(cardElem) {
-                        'use strict';
-            
-                        var instanceId      = cardElem.data('instanceid');
-            
-                        var cardType        = cardElem.data('cardtype');
-                        var deck            = cardElem.data('carddeck');
-            
-                        // Create background & card
-            
-                        var bgElem          =   $('<div></div>', {
-                            'id':           'card_viewer',
-                            'class':        'dialog_background'
-                        });
-                        bgElem.css('display', 'none');
-                        bgElem.appendTo($('body'));
-            
-                        var cardContainer   =   $('<div></div>', {
-                            'class':    'dialog_container'
-                        });
-                        cardContainer.appendTo(bgElem);
-            
-                        var cardData        = canvasStorage.list.get('card', instanceId);
-                        cardData.size       = 'large';
-            
-                        $(window).trigger('widget:card:view:add', [cardData]);
-            
-                        bgElem.fadeIn(250,  function() {
-                        });
                     },
             
             
@@ -1632,10 +1640,12 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
         
                             $(window).trigger('widget:card:model:new', [instanceId, cellId, leftOffsetPercent.toString(), (dropPosY / cards.zoomFactor).toString(), deck, cardType, nextZIndex]);
         
-                            var bgElem  = $('.dialog_background');
-                            bgElem.fadeOut( 250,
+                            
+                            var dialog  = $('.dialog');
+                            dialog.fadeOut( 250,
                                 function() {
-                                    bgElem.remove();
+                                    dialog.remove();
+                                    $(window).trigger('widget:card:view:edit', [instanceId]);
                                 });
 
 
