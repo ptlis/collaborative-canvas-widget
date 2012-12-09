@@ -366,8 +366,8 @@ define( ['jquery', 'containers', 'canvasStorage'],
                             deckIcons[i].appendTo(li);
             
                             deckIcons[i]
-                                .off('mouseover')   .on('mouseover',    decks.handlers.mouseOverFunc)
-                                .off('mouseout')    .on('mouseout',     decks.handlers.mouseOutFunc);
+                                .off('mouseover')   .on('mouseover',    decks.handlers.showHint)
+                                .off('mouseout')    .on('mouseout',     decks.handlers.hideHint);
                         }
             
                         if(firstRun) {
@@ -560,7 +560,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
                     },
                     
         
-                    mouseOverFunc : function(event) {
+                    showHint : function(event) {
                         'use strict';
         
                         var dialog          = $('.dialog');
@@ -577,7 +577,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
                     },
         
         
-                    mouseOutFunc : function() {
+                    hideHint : function() {
                         'use strict';
         
                         $('.dialog').find('.deck_hint').remove();
