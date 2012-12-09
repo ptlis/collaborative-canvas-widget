@@ -327,12 +327,14 @@ define( ['jquery', 'containers', 'canvasStorage'],
                         remArrow.appendTo(dialog);
 
                         inactiveCol.sortable({
-                            connectWith:    '.connected'
+                            connectWith:    '.connected',
+                            containment:    dialog
                         });
 
                         // Events to add and remove items.
                         activeCol.sortable({
                             connectWith:    '.connected',
+                            containment:    dialog,
                             receive : function(event, ui) {
                                 $(window).trigger('widget:deck:model:new', [ui.item.find('span').data('carddeck')]);
                             },
