@@ -115,11 +115,6 @@ define( ['jquery', 'cards', 'canvasStorage', 'containers', 'decks', 'fields', 'c
                 };
                 $.contextMenu(options);
     
-//                decks.init();
-//                containers.init();
-//                fields.init();
-//                cards.init();
-//                connections.init();
     
                 canvasStorage.init(storageMethod, firstRun);
                 canvasStorage.setLocalStorageUIUpdateFunc(localStoragePropagate);

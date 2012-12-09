@@ -13,7 +13,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
                 init : function() {
                     'use strict';
-console.log('init');
+
                     $(window)
                         .off(   'widget:deck:model:new')            .on('widget:deck:model:new',            decks.model.add)
                         .off(   'widget:deck:model:delete')         .on('widget:deck:model:delete',         decks.model.remove)
@@ -97,9 +97,9 @@ console.log('init');
         
                     deckElem
                         // Dragging
-                        .on('dragstart',    decks.handlers.bar.ragStart)
-                        .on('drag',         decks.handlers.bar.rag)
-                        .on('dragend',      decks.handlers.bar.ragEnd)
+                        .on('dragstart',    decks.handlers.bar.dragStart)
+                        .on('drag',         decks.handlers.bar.drag)
+                        .on('dragend',      decks.handlers.bar.dragEnd)
         
                     // Tooltips
                         .on('mouseenter',   decks.handlers.bar.tooltipShow)
