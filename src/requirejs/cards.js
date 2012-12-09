@@ -1637,6 +1637,9 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                                 function() {
                                     bgElem.remove();
                                 });
+
+
+                            $(window).trigger('widget:container:view:resize');
                         },
         
         
