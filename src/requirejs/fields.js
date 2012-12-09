@@ -32,11 +32,6 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
                 },
         
         
-                createDialog : function(firstRun) {
-                    'use strict';
-                },
-        
-        
                 updateAll : function(fieldsData) {
                     'use strict';
         
@@ -239,6 +234,8 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
                             var labelVal        = $(event.target).val();
             
                             labelElem.text(labelVal + ':');
+                            
+                            $(window).trigger('widget:field:model:change_title', [instanceId, labelVal])
                         };
             
                         var remFunction     = function(event) {

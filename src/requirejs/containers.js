@@ -18,6 +18,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                         .off(   'widget:container:model:new_positioned')    .on('widget:container:model:new_positioned',    containers.model.addPositioned)
                         .off(   'widget:container:model:delete')            .on('widget:container:model:delete',            containers.model.remove)
                         .off(   'widget:container:model:remove_all')        .on('widget:container:model:remove_all',        containers.model.removeAll)
+                        .off(   'widget:container:model:change_title')      .on('widget:container:model:change_title',      containers.model.changeTitle)
         
                         .off(   'widget:container:view:add')                .on('widget:container:view:add',                containers.view.add)
                         .off(   'widget:container:view:remove')             .on('widget:container:view:remove',             containers.view.remove)
@@ -179,6 +180,8 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                         var titleVal        = $(event.target).val();
         
                         titleElem.val(titleVal);
+                        
+                        $(window).trigger('widget:container:model:change_title', [instanceId, titleVal])
                     };
         
                     var remFunction     = function(event) {
@@ -646,6 +649,17 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                         'use strict';
         
                         return canvasStorage.list.getAll('container');
+                    },
+        
+        
+                    changeTitle : function(event, containerId, containerTitle) {
+                        'use strict';
+        
+                        var extraFields                 = containers.model.getFields();
+                        extraFields.id                  = containerId;
+                        extraFields.time_period_title   = containerTitle;
+        
+                        canvasStorage.list.update('container', extraFields);
                     }
                 },
         
