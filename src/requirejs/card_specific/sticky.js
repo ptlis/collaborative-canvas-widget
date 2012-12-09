@@ -1,8 +1,8 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'decks'],
-        function($, decks) {
+define( ['jquery', 'decks', 'canvasStorage'],
+        function($, decks, canvasStorage) {
             'use strict';
 
             var sticky  = {
