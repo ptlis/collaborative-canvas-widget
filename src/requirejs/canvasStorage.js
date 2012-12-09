@@ -340,78 +340,16 @@ define( ['jquery', 'require'],
                     // Handle container resizing
                     $(window).trigger('widget:container:view:resize');
                 },
-                
-                    
-                showLoadingDialog : function() {
-                    'use strict';
-                    
-                    // Create loading screen
-                    var loadingBg           =   $('<div></div>', {
-                                                    'class':        'dialog_background',
-                                                    'id':           'loading_background'
-                                                });
-            
-                    var container           =   $('<div></div>', {
-                                                        'class':        'dialog_container'
-                                                    });
-                    container.appendTo(loadingBg);
-            
-                    var dialog              =   $('<div></div>', {
-                                                    'class':        'dialog',
-                                                    'id':           'loading_dialog'
-                                                });
-                    dialog.appendTo(container);
-            
-                    var loadingElem         =   $('<div></div>', {
-                                                    'class':    'loading_anim'
-                                                });
-                    loadingElem.appendTo(dialog);
-            
-                    var loadingMsg          =   $('<div></div>', {
-                                                    'class':    'loading_msg'
-                                                });
-                    loadingMsg.text('Starting up...');
-                    loadingMsg.appendTo(dialog);
-            
-                    loadingBg.appendTo($('body'));
-                },
-                
-    
-                hideLoadingDialog : function() {
-                    'use strict';
-                                
-                    var canvas  = require('canvas');
-                    
-                    if(canvasStorage.runningVersion === null) {
-    
-                        $('#loading_dialog').fadeOut(
-                            250,
-                            function() {
-                                canvasStorage.firstRunFunc();
-                                $('#loading_dialog').remove();
-                            }
-                        );
-                    }
-    
-                    else {
-                        $('#loading_background').fadeOut(
-                            250,
-                            function() {
-                                $('#loading_background').remove();
-    
-                                canvas.dimensionsCheck();
-                            }
-                        );
-                    }
-                },
     
     
                 setLocalStorageUIUpdateFunc : function(uiUpdateFunction) {
                     'use strict';
+                    
+                    var canvas  = require('canvas');
     
                     if(canvasStorage.method === 'localStorage') {
     
-                        canvasStorage.showLoadingDialog();
+                        canvas.showLoadingDialog();
     
                         // Update this browser context if changes are made on other
                         $(window)
@@ -432,7 +370,7 @@ define( ['jquery', 'require'],
     
                             canvasStorage.standardPropagate();    // TODO: Better way of calling (this is passed as a param in another func)
     
-                            canvasStorage.hideLoadingDialog();
+                            canvas.hideLoadingDialog();
                         }, 1000);
                     }
                 },
@@ -440,11 +378,13 @@ define( ['jquery', 'require'],
     
                 setWaveUIUpdateFunc : function(uiUpdateFunction) {
                     'use strict';
+
+                    var canvas  = require('canvas');
     
                     // Update this widget if changes are detected
                     if(canvasStorage.method === 'wave') {
     
-                        canvasStorage.showLoadingDialog();
+                        canvas.showLoadingDialog();
     
                         wave.setStateCallback(function() {
                             if(!canvasStorage.ready) {
@@ -457,7 +397,7 @@ define( ['jquery', 'require'],
                                 }
     
                                 canvasStorage.firstRunFunc();
-                                canvasStorage.hideLoadingDialog();
+                                canvas.hideLoadingDialog();
                             }
                         });
                     }
@@ -477,9 +417,11 @@ define( ['jquery', 'require'],
     
                 setROLEUIUpdateFunc : function(uiUpdateFunc) {
                     'use strict';
+
+                    var canvas  = require('canvas');
     
                     if(!canvasStorage.ready) {
-                        canvasStorage.lshowLoadingDialog();
+                        canvas.showLoadingDialog();
     
                         canvasStorage.space     = new openapp.oo.Resource(openapp.param.space());
                         canvasStorage.user      = new openapp.oo.Resource(openapp.param.user());
@@ -570,7 +512,7 @@ define( ['jquery', 'require'],
                                     && canvasStorage.cacheInitialised.field) {
     
                                 canvasStorage.standardPropagate();
-                                canvasStorage.hideLoadingDialog();
+                                canvas.hideLoadingDialog();
     
     
                                 canvasStorage.iwcClient = new iwc.Client(['*']);
