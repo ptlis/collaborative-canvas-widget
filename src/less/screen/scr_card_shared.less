@@ -62,10 +62,21 @@
                 font-style:         italic;
             }
         }
+        
+        &[data-cardsize="medium"] {
+            .card_content {
+                overflow:                hidden;
+            }
+        }
+        
+        &[data-cardsize="large"] {
+            .card_content {
+                overflow-y:              scroll;
+            }
+        }
 
         //  Content
         .card_content {
-            overflow:                hidden;
 
             .group h5, .group .text_input {
                 margin:             0.25em 0 0.25em 1em;
