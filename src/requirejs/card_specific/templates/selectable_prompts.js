@@ -2,8 +2,8 @@
 
 
 
-define( ['jquery'],
-        function ($) {
+define( ['jquery', 'canvasStorage'],
+        function ($, canvasStorage) {
 
         /* Class used to create card decks from a template. **/
             function SelectablePromptTemplate(name, data) {
