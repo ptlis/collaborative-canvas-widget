@@ -1,8 +1,8 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'cards'],
-        function($, cards) {
+define( ['jquery', 'decks'],
+        function($, decks) {
             'use strict';
 
             var sticky  = {
@@ -321,6 +321,6 @@ define( ['jquery', 'cards'],
                 }
             };
 
-            cards.addDeckHandler('sticky', sticky);
+            decks.addHandler('sticky', sticky);
         }
 );

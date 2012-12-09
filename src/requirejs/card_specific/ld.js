@@ -1,8 +1,8 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'card_specific/templates/selectable_prompts', 'cards'],
-        function($, SelectablePromptTemplate, cards) {
+define( ['jquery', 'card_specific/templates/selectable_prompts', 'decks'],
+        function($, SelectablePromptTemplate, decks) {
             'use strict';
 
             var deckData    = {
@@ -189,6 +189,6 @@ define( ['jquery', 'card_specific/templates/selectable_prompts', 'cards'],
                 }
             };
 
-            cards.addDeckHandler('ld', new SelectablePromptTemplate('ld', deckData));
+            decks.addHandler('ld', new SelectablePromptTemplate('ld', deckData));
         }
 );

@@ -1,9 +1,10 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'cards'],
-        function($, cards) {
+define( ['jquery', 'decks'],
+        function($, decks) {
             'use strict';
+            
 
             var multimedia = {
 
@@ -927,6 +928,6 @@ define( ['jquery', 'cards'],
                 maxFileSize: 1024 * 1024 * 10
             };
 
-            cards.addDeckHandler('multimedia', multimedia);
+            decks.addHandler('multimedia', multimedia);
         }
 );

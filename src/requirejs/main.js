@@ -38,7 +38,6 @@ requirejs.config({
 });
 
 require([
-            'lib/jquery',
             'lib/jquery.base64',
             'lib/jquery.contextMenu',
             'lib/jquery.event.drag',
@@ -47,6 +46,15 @@ require([
             'lib/jquery.event.drop.live',
             'lib/jquery.ui.position',
 
+            'card_specific/templates/selectable_prompts',
+            'card_specific/multimedia',
+            'card_specific/sticky',
+            'card_specific/ld',
+            'card_specific/hlm',
+            'card_specific/information_skills',
+            'card_specific/assessment',
+
+
             'canvasStorage',
             'cards',
             'connections',
@@ -54,14 +62,7 @@ require([
             'decks',
             'fields',
             'util',
-
-            'card_specific/templates/selectable_prompts',
-            'card_specific/multimedia',
-            'card_specific/sticky',
-            'card_specific/ld',
-            'card_specific/hlm',
-            'card_specific/information_skills',
-            'card_specific/assessment'
+            'canvas'
         ],
         function($) {
 

@@ -44,6 +44,7 @@
  * @return string
  */
 
+
 (function($){
 
     var keyString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
