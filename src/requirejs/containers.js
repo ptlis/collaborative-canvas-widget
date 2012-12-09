@@ -26,6 +26,92 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                         .off(   'widget:container:view:remove_all')         .on('widget:container:view:remove_all',         containers.view.removeAll)
                         .off(   'widget:container:view:update')             .on('widget:container:view:update',             containers.view.update);
                 },
+                
+                
+                dropHandler : function(event, ui) {
+                    var dropPosY;
+                    var dropPosX;
+                    var cell    = $(this);
+                    
+                    if(ui.draggable.data('prefix') == 'card') {
+                        var cardElem    = ui.draggable;
+                        var cellId      = cell.parents('.cell_container').data('instanceid');
+                        var oldCellId   = cardElem.parents('.cell_container').data('instanceid');
+
+                        
+                        // If the cell changes some hairy math must be done to position the card correctly
+                        if(cellId !== oldCellId) {
+
+                            var newCellPos  = cell.offset();
+                            var oldCellPos  = cardElem.parents('.cell_inner').offset();
+
+                            // Moving card down
+                            if(oldCellPos.top < newCellPos.top) {
+                                dropPosY        = parseInt(cardElem.css('top').replace('px', ''), 10) - (newCellPos.top - oldCellPos.top) + (cardElem.outerHeight() / 2);
+                            }
+
+                            // Moving card up
+                            else {
+                                dropPosY        = parseInt(cardElem.css('top').replace('px', ''), 10) + (oldCellPos.top - newCellPos.top) + (cardElem.outerHeight() / 2);
+                            }
+                        }
+                        else {
+                            dropPosY    = parseInt(cardElem.css('top').replace('px', ''), 10) + (cardElem.outerHeight() / 2);
+                        }
+
+                        dropPosX    = parseInt(cardElem.css('left').replace('px', ''), 10) + (cardElem.outerWidth() / 2);
+
+                        var leftOffsetPercent   = (dropPosX / cell.width()) * 100;
+
+                        $(window).trigger('widget:card:model:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY / cards.zoomFactor, cardElem.css('z-index')]);
+                        $(window).trigger('widget:card:view:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY, cardElem.css('z-index')]);
+                        
+                    }
+                    
+                    else if(ui.draggable.data('prefix') == 'deck') {
+                        
+                        var deck                = ui.draggable.data('carddeck');
+                        
+                        var bgElem              =   $('<div></div>', {
+                                                        'class':        'dialog_background'
+                                                    });
+                        bgElem.css('display', 'none');
+                        bgElem.appendTo($('body'));
+
+
+                        var dialogContElem      =   $('<div></div>', {
+                                                        'class':        'dialog_container'
+                                                    });
+                        dialogContElem.appendTo(bgElem);
+
+                        var wheelContainer      =   $('<div></div>', {
+                                                        'class':        'dialog card_selector_box'
+                                                    });
+                        wheelContainer.appendTo(dialogContElem);
+
+                        var dismiss             =   $('<div></div>', {
+                                                        'class':    'dialog_dismiss dismiss_button_32x32'
+                                                    });
+                        dismiss.appendTo(wheelContainer);
+
+
+                        dismiss
+                            .off('click')
+                            .on('click', function() {
+                                $(bgElem).fadeOut(250,  function() {
+                                    bgElem.remove();
+                                });
+                            });
+
+                        
+                        dropPosY            = ui.position.top - cell.offset().top;
+                        dropPosX            = ui.position.left - cell.offset().left;
+
+                        $(bgElem).fadeIn(250, function() {
+                            cards.handlers.deck.selectorWheel(deck, dropPosX, dropPosY, cell);
+                        });
+                    }
+                },
         
         
                 createDialog : function(firstRun) {
@@ -436,12 +522,9 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                     $.contextMenu(options);
         
                     // Card drop
-                    dropElem
-                        .on('dropstart',    containers.handlers.cardDropStart)
-                        .on('drop',         containers.handlers.cardDrop)
-                        .on('dropend',      containers.handlers.cardDropEnd);
-        
-                    $.drop({ mode:'intersect' });
+                    dropElem.droppable({
+                        drop : containers.dropHandler
+                    });
         
                     // Title change
                     canvasStorage.addChangeEvents(containerElem);
@@ -462,11 +545,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                     // Right-click context
                     $.contextMenu('destroy', '[data-instanceid="' + containerId + '"] .cell_inner');
         
-                    // Card drop
-                    dropElem
-                        .off('dropstart')
-                        .off('drop')
-                        .off('dropend');
+                    // TODO: Remove card / deck drop
         
                     // Title change
                     canvasStorage.removeChangeEvents(containerElem);
@@ -697,176 +776,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
                         $('[data-instanceid="' + containerData.id + '"] .cell_label').val(containerData.time_period_title);
                     }
-                },
-        
-        
-                handlers : {
-        
-        
-                    cardDropStart : function(event, dd) {
-                        'use strict';
-        
-                        var cardElem;
-        
-                        if($(event.target).data('prefix') === 'card') {
-                            cardElem    = $(event.target);
-                        }
-                        else {
-                            cardElem    = $(event.target).parents('[data-prefix="card"]');
-                        }
-        
-                        dd.instanceid   = cardElem.data('instanceid');
-                        dd.originalLeft = cardElem.css('left');
-                        dd.originalTop  = cardElem.css('top');
-        
-                        $(this).parents('.cell_outer').addClass('active');
-                    },
-        
-        
-                    cardDrop : function(event, dd) {
-                        'use strict';
-        
-                        var dropPosX;
-                        var dropPosY;
-                        var cardElem;
-        
-                        if(typeof(dd.instanceid) === 'undefined') {
-                            var cell                = $(this);
-                            var deck                = $(event.target).data('carddeck');
-                            var targetPos;
-        
-                            if(typeof(deck) !== 'undefined') {
-        
-                                // make dragged deck invisible while it returns
-                                $(event.target).css('display', 'none');
-        
-                                var bgElem              =   $('<div></div>', {
-                                                                'class':        'dialog_background'
-                                                            });
-                                bgElem.css('display', 'none');
-                                bgElem.appendTo($('body'));
-        
-        
-                                var dialogContElem      =   $('<div></div>', {
-                                                                'class':        'dialog_container'
-                                                            });
-                                dialogContElem.appendTo(bgElem);
-        
-                                var wheelContainer      =   $('<div></div>', {
-                                                                'class':        'dialog card_selector_box'
-                                                            });
-                                wheelContainer.appendTo(dialogContElem);
-        
-                                var dismiss             =   $('<div></div>', {
-                                                                'class':    'dialog_dismiss dismiss_button_32x32'
-                                                            });
-                                dismiss.appendTo(wheelContainer);
-        
-        
-                                dismiss
-                                    .off('click')
-                                    .on('click', function() {
-                                        $(bgElem).fadeOut(250,  function() {
-                                            bgElem.remove();
-                                        });
-                                    });
-        
-                                targetPos           = cell.offset();
-        
-                                dropPosX            = (dd.startX + dd.deltaX) - targetPos.left;
-                                dropPosY            = (dd.startY + dd.deltaY) - targetPos.top;
-        
-        
-                                $(bgElem).fadeIn(250, function() {
-                                    cards.handlers.deck.selectorWheel(deck, dropPosX, dropPosY, cell);
-                                });
-        
-                                $(window).trigger('widget:container:view:resize');
-        
-                                event.preventDefault();
-                            }
-        
-                        }
-        
-        
-                        else {
-                            if($(event.target).data('prefix') === 'card') {
-                                cardElem    = $(event.target);
-                            }
-                            else {
-                                cardElem    = $(event.target).parents('[data-prefix="card"]');
-                            }
-        
-                            // Valid drag
-                            if(cardElem.length) {
-                                var cellId      = $(this).parents('.cell_container').data('instanceid');
-                                var oldCellId   = cardElem.parents('.cell_container').data('instanceid');
-        
-                                // If the cell changes some hairy math must be done to position the card correctly
-                                if(cellId !== oldCellId) {
-        
-                                    var newCellPos  = $(this).offset();
-                                    var oldCellPos  = cardElem.parents('.cell_inner').offset();
-        
-                                    // Moving card down
-                                    if(oldCellPos.top < newCellPos.top) {
-                                        dropPosY        = parseInt(cardElem.css('top').replace('px', ''), 10) - (newCellPos.top - oldCellPos.top) + (cardElem.outerHeight() / 2);
-                                    }
-        
-                                    // Moving card up
-                                    else {
-                                        dropPosY        = parseInt(cardElem.css('top').replace('px', ''), 10) + (oldCellPos.top - newCellPos.top) + (cardElem.outerHeight() / 2);
-                                    }
-                                }
-        
-                                else {
-                                    dropPosY    = parseInt(cardElem.css('top').replace('px', ''), 10) + (cardElem.outerHeight() / 2);
-                                }
-        
-                                dropPosX    = parseInt(cardElem.css('left').replace('px', ''), 10) + (cardElem.outerWidth() / 2);
-        
-                                var leftOffsetPercent   = (dropPosX / $(this).width()) * 100;
-        
-                                $(window).trigger('widget:card:model:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY / cards.zoomFactor, cardElem.css('z-index')]);
-                                $(window).trigger('widget:card:view:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY, cardElem.css('z-index')]);
-        
-                                cardElem.removeClass('dragging');
-                            }
-        
-                            // Invalid drag, move card to original position
-                            else {
-        
-                                var cardElems   = $('[data-prefix="card"].dragging');
-        
-                                var animateCallback = function() {
-                                    cardElem.removeClass('dragging');
-        
-                                    $(window).trigger('widget:connection:view:update_all_paths');
-                                };
-        
-                                for(var i = 0; i < cardElems.length; i++) {
-                                    cardElem            = $(cardElems[i]);
-                                    containerElem       = cardElem.parents('.cell_container');
-        
-                                    cardElem.animate({
-                                            'top':  dd.originalTop,
-                                            'left': dd.originalLeft
-                                        },
-                                        250,
-                                        animateCallback);
-                                }
-                            }
-                        }
-                    },
-        
-        
-                    cardDropEnd : function(event, dd) {
-                        'use strict';
-        
-                        $(this).parents('.cell_outer').removeClass('active');
-                    }
-                }
-        
+                }        
             };
             
             

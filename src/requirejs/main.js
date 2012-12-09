@@ -17,24 +17,6 @@ requirejs.config({
             'exports':  'jquery.fn.contextMenu'
         },
         
-        'jquery.event.drag': {
-            'deps':     ['jquery'],
-            'exports':  'jquery.fn.drag'
-        },
-        
-        'jquery.event.drag.live': {
-            'deps':     ['jquery', 'jquery.event.drag']
-        },
-        
-        'jquery.event.drop': {
-            'deps':     ['jquery'],
-            'exports':  'jquery.fn.drop'
-        },
-        
-        'jquery.event.drop.live': {
-            'deps':     ['jquery']
-        },
-        
         'jquery.ui.position': {
             'deps':     ['jquery']
         }
@@ -44,10 +26,6 @@ requirejs.config({
 require([
             'lib/jquery.base64',
             'lib/jquery.contextMenu',
-            'lib/jquery.event.drag',
-            'lib/jquery.event.drag.live',
-            'lib/jquery.event.drop',
-            'lib/jquery.event.drop.live',
             'lib/jquery.ui',
 
             'card_specific/templates/selectable_prompts',

@@ -2,7 +2,7 @@
 
 
 define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
-        function($, reqquire, connections, canvasStorage, canvas) {
+        function($, require, connections, canvasStorage, canvas) {
             'use strict';
             
             var cards = {
@@ -252,18 +252,18 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                             menuElem.css({top: yOffset, left: xOffset});
                         };
                         $.contextMenu(options);
-            
+
+                        // Bring card to front
                         cardElem
-            
-                            // Bring card to front
                             .on('click', function() {
                                 $(window).trigger('widget:card:model:to_front', [cardElem.data('instanceid')]);
-                            })
+                            });
             
-                            // Allow cards to be draggable
-                            .on('dragstart',    {'not': '.menu_icon, .context-menu-list *, .context-menu-layer *'}, cards.handlers.cardDragStart)
-                            .on('drag',         {'not': '.menu_icon, .context-menu-list *, .context-menu-layer *'}, cards.handlers.cardDrag)
-                            .on('dragend',      {'not': '.menu_icon, .context-menu-list *, .context-menu-layer *'}, cards.handlers.cardDragEnd);
+                        // Allow cards to be draggable
+                        cardElem.draggable({
+                            'revert':   'invalid',
+                            'cancel':   '.menu_icon, .context-menu-list *, .context-menu-layer *'
+                        });
                     }
             
                     if(size === 'large') {
@@ -313,10 +313,9 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
                         // Drag & bring to front events
                         cardElem
-                            .off('click')
-                            .off('dragstart')
-                            .off('drag')
-                            .off('dragend');
+                            .off('click');
+                        
+                        // TODO: Remove card drag events
                     }
             
                     if(size === 'large') {
@@ -1421,58 +1420,6 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                     },
             
             
-                    cardDragStart : function(event, dd) {
-                        'use strict';
-            
-                        var dragContainer   = $('#contain_drag');
-                        var cardElem;
-            
-                        if($(event.target).hasClass('card')) {
-                            cardElem        = $(event.target);
-                        }
-                        else {
-                            cardElem        = $(event.target).parents('[data-prefix="card"]');
-                        }
-            
-                        $.contextMenu('destroy', '[data-instanceid="' + cardElem.data('instanceid') + '"][data-cardsize="medium"]');
-            
-                        $(window).trigger('widget:card:model:to_front', [cardElem.data('instanceid')]);
-            
-                        dd.limit        = dragContainer.offset();
-                        dd.limit.bottom = dd.limit.top + dragContainer.outerHeight() - $(this).outerHeight();
-                        dd.limit.right  = dd.limit.left + dragContainer.outerWidth() - $(this).outerWidth();
-                        $(this).addClass('dragging');
-            
-                        dd.cardInstanceId     = cardElem.data('instanceid');
-                    },
-            
-            
-                    cardDrag : function(event, dd) {
-                        'use strict';
-            
-                        var cardElem        = cards.getCardElem(dd.cardInstanceId);
-            
-                        var containerPos    = cardElem.parents('.cell_inner').offset();
-            
-                        $(this).css({
-                            'top':  Math.min( dd.limit.bottom, Math.max( dd.limit.top, dd.offsetY ) )  - containerPos.top,
-                            'left': Math.min( dd.limit.right, Math.max( dd.limit.left, dd.offsetX ) ) - containerPos.left
-                        });
-            
-                        $(window).trigger('widget:connection:view:move_for_card', [dd.cardInstanceId]);
-                    },
-            
-            
-                    cardDragEnd : function(event, dd) {
-                        'use strict';
-            
-                        var cardElem        = cards.getCardElem(dd.cardInstanceId);
-            
-                        cards.addEvents(cardElem);
-                        $(window).trigger('widget:connection:view:move_for_card', [dd.cardInstanceId]);
-                    },
-            
-            
                     pairedElementDialog : function(event) {
                         'use strict';
 
@@ -1677,7 +1624,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                             var cardType            = $(event.target).data('cardtype');
                             var deck                = $(event.target).data('carddeck');
         
-                            var cellId              = $(cell).parents('.cell_container').data('instanceid');
+                            var cellId              = cell.parents('.cell_container').data('instanceid');
         
                             var instanceId          = canvas.uidGenerator();
                             var nextZIndex          = canvasStorage.util.getNextZIndex();

@@ -89,36 +89,36 @@ define( ['jquery', 'containers', 'canvasStorage'],
                     return icons;
                 },
         
+                
+                
         
                 addEvents : function(deckElem) {
                     'use strict';
-        
+
                     decks.removeEvents(deckElem);
-        
-                    deckElem
-                        // Dragging
-                        .on('dragstart',    decks.handlers.bar.dragStart)
-                        .on('drag',         decks.handlers.bar.drag)
-                        .on('dragend',      decks.handlers.bar.dragEnd)
-        
+
                     // Tooltips
+                    deckElem
                         .on('mouseenter',   decks.handlers.bar.tooltipShow)
                         .on('mouseleave',   decks.handlers.bar.tooltipHide);
+                    
+                    // Dragging
+                    deckElem.draggable({
+                        'revert':   'invalid',
+                        'helper':   'clone'
+                    });
                 },
         
         
                 removeEvents : function(deckElem) {
                     'use strict';
-        
+
+                    // Tooltips
                     deckElem
-                        // Dragging
-                        .off('dragstart')
-                        .off('drag')
-                        .off('dragend')
-        
-                        // Tooltips
                         .off('mouseenter')
                         .off('mouseleave');
+
+                    // TODO: Figure out reliable way to remove draggable.
                 },
         
         
@@ -499,65 +499,6 @@ define( ['jquery', 'containers', 'canvasStorage'],
 
                         tooltipHide : function(event) {
                             $(event.target).parents('li').find('.deck_tooltip').fadeOut(100);
-                        },
-
-
-                        dragStart : function(event, dd) {                            
-                            if($(this).hasClass('inactive')) {
-                                event.preventDefault();
-                            }
-                
-                            else {
-                
-                                // Remove tooltip events
-                                $(this).off('mouseenter');
-                                $(this).off('mouseleave');
-                
-                                decks.handlers.bar.tooltipHide(event);
-                
-                                var clonedDeck  = $(this).clone();
-                
-                                $(this).after(clonedDeck);
-                
-                                decks.addEvents(clonedDeck);
-                
-                                $(this).css({
-                                    'position': 'absolute',
-                                    'z-index':  '9999'
-                                });
-                            }
-                        },
-
-
-                        drag : function(event, dd) {
-                            if($(this).hasClass('inactive')) {
-                                event.preventDefault();
-                            }
-                
-                            else {
-                                $(this).css({
-                                    'top':  dd.offsetY - $(window).scrollTop(),
-                                    'left': dd.offsetX
-                                });
-                            }
-                        },
-
-
-                        dragEnd : function(event, dd) {
-                            if($(this).hasClass('inactive')) {
-                                event.preventDefault();
-                            }
-                
-                            else {
-                                $(this).animate({
-                                        'top':  dd.originalY - $(window).scrollTop(),
-                                        'left': dd.originalX
-                                    },
-                                    250,
-                                    function() {
-                                        $(this).remove();
-                                    });
-                            }
                         }
                     },
                     
