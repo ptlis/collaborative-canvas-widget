@@ -12,6 +12,12 @@
 
 BASE=$PWD
 
-rm -rf src/compressed_js/
+rm -rf src/js/
 
-mkdir src/compressed_js/
+mkdir src/js/
+
+cd src/requirejs/
+
+r.js -o build.js
+
+cd $BASE
