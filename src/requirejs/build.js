@@ -4,5 +4,6 @@
         jquery: "lib/require-jquery"
     },
     name: "main",
-    out: "main-built.js"
+    out: "../js/main-built.js",
+    preserveLicenseComments: false
 })
