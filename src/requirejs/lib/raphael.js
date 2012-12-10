@@ -87,7 +87,9 @@
             current_event = ce;
             return out.length ? out : null;
         };
-    
+     // added to put eve into global scope
+        window.eve = eve;
+
     eve.listeners = function (name) {
         var names = name.split(separator),
             e = events,

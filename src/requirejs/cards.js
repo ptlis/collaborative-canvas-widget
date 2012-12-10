@@ -1,8 +1,8 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
-        function($, require, connections, canvasStorage, canvas) {
+define( ['jquery', 'require', 'connections', 'canvasStorage', 'util'],
+        function($, require, connections, canvasStorage, util) {
             'use strict';
             
             var cards = {
@@ -23,9 +23,6 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 init : function() {
-                    'use strict';
-                    
-                    var decks       = require('decks'); // Pull in decks
             
                     var testAnchor  = document.createElement('a');
                     if(typeof testAnchor.download !== 'undefined') {
@@ -59,21 +56,17 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
                     // Zooming in
                     $('.zoom_in')
-                        .off(   'click').on(        'click',            cards.handlers.zoomIn)
-                        .off(   'mouseenter').on(   'mouseenter',       decks.handlers.bar.tooltipShow)
-                        .off(   'mouseleave').on(   'mouseleave',       decks.handlers.bar.tooltipHide);
+                        .off(   'click').on(        'click',            cards.handlers.zoomIn);
             
                     // Zooming out
                     $('.zoom_out')
-                        .off(   'click').on(        'click',            cards.handlers.zoomOut)
-                        .off(   'mouseenter').on(   'mouseenter',       decks.handlers.bar.tooltipShow)
-                        .off(   'mouseleave').on(   'mouseleave',       decks.handlers.bar.tooltipHide);
+                        .off(   'click').on(        'click',            cards.handlers.zoomOut);
                 },
             
             
                 /*  Convenience function, returns current card width, height, x offset & y offset */
                 getCardDimensions : function(cardId) {
-                    'use strict';
+                    
             
                     var dimensions      = {};
                     var zoomFactorIndex = cards.zoomFactor.replace('.', '_');
@@ -97,7 +90,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 getCardElem : function(cardId) {
-                    'use strict';
+                    
             
                     var cachedCardData  = cards.cache.getCachedCardData(cardId);
             
@@ -106,7 +99,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 getCardElems : function() {
-                    'use strict';
+                    
             
                     var cardElems   = [];
                     for(var cardId in cards.cache.cachedCards) {
@@ -120,7 +113,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 removeRequest : function(event, cardId) {
-                    'use strict';
+                    
             
                     if(confirm('Are you sure you want to remove this card?')) {
                         $(window).trigger('widget:card:model:delete',  [cardId]);
@@ -129,7 +122,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 addEvents : function(cardElem) {
-                    'use strict';
+                    
             
                     cards.removeEvents(cardElem);
                     
@@ -295,7 +288,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 removeEvents : function(cardElem) {
-                    'use strict';
+                    
 
                     var decks       = require('decks'); // Pull in decks
             
@@ -336,7 +329,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 updateAll : function() {
-                    'use strict';
+                    
             
                     var addedCards              = [];
                     var removedCards            = [];
@@ -370,7 +363,6 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     // Add cards
-                    var destCell;
                     for(i = 0; i < addedCards.length; i++) {
                         addedCards[i].size  = 'medium';
                         $(window).trigger('widget:card:view:add', [addedCards[i]]);
@@ -387,7 +379,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 propagateDataAll : function() {
-                    'use strict';
+                    
             
                     var placedCards             = $('[data-prefix="card"]');
             
@@ -399,7 +391,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                 propagateData : function(cardElem) {
-                    'use strict';
+                    
 
                     var decks       = require('decks'); // Pull in decks
             
@@ -498,7 +490,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
                 model : {
                     getFields : function() {
-                        'use strict';
+                        
             
                         return {
                             cell_id:    '',
@@ -512,7 +504,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     add : function(event, instanceId, cellId, xPos, yPos, deck, cardType, zIndex, presetData) {
-                        'use strict';
+                        
             
                         var extraFields         = cards.model.getFields();
                         extraFields.id          = instanceId;
@@ -537,7 +529,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     remove : function(event, cardId) {
-                        'use strict';
+                        
             
                         $(window).trigger('widget:connection:model:delete_for_card', [cardId]);
             
@@ -549,7 +541,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     removeAll : function() {
-                        'use strict';
+                        
             
                         $(window).trigger('widget:connection:model:remove_all');
             
@@ -558,7 +550,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     changeType : function(event, cardId, cardType) {
-                        'use strict';
+                        
             
                         var extraFields = {
                             'id':       cardId,
@@ -570,7 +562,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     move : function(event, cardId, cellId, xPosPercent, yPos, zIndex) {
-                        'use strict';
+                        
             
                         // Clear existing timer, ready to be reset
                         if(typeof(canvasStorage.delayIds) !== 'undefined' && typeof(canvasStorage.delayIds['move_' + cardId]) !== 'undefined') {
@@ -596,7 +588,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     toFront : function(event, cardId) {
-                        'use strict';
+                        
             
                         var nextZIndex  = canvasStorage.util.getNextZIndex();
             
@@ -612,14 +604,14 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     get : function(cardId) {
-                        'use strict';
+                        
             
                         return canvasStorage.list.get('card', cardId);
                     },
             
             
                     getAll : function() {
-                        'use strict';
+                        
             
                         return canvasStorage.list.getAll('card');
                     }
@@ -643,7 +635,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     addZoomedDimensions : function(cardId, cardElem) {
-                        'use strict';
+                        
             
                         var zoomFactorIndex = cards.zoomFactor.replace('.', '_');
             
@@ -665,7 +657,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     addCachedCardData : function(cardId, cardElem) {
-                        'use strict';
+                        
             
                         if(!(cardId in cards.cache.cachedCards && cards.cache.cachedCards.hasOwnProperty(cardId))) {
                             cards.cache.cachedCards[cardId] = {};
@@ -678,7 +670,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     getCachedCardData : function(cardId) {
-                        'use strict';
+                        
             
                         var cardData    = null;
                         if(cardId in cards.cache.cachedCards && cards.cache.cachedCards.hasOwnProperty(cardId)) {
@@ -690,7 +682,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     deleteCachedCardData : function(cardId) {
-                        'use strict';
+                        
             
                         delete cards.cache.cachedCards[cardId];
                     }
@@ -700,7 +692,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
                 view : {
                     add : function(event, cardData) {
-                        'use strict';
+                        
 
                         var decks       = require('decks'); // Pull in decks
             
@@ -731,7 +723,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     remove : function(event, cardData) {
-                        'use strict';
+                        
             
                         var cardElems   = $('[data-instanceid="' + cardData.id + '"]');
                         var cardElem;
@@ -757,7 +749,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     removeAll : function() {
-                        'use strict';
+                        
             
                         var cardElems   = $('[data-prefix="card"]');
                         var cardElem;
@@ -783,7 +775,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     changeType : function(event, cardId, cardType) {
-                        'use strict';
+                        
             
                         var cardElems       = $('[data-instanceid="' + cardId + '"]');
                         cardElems.attr('data-cardtype', cardType);
@@ -791,7 +783,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     move : function(event, cardId, cellId, xPosPercent, yPos, zIndex) {
-                        'use strict';
+                        
             
                         var cellElem        = $('[data-instanceid="' + cellId + '"] .cell_inner');
                         var cardElem        = cards.getCardElem(cardId);
@@ -829,7 +821,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     toFront : function(event, cardId, zIndex) {
-                        'use strict';
+                        
             
                         var cardElem        = cards.getCardElem(cardId);
                         cardElem.css('z-index', zIndex);
@@ -837,7 +829,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     postPropagate : function(event, cardElem) {
-                        'use strict';
+                        
 
                         var decks       = require('decks'); // Pull in decks
             
@@ -848,7 +840,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     update : function(event, cardData) {
-                        'use strict';
+                        
 
                         var decks       = require('decks'); // Pull in decks
             
@@ -994,7 +986,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
                     // TODO: This shouldn't be here
                     exportDialog : function(event) {
-                        'use strict';
+                        
             
                         var bgElem                  =   $('<div></div>', {
                             'class':    'dialog_background'
@@ -1091,7 +1083,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
                     // TODO: This shouldn't be here
                     importDialog : function(event) {
-                        'use strict';
+                        
             
                         var bgElem                  =   $('<div></div>', {
                             'class':    'dialog_background'
@@ -1231,7 +1223,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     editDismiss : function(event) {
-                        'use strict';
+                        
             
                         var medCard         = cards.getCardElem($(event.target).parents('[data-prefix="card"]').data('instanceid'));
             
@@ -1247,7 +1239,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     copy : function(cardElem) {
-                        'use strict';
+                        
             
                         cards.clipboardData.method      = 'copy';
                         cards.clipboardData.instanceId  = cardElem.data('instanceid');
@@ -1255,7 +1247,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     cut : function(cardElem) {
-                        'use strict';
+                        
             
                         // remove opacity from previously cut card
                         $('.to_cut').removeClass('to_cut');
@@ -1268,7 +1260,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     paste : function(cellId, dropPosX, dropPosY) {
-                        'use strict';
+                        
 
                         var decks       = require('decks'); // Pull in decks
             
@@ -1277,7 +1269,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                         var leftOffsetPercent   = (dropPosX / destCell.width()) * 100;
             
                         if(cards.clipboardData.method === 'copy') {
-                            var instanceId          = canvas.uidGenerator();
+                            var instanceId          = util.uidGenerator();
                             var cardData            = cards.model.get(cards.clipboardData.instanceId);
                             var cardExtraData       = decks.getHandler(cardData.deck).getExtraFields(cardData.cardtype);
                             var storeData           = {};
@@ -1331,14 +1323,14 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     changeActiveDecks : function() {
-                        'use strict';
+                        
             
                         $(window).trigger('widget:deck:view:create_dialog', [false]);
                     },
             
             
                     zoomIn : function() {
-                        'use strict';
+                        
             
                         // Floating point math has interesting consequences >_>
                         switch(cards.zoomFactor) {
@@ -1383,7 +1375,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                     },
             
                     zoomOut : function() {
-                        'use strict';
+                        
             
                         // Floating point math has interesting consequences >_>
                         switch(cards.zoomFactor) {
@@ -1429,7 +1421,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     pairedElementDialog : function(event) {
-                        'use strict';
+                        
 
                         var decks       = require('decks'); // Pull in decks
             
@@ -1542,7 +1534,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     pairedElementAdd : function(event) {
-                        'use strict';
+                        
             
                         canvasStorage.changeHandlers.addEntry(event);
             
@@ -1562,7 +1554,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
                     pairedElementRemove : function(event) {
-                        'use strict';
+                        
             
                         canvasStorage.changeHandlers.removeEntry(event);
             
@@ -1600,7 +1592,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
                     deck : {
         
                         cardMouseOver : function(event) {
-                            'use strict';
+                            
 
                             var decks       = require('decks'); // Pull in decks
         
@@ -1616,7 +1608,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
         
         
                         cardMouseOut : function(event) {
-                            'use strict';
+                            
         
                             var wheelContainer  = $('.card_selector_box');
                             var deckHint        = wheelContainer.find('.deck_hint');
@@ -1627,14 +1619,14 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
         
         
                         cardClicked : function(event, dropPosX, dropPosY, cell) {
-                            'use strict';
+                            
         
                             var cardType            = $(event.target).data('cardtype');
                             var deck                = $(event.target).data('carddeck');
         
                             var cellId              = cell.parents('.cell_container').data('instanceid');
         
-                            var instanceId          = canvas.uidGenerator();
+                            var instanceId          = util.uidGenerator();
                             var nextZIndex          = canvasStorage.util.getNextZIndex();
                             var leftOffsetPercent   = (dropPosX / cell.width()) * 100;
         
@@ -1654,7 +1646,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
         
         
                         selectorWheel : function(deck, dropPosX, dropPosY, cell) {
-                            'use strict';
+                            
 
                             var decks       = require('decks'); // Pull in decks
         
@@ -1755,9 +1747,7 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'canvas'],
             
             
             // Initialise card handlers
-            $(window).on('load', function() {
-                cards.init();
-            });
+            cards.init();
             
 
             return cards;

@@ -3,7 +3,7 @@
 
 define( ['jquery', 'containers', 'canvasStorage'],
         function($, containers, canvasStorage) {
-			'use strict';
+            'use strict';
 	
             /*  The dialog to select the active decks. */
             var decks   = {
@@ -12,7 +12,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
                 availableDecks      : {},
         
                 init : function() {
-                    'use strict';
+                    
 
                     $(window)
                         .off(   'widget:deck:model:new')            .on('widget:deck:model:new',            decks.model.add)
@@ -28,7 +28,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
             
             
                 getHandler : function(deck) {
-                    'use strict';
+                    
             
                     var handler;
             
@@ -46,14 +46,14 @@ define( ['jquery', 'containers', 'canvasStorage'],
             
             
                 addHandler : function(deckName, deckObj) {
-                    'use strict';
+                    
             
                     decks.availableDecks[deckName]  = deckObj;
                 },
             
             
                 removeHandler : function(deckName) {
-                    'use strict';
+                    
             
                     if(deckName in decks.availableDecks && decks.availableDecks.hasOwnProperty(deckName)) {
                         delete  decks.availableDecks[deckName];
@@ -62,7 +62,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                 getDeckIcons : function(filtered) {
-                    'use strict';
+                    
         
                     var icons       = [];
         
@@ -93,7 +93,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
                 
         
                 addEvents : function(deckElem) {
-                    'use strict';
+                    
 
                     decks.removeEvents(deckElem);
 
@@ -111,7 +111,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                 removeEvents : function(deckElem) {
-                    'use strict';
+                    
 
                     // Tooltips
                     deckElem
@@ -123,7 +123,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                 updateAll : function() {
-                    'use strict';
+                    
         
                     var addedDeckIds    = [];
                     var removedDecks  = [];
@@ -170,7 +170,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
                 view : {
                     add : function(event, deckData) {
-                        'use strict';
+                        
         
                         // Create tooltip
                         var hint    = decks.availableDecks[deckData.id].createHintDeck();
@@ -192,7 +192,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                     remove : function(event, deckData) {
-                        'use strict';
+                        
         
                         var deckElem    = $('#deck_selector [data-carddeck="' + deckData.id + '"]');
         
@@ -201,7 +201,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                     removeAll : function() {
-                        'use strict';
+                        
                         var deckElems   = $('#deck_selector [data-prefix="deck"]');
         
                         for(var i = 0; i < deckElems.length; i++) {
@@ -211,7 +211,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                     update : function(event, deckData) {
-                        'use strict';
+                        
                     },
                     
                     createDialog : function(event, firstRun) {
@@ -437,7 +437,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
                 model : {
                     getFields : function() {
-                        'use strict';
+                        
         
                         return {
                         };
@@ -445,7 +445,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                     add : function(event, deckId) {
-                        'use strict';
+                        
         
                         var extraFields     = decks.model.getFields();
                         extraFields.id      = deckId;
@@ -455,7 +455,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                     remove : function(event, deckId) {
-                        'use strict';
+                        
         
                         var extraFields     = decks.model.getFields();
                         extraFields.id      = deckId;
@@ -465,21 +465,21 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                     removeAll : function() {
-                        'use strict';
+                        
         
                         canvasStorage.list.removeAll('deck', decks.model.getFields());
                     },
         
         
                     get : function(deckId) {
-                        'use strict';
+                        
         
                         return canvasStorage.list.get('deck', deckId);
                     },
         
         
                     getAll : function() {
-                        'use strict';
+                        
         
                         return canvasStorage.list.getAll('deck');
                     }
@@ -504,7 +504,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
                     
         
                     showHint : function(event) {
-                        'use strict';
+                        
         
                         var dialog          = $('.dialog');
                         var deck            = $(event.target).data('carddeck');
@@ -521,7 +521,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
         
         
                     hideHint : function() {
-                        'use strict';
+                        
         
                         $('.dialog').find('.deck_hint').remove();
                     }
@@ -530,10 +530,7 @@ define( ['jquery', 'containers', 'canvasStorage'],
             
             
             // Initialise deck handlers
-            $(window).on('load', function() {
-                decks.init();
-            });
-
+            decks.init();
     
             return decks;
         }

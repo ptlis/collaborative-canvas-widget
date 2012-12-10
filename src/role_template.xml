@@ -33,16 +33,7 @@
 
             <link rel="stylesheet" type="text/css" href="css/yui-2.9.0/reset-min.css">
 
-            <script type="text/javascript" src="js/library/jquery-1.8.3.min.js"></script>
-            <script type="text/javascript" src="js/library/jquery.base64.js"></script>
-            <script type="text/javascript" src="js/library/jquery.contextMenu.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drag.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drag.live.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drop.js"></script>
-            <script type="text/javascript" src="js/library/jquery.event.drop.live.js"></script>
-            <script type="text/javascript" src="js/library/jquery.ui.position.js"></script>
-
-            <script type="text/javascript" src="js/library/raphael.js"></script>
+            <script type="text/javascript" src="js/main-built.js"></script>
 
 		<!-- Our CSS & JS Files -->
 
@@ -56,42 +47,27 @@
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_connections.css">
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_icons.css">
 
-            <script type="text/javascript" src="js/canvasStorage.js"></script>
-			<script type="text/javascript" src="js/cards.js"></script>
-            <script type="text/javascript" src="js/connections.js"></script>
-            <script type="text/javascript" src="js/containers.js"></script>
-            <script type="text/javascript" src="js/decks.js"></script>
-			<script type="text/javascript" src="js/fields.js"></script>
-			<script type="text/javascript" src="js/util.js"></script>
-
             <!-- Template decks -->
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/templates/selectable_prompts.css">
-            <script type="text/javascript" src="js/card_specific/templates/selectable_prompts.js"></script>
 
 
 			<!-- Multimedia -->
 			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/multimedia.css">
-			<script type="text/javascript" src="js/card_specific/multimedia.js"></script>
 
 			<!-- Sticky notes -->
 			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/sticky.css">
-			<script type="text/javascript" src="js/card_specific/sticky.js"></script>
 
 			<!-- Learning Design -->
 			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/ld.css">
-			<script type="text/javascript" src="js/card_specific/ld.js"></script>
 
 			<!-- HLM -->
 			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/hlm.css">
-			<script type="text/javascript" src="js/card_specific/hlm.js"></script>
 
 			<!-- Information Skill -->
 			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/information_skills.css">
-			<script type="text/javascript" src="js/card_specific/information_skills.js"></script>
 
 			<!-- Assessment -->
 			<link type="text/css" rel="stylesheet" media="screen" href="css/screen/card_specific/assessment.css">
-			<script type="text/javascript" src="js/card_specific/assessment.js"></script>
 
 
 

@@ -1,15 +1,15 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
-        function($, cards, canvasStorage, canvas) {
-			'use strict';
-    
+define( ['jquery', 'cards', 'canvasStorage', 'util'],
+        function($, cards, canvasStorage, util) {
+            'use strict';
+
             /*  Functionality related to containers */
             var containers = {
         
                 init : function() {
-                    'use strict';
+                    
         
                     // Handle events
                     $(window)
@@ -34,7 +34,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                     var dropPosX;
                     var cell    = $(this);
                     
-                    if(ui.draggable.data('prefix') == 'card') {
+                    if(ui.draggable.data('prefix') === 'card') {
                         var cardElem    = ui.draggable;
                         var cellId      = cell.parents('.cell_container').data('instanceid');
                         var oldCellId   = cardElem.parents('.cell_container').data('instanceid');
@@ -69,7 +69,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                         
                     }
                     
-                    else if(ui.draggable.data('prefix') == 'deck') {
+                    else if(ui.draggable.data('prefix') === 'deck') {
                         
                         var deck                = ui.draggable.data('carddeck');
                         
@@ -116,7 +116,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                 createDialog : function(firstRun) {
-                    'use strict';
+                    
         
                     var bgElem;
                     var dialogCont;
@@ -181,7 +181,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
                         titleElem.val(titleVal);
                         
-                        $(window).trigger('widget:container:model:change_title', [instanceId, titleVal])
+                        $(window).trigger('widget:container:model:change_title', [instanceId, titleVal]);
                     };
         
                     var remFunction     = function(event) {
@@ -193,7 +193,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
                     };
         
                     var addFunction     = function(event) {
-                        var containerId     = canvas.uidGenerator();
+                        var containerId     = util.uidGenerator();
                         var defaultTitle    = '';
         
                         $(window).trigger('widget:container:model:new', [containerId, defaultTitle]);
@@ -348,7 +348,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                 updateAll : function(containersData) {
-                    'use strict';
+                    
         
                     var i;
                     var addedContainers         = [];
@@ -401,7 +401,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                 addEvents : function(containerElem) {
-                    'use strict';
+                    
         
                     containers.removeEvents(containerElem);
         
@@ -535,7 +535,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                 removeEvents : function(containerElem) {
-                    'use strict';
+                    
         
                     var containerId     = containerElem.data('instanceid');
                     var dropElem        = containerElem.find('.cell_inner');
@@ -556,7 +556,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                 removeRequest : function(event, containerId) {
-                    'use strict';
+                    
         
                     var containerElems  = $('.cell_container');
         
@@ -573,7 +573,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
                 model : {
                     getFields : function() {
-                        'use strict';
+                        
         
                         return {
                             'time_period_title':    ''
@@ -582,7 +582,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     add : function(event, containerId, containerTitle) {
-                        'use strict';
+                        
         
                         var extraFields                 = containers.model.getFields();
                         extraFields.id                  = containerId;
@@ -593,24 +593,24 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     addMulti : function(event, containerDataArr) {
-                        'use strict';
+                        
         
                         canvasStorage.list.addMulti('container', containerDataArr);
                     },
         
         
                     addPositioned : function(event, position, relativeToId) {
-                        'use strict';
+                        
         
                         var extraFields     = containers.model.getFields();
-                        extraFields.id      = canvas.uidGenerator();
+                        extraFields.id      = util.uidGenerator();
         
                         canvasStorage.list.addPositioned('container', extraFields, position, relativeToId);
                     },
         
         
                     remove : function(event, containerId) {
-                        'use strict';
+                        
         
                         var extraFields     = containers.model.getFields();
                         extraFields.id      = containerId;
@@ -630,7 +630,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     removeAll : function() {
-                        'use strict';
+                        
         
                         canvasStorage.list.removeAll('container', containers.model.getFields());
         
@@ -639,21 +639,21 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     get : function(containerId) {
-                        'use strict';
+                        
         
                         return canvasStorage.list.get('container', containerId);
                     },
         
         
                     getAll : function() {
-                        'use strict';
+                        
         
                         return canvasStorage.list.getAll('container');
                     },
         
         
                     changeTitle : function(event, containerId, containerTitle) {
-                        'use strict';
+                        
         
                         var extraFields                 = containers.model.getFields();
                         extraFields.id                  = containerId;
@@ -667,7 +667,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
                     /* Create a new container */
                     add : function(event, containerData) {
-                        'use strict';
+                        
         
                         var containerElem   =   $('<div></div>', {
                             'class':            'cell_container',
@@ -724,7 +724,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     remove : function(event, containerData) {
-                        'use strict';
+                        
         
                         $('[data-instanceid="' + containerData.id + '"]').remove();
         
@@ -733,14 +733,14 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     removeAll : function() {
-                        'use strict';
+                        
         
                         $('.cell_container').remove();
                     },
         
         
                     resize : function(cellOuterElem) {
-                        'use strict';
+                        
         
                         var cellInnerElem               = cellOuterElem.find('.cell_inner');
         
@@ -773,7 +773,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     resizeAll : function() {
-                        'use strict';
+                        
         
                         // Iterate over cards in cells & see if any cell can be shrunk to still fit them
                         var outerCells  = $('.cell_outer');
@@ -786,7 +786,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
         
         
                     update : function(event, containerData) {
-                        'use strict';
+                        
         
                         $('[data-instanceid="' + containerData.id + '"] .cell_label').val(containerData.time_period_title);
                     }
@@ -795,9 +795,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'canvas'],
             
             
             // Initialise container handlers
-            $(window).on('load', function() {
-                containers.init();
-            });
+            containers.init();
             
     
             return containers;

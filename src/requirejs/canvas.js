@@ -2,19 +2,22 @@
 
 /*  Functionality that is required for the whole canvas. */
 define(
-    ['jquery', 'canvasStorage'],
-    function($, canvasStorage) {
+    ['jquery', 'canvasStorage', 'decks'],
+    function($, canvasStorage, decks) {
         'use strict';
 
         var canvas    = {};
         
         
-        /* Generate a unique identifier. */
-        canvas.uidGenerator = function() {
-            var S4 = function() {
-                return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-            };
-            return 'id' + (S4()+S4());
+        canvas.init = function() {
+            $('.zoom_in')
+                .off(   'mouseenter').on(   'mouseenter',       decks.handlers.bar.tooltipShow)
+                .off(   'mouseleave').on(   'mouseleave',       decks.handlers.bar.tooltipHide);
+    
+            // Zooming out
+            $('.zoom_out')
+                .off(   'mouseenter').on(   'mouseenter',       decks.handlers.bar.tooltipShow)
+                .off(   'mouseleave').on(   'mouseleave',       decks.handlers.bar.tooltipHide);
         };
         
         
@@ -131,6 +134,7 @@ define(
             }
         };
         
+        canvas.init();
         
         return canvas;
     }

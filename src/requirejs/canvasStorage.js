@@ -3,7 +3,7 @@
 
 define( ['jquery', 'require'],
         function($, require) {
-
+            'use strict';
 
         /*  Abstraction of underlying storage mechanism */
             var canvasStorage   = {
@@ -65,7 +65,7 @@ define( ['jquery', 'require'],
     
     
                 init : function(storageMethod, firstRunFunc) {
-                    'use strict';
+                    
     
                     canvasStorage.method        = storageMethod;
                     canvasStorage.firstRunFunc  = firstRunFunc;
@@ -87,14 +87,14 @@ define( ['jquery', 'require'],
     
     
                 getRunningVersion : function() {
-                    'use strict';
+                    
     
                     return canvasStorage.runningVersion;
                 },
     
     
                 setRunningVersion : function() {
-                    'use strict';
+                    
     
                     if(canvasStorage.method === 'wave' || canvasStorage.method === 'localStorage') {
                         canvasStorage.util.storeDelta({'data_version': canvasStorage.version});
@@ -130,7 +130,7 @@ define( ['jquery', 'require'],
     
                 // Generate JSON datastructe containing all data
                 exportData : function() {
-                    'use strict';
+                    
 
                     var cards               = require('cards');
                     var connections         = require('connections');
@@ -168,7 +168,7 @@ define( ['jquery', 'require'],
     
     
                 importData : function(importedData) {
-                    'use strict';
+                    
     
                     if(importedData.data_version !== canvasStorage.version) {
                         throw 'Data version mismatch between import and application';
@@ -314,7 +314,7 @@ define( ['jquery', 'require'],
                 },
     
                 standardPropagate : function() {
-                    'use strict';
+                    
                     
                     var cards               = require('cards');
                     var connections         = require('connections');
@@ -343,10 +343,10 @@ define( ['jquery', 'require'],
     
     
                 setLocalStorageUIUpdateFunc : function(uiUpdateFunction) {
-                    'use strict';
+                    
                     
                     var canvas  = require('canvas');
-    
+
                     if(canvasStorage.method === 'localStorage') {
     
                         canvas.showLoadingDialog();
@@ -362,12 +362,12 @@ define( ['jquery', 'require'],
                         canvasStorage.cachedZIndex      = canvasStorage.util.getData('z_index');
     
                         window.setTimeout(function() {
-    
+
                             // Initialisation of cache
                             for(var i = 0; i < canvasStorage.storedLists.length; i++) {
                                 canvasStorage.list.cache.initialise(canvasStorage.storedLists[i]);
                             }
-    
+
                             canvasStorage.standardPropagate();    // TODO: Better way of calling (this is passed as a param in another func)
     
                             canvas.hideLoadingDialog();
@@ -377,7 +377,7 @@ define( ['jquery', 'require'],
     
     
                 setWaveUIUpdateFunc : function(uiUpdateFunction) {
-                    'use strict';
+                    
 
                     var canvas  = require('canvas');
     
@@ -405,7 +405,7 @@ define( ['jquery', 'require'],
     
     
                 setWaveParticipantUpdateFunc : function(participantUpdateFunction) {
-                    'use strict';
+                    
     
                     if(canvasStorage.method === 'wave') {
                         wave.setParticipantCallback(function() {
@@ -416,7 +416,7 @@ define( ['jquery', 'require'],
     
     
                 setROLEUIUpdateFunc : function(uiUpdateFunc) {
-                    'use strict';
+                    
 
                     var canvas  = require('canvas');
     
@@ -600,7 +600,7 @@ define( ['jquery', 'require'],
                 changeHandlers : {
     
                     textInput : function(event, additionalCallback) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -666,7 +666,7 @@ define( ['jquery', 'require'],
     
     
                     addEntry : function(event) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -686,7 +686,7 @@ define( ['jquery', 'require'],
     
     
                     removeEntry : function(event) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -711,7 +711,7 @@ define( ['jquery', 'require'],
     
                     /** Retrieves data identified by key from store */
                     getData : function(key) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -742,7 +742,7 @@ define( ['jquery', 'require'],
                     /** Accepts a JSON structure of key-value pairs to store, processes
                      deferred delta too. */
                     storeDelta : function(delta) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -781,7 +781,7 @@ define( ['jquery', 'require'],
     
     
                     storeDeferredDelta : function(delta) {
-                        'use strict';
+                        
     
                         for(var key in delta) {
                             if(delta.hasOwnProperty(key)) {
@@ -797,7 +797,7 @@ define( ['jquery', 'require'],
                      *  changes).
                      */
                     getNextChangeId : function() {
-                        'use strict';
+                        
     
                         var nextChangeId;
     
@@ -822,7 +822,7 @@ define( ['jquery', 'require'],
     
     
                     getNextZIndex : function() {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -875,7 +875,7 @@ define( ['jquery', 'require'],
     
     
                     defaultFocus: function(event) {
-                        'use strict';
+                        
     
                         var target          = $(event.target);
                         var instanceId      = target.parents('[data-instanceid]').data('instanceid');
@@ -895,7 +895,7 @@ define( ['jquery', 'require'],
     
     
                     defaultBlur: function(event) {
-                        'use strict';
+                        
     
                         var target          = $(event.target);
                         var instanceId      = target.parents('[data-instanceid]').data('instanceid');
@@ -926,7 +926,7 @@ define( ['jquery', 'require'],
                         queued  : [],
     
                         add : function(action, itemData, namespace) {
-                            'use strict';
+                            
     
                             var intentData = {
                                 'ns'        : namespace,
@@ -939,7 +939,7 @@ define( ['jquery', 'require'],
     
     
                         publish : function() {
-                            'use strict';
+                            
     
                             var intent  = {
                                 'component':    '',
@@ -1002,7 +1002,7 @@ define( ['jquery', 'require'],
     
     
                         initialise : function(prefix, completeCallback) {
-                            'use strict';
+                            
 
                             var cards               = require('cards');
                             var connections         = require('connections');
@@ -1156,7 +1156,7 @@ define( ['jquery', 'require'],
     
     
                         cacheItem : function(prefix, itemData, uri) {
-                            'use strict';
+                            
     
                             var data    = {
                                 'data':     itemData
@@ -1171,14 +1171,14 @@ define( ['jquery', 'require'],
     
     
                         deleteCachedItem : function(prefix, itemData) {
-                            'use strict';
+                            
     
                             delete canvasStorage.list.cache.data[prefix][itemData.id];
                         },
     
     
                         deleteAllCachedItems : function(prefix) {
-                            'use strict';
+                            
     
                             delete(canvasStorage.list.cache.data[prefix]);
     
@@ -1192,7 +1192,7 @@ define( ['jquery', 'require'],
     
     
                         getCachedItemId : function(prefix, itemId) {
-                            'use strict';
+                            
     
                             var itemData    = null;
                             if(itemId in canvasStorage.list.cache.data[prefix] && canvasStorage.list.cache.data[prefix].hasOwnProperty(itemId)) {
@@ -1203,35 +1203,35 @@ define( ['jquery', 'require'],
     
     
                         getAllCachedItems : function(prefix) {
-                            'use strict';
+                            
     
                             return canvasStorage.list.cache.data[prefix];
                         },
     
     
                         setFirstItemId : function(prefix, itemId) {
-                            'use strict';
+                            
     
                             canvasStorage.list.cache.data[prefix].firstItemId    = itemId;
                         },
     
     
                         getFirstItemId : function(prefix) {
-                            'use strict';
+                            
     
                             return canvasStorage.list.cache.data[prefix].firstItemId;
                         },
     
     
                         setLastItemId : function(prefix, itemId) {
-                            'use strict';
+                            
     
                             canvasStorage.list.cache.data[prefix].lastItemId    = itemId;
                         },
     
     
                         getLastItemId : function(prefix) {
-                            'use strict';
+                            
     
                             return canvasStorage.list.cache.data[prefix].lastItemId;
                         }
@@ -1239,7 +1239,7 @@ define( ['jquery', 'require'],
                     },
     
                     addPositioned : function(prefix, newItemData, position, relativeToId) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -1463,7 +1463,7 @@ define( ['jquery', 'require'],
     
     
                     add : function(prefix, newItemData) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -1591,7 +1591,7 @@ define( ['jquery', 'require'],
     
     
                     addMulti : function(prefix, newItemDataArr) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -1760,7 +1760,7 @@ define( ['jquery', 'require'],
     
     
                     remove : function(prefix, remItemData) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -1959,7 +1959,7 @@ define( ['jquery', 'require'],
     
     
                     removeAll : function(prefix, remItemData) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -2042,7 +2042,7 @@ define( ['jquery', 'require'],
     
     
                     get : function(prefix, itemId) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -2060,7 +2060,7 @@ define( ['jquery', 'require'],
     
     
                     getAll : function(prefix) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -2092,7 +2092,7 @@ define( ['jquery', 'require'],
     
     
                     update : function(prefix, itemData) {
-                        'use strict';
+                        
     
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
@@ -2162,7 +2162,7 @@ define( ['jquery', 'require'],
          *  custom attribute.
          */
                 addChangeEvents : function(element, additionalCallback) {
-                    'use strict';
+                    
     
                     canvasStorage.removeChangeEvents(element);
     
@@ -2183,7 +2183,7 @@ define( ['jquery', 'require'],
     
     
                 removeChangeEvents : function(element) {
-                    'use strict';
+                    
     
                     var defaultElems    = $(element).find('[data-defaultvalue]');
                     defaultElems

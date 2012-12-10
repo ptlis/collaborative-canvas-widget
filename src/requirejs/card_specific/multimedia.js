@@ -261,7 +261,6 @@ define( ['jquery', 'decks', 'canvasStorage'],
 
 
                 removeEvents : function(cardElem) {
-        console.log('rem  ' + cardElem.data('instanceid'));
                     var size        = $(cardElem).data('cardsize');
                     var cardType    = $(cardElem).data('cardtype');
 
@@ -279,7 +278,6 @@ define( ['jquery', 'decks', 'canvasStorage'],
 
 
                 postPropagate : function(cardElem) {
-        console.log('post ' + cardElem.data('instanceid'));
                     var cardType    = cardElem.data('cardtype');
                     var size        = cardElem.data('cardsize');
                     var playButton  = cardElem.find('.play_button');

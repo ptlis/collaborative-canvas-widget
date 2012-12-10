@@ -1,9 +1,9 @@
 /*jshint jquery:true */
 
  
-define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
-        function($, containers, canvasStorage, canvas) {
-			'use strict';
+define( ['jquery', 'containers', 'canvasStorage', 'util'],
+        function($, containers, canvasStorage, util) {
+            'use strict';
     
             /*  Functionality related to header fields */
             var fields = {
@@ -14,8 +14,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
                                     ],
         
                 init : function() {
-                    'use strict';
-        
+                    
                     // Handle events
                     $(window)
                         .off(   'widget:field:model:new')           .on('widget:field:model:new',              fields.model.add)
@@ -33,7 +32,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                 updateAll : function(fieldsData) {
-                    'use strict';
+                    
         
                     // Handle fields
                     var i;
@@ -94,14 +93,14 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                 addEvents : function(fieldElem) {
-                    'use strict';
+                    
         
                     canvasStorage.addChangeEvents(fieldElem);
                 },
         
         
                 removeEvents : function(fieldElem) {
-                    'use strict';
+                    
         
                     canvasStorage.removeChangeEvents(fieldElem);
                 },
@@ -109,7 +108,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
                 view : {
                     add : function(event, fieldData) {
-                        'use strict';
+                        
         
                         var li      =       $('<li></li>', {
                                                 'data-instanceid':      fieldData.id,
@@ -158,28 +157,27 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                     remove : function(event, fieldData) {
-                        'use strict';
+                        
         
                         $('[data-instanceid="' + fieldData.id  + '"]').remove();
                     },
         
         
                     removeAll : function() {
-                        'use strict';
+                        
         
                         $('#field_container [data-instanceid]').remove();
                     },
         
         
                     update : function(event, fieldData) {
-                        'use strict';
+                        
         
                         $('[data-instanceid="' + fieldData.id + '"] label').text(fieldData.title + ':');
                         $('[data-instanceid="' + fieldData.id + '"] input').val(fieldData.data);
                     },
                     
                     createDialog : function(event, firstRun) {
-                        
                         var bgElem;
                         var dialogCont;
                         if($('.dialog_background').length) {
@@ -235,7 +233,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
             
                             labelElem.text(labelVal + ':');
                             
-                            $(window).trigger('widget:field:model:change_title', [instanceId, labelVal])
+                            $(window).trigger('widget:field:model:change_title', [instanceId, labelVal]);
                         };
             
                         var remFunction     = function(event) {
@@ -247,7 +245,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
                         };
             
                         var addFunction     = function(event) {
-                            var fieldId         = canvas.uidGenerator();
+                            var fieldId         = util.uidGenerator();
                             var defaultTitle    = 'new field';
             
                             $(window).trigger('widget:field:model:new', [fieldId, defaultTitle]);
@@ -298,7 +296,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
             
                             // First setup array
                             for(i = 0; i < fields.defaultFields.length; i++) {
-                                fieldId             = canvas.uidGenerator();
+                                fieldId             = util.uidGenerator();
             
                                 fieldArr.push({ 'id':       fieldId,
                                                 'title':    fields.defaultFields[i]});
@@ -450,7 +448,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
                 model : {
                     getFields : function() {
-                        'use strict';
+                        
         
                         return {
                             'title':    '',
@@ -460,7 +458,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                     add : function(event, fieldId, fieldTitle) {
-                        'use strict';
+                        
         
                         var extraFields     = fields.model.getFields();
                         extraFields.id      = fieldId;
@@ -471,14 +469,14 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                     addMulti : function(event, fieldDataArr) {
-                        'use strict';
+                        
         
                         canvasStorage.list.addMulti('field', fieldDataArr);
                     },
         
         
                     remove : function(event, fieldId) {
-                        'use strict';
+                        
         
                         var extraFields     = fields.model.getFields();
                         extraFields.id      = fieldId;
@@ -488,14 +486,14 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                     removeAll : function() {
-                        'use strict';
+                        
         
                         canvasStorage.list.removeAll('field', fields.model.getFields());
                     },
         
         
                     changeTitle : function(event, fieldId, fieldTitle) {
-                        'use strict';
+                        
         
                         var extraFields     = fields.model.getFields();
                         extraFields.id      = fieldId;
@@ -506,14 +504,14 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                     get : function(fieldId) {
-                        'use strict';
+                        
         
                         return canvasStorage.list.get('field', fieldId);
                     },
         
         
                     getAll : function() {
-                        'use strict';
+                        
         
                         return canvasStorage.list.getAll('field');
                     }
@@ -524,7 +522,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
         
         
                     modifyFields : function(event) {
-                        'use strict';
+                        
 
                         $(window).trigger('widget:field:view:create_dialog', [false]);
                     }
@@ -533,9 +531,7 @@ define( ['jquery', 'containers', 'canvasStorage', 'canvas'],
             
             
             // Initialise field handlers
-            $(window).on('load', function() {
-                fields.init();
-            });
+            fields.init();
             
 
             return fields;
