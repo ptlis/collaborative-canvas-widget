@@ -15,12 +15,16 @@
         exit
     fi
 
-# Export clean copy of widget
+
+# Copy widget data
 	if [ -e role_widget ]
 	then
 		rm -rf role_widget
 	fi
-	svn export -q svn://localhost/8LEM/prototype_17/ role_widget
+	mkdir role_widget
+	cp -R src role_widget
+	cp compile_less.sh role_widget
+	cp compile_requirejs.sh role_widget
 
 
 # Compile LESS to CSS
@@ -29,6 +33,14 @@
     cd ..
     rm -rf role_widget/src/less/
     rm role_widget/compile_less.sh
+    
+    
+# Compile & compress requirejs deps
+	cd role_widget/
+	./compile_requirejs.sh
+	cd ..
+	rm -rf role_widget/src/requirejs/
+	rm role_widget/compile_requirejs.sh
 
 
 # Copy widget_template.xml contents into widget.xml
@@ -59,9 +71,13 @@
     rm role_widget/src/wookie_template.xml
 
 
-# Remove Index.htm
+# Remove index.htm
     rm role_widget/src/index.htm
+    
+    
+# Remove requirejs javascript source
+	rm -rf role-widget/src/requirejs/
 
 
 # Mark as ROLE widget
-    sed -i '1s/^/var ROLE=true;\n/' role_widget/src/js/util.js
+    sed -i '1s/^/var ROLE=true;\n/' role_widget/src/js/main-built.js
