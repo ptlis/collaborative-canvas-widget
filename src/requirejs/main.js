@@ -40,13 +40,13 @@ require([
             'lib/jquery.ui'
         ],
         function($, canvasStorage, canvas, decks, cards, containers, fields, connections) {
-        
+
                 var storageMethod;
-        
+
                 // ROLE & iwc/openapp
-                if (typeof(ROLE) !== 'undefined' && ROLE === true) {
+                if (typeof(ROLE) !== 'undefined' && ROLE === true) {ROLE)
                     storageMethod   = 'role';
-                    gadgets.util.registerOnLoadHandler(windowLoadFunc);
+                    windowLoadFunc();
         
                 // Wookie & wave
                 } else if (typeof(WOOKIE) !== 'undefined' && WOOKIE === true) {
