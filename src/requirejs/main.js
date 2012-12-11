@@ -28,6 +28,7 @@ require([
             'containers',
             'fields',
             'connections',
+            'customisation',
             
             'card_specific/assessment',
             'card_specific/hlm',
@@ -39,7 +40,7 @@ require([
             'lib/jquery.contextMenu',
             'lib/jquery.ui'
         ],
-        function($, canvasStorage, canvas, decks, cards, containers, fields, connections) {
+        function($, canvasStorage, canvas, decks, cards, containers, fields, customisation) {
 
                 var storageMethod;
 
@@ -86,7 +87,7 @@ require([
                                     break;
         
                                 case 'customise_decks':
-                                    alert('customise');
+                                    $(window).trigger('widget:customisation:dialog:deck_selection');
                                     break;
         
                                 case 'import':
