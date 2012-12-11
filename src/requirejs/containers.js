@@ -9,7 +9,6 @@ define( ['jquery', 'cards', 'canvasStorage', 'util'],
             var containers = {
         
                 init : function() {
-                    
         
                     // Handle events
                     $(window)
@@ -582,7 +581,6 @@ define( ['jquery', 'cards', 'canvasStorage', 'util'],
         
         
                     add : function(event, containerId, containerTitle) {
-                        
         
                         var extraFields                 = containers.model.getFields();
                         extraFields.id                  = containerId;
@@ -667,7 +665,7 @@ define( ['jquery', 'cards', 'canvasStorage', 'util'],
         
                     /* Create a new container */
                     add : function(event, containerData) {
-                        
+                        console.log('addherhe')
         
                         var containerElem   =   $('<div></div>', {
                             'class':            'cell_container',
@@ -711,9 +709,11 @@ define( ['jquery', 'cards', 'canvasStorage', 'util'],
                         }
         
                         else if(containerData.next !== null && containerData.next.length > 0 && $('[data-instanceid="' + containerData.next + '"]').length > 0) {
+console.log('attach 1')
                             $('.cell_container[data-instanceid="' + containerData.next + '"]').before(containerElem);
                         }
                         else {
+console.log('attach 2')
                             $('#contain_drag svg').after(containerElem);
                         }
         

@@ -2,8 +2,8 @@
 
 
 
-define( ['jquery', 'require', 'canvasStorage', 'util'],
-        function($, require, canvasStorage, util) {
+define( ['jquery', 'require', 'canvasStorage', 'util', 'lib/raphael'],
+        function($, require, canvasStorage, util, raphael) {
             'use strict';
             var connections = {
     
@@ -34,9 +34,9 @@ define( ['jquery', 'require', 'canvasStorage', 'util'],
                     .off(   'widget:connection:view:update_all_paths')  .on('widget:connection:view:update_all_paths',  connections.view.updateAllPaths)
                     .off(   'widget:connection:view:update')            .on('widget:connection:view:update',            connections.view.update)
                     .off(   'widget:connection:view:to_front')          .on('widget:connection:view:to_front',          connections.view.toFront);
-/*
+
                     connections.raphaelCanvas   = Raphael('contain_drag', 0, 0);
-    
+/*
                     $('#contain_drag svg')[0].removeAttribute('width');
                     $('#contain_drag svg')[0].removeAttribute('height');*/
                 },

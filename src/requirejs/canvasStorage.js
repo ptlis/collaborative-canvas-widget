@@ -1464,7 +1464,6 @@ define( ['jquery', 'require'],
     
                     add : function(prefix, newItemData) {
                         
-    
                         if(!canvasStorage.ready) {
                             throw 'canvasStorage not initialised';
                         }
