@@ -75,39 +75,7 @@ define(
         };
         
         
-        // Show the loading animation
-        canvas.showLoadingDialog = function() {
-            // Create loading screen
-            var loadingBg           =   $('<div></div>', {
-                                            'class':        'dialog_background',
-                                            'id':           'loading_background'
-                                        });
-    
-            var container           =   $('<div></div>', {
-                                                'class':        'dialog_container'
-                                            });
-            container.appendTo(loadingBg);
-    
-            var dialog              =   $('<div></div>', {
-                                            'class':        'dialog',
-                                            'id':           'loading_dialog'
-                                        });
-            dialog.appendTo(container);
-    
-            var loadingElem         =   $('<div></div>', {
-                                            'class':    'loading_anim'
-                                        });
-            loadingElem.appendTo(dialog);
-    
-            var loadingMsg          =   $('<div></div>', {
-                                            'class':    'loading_msg'
-                                        });
-            loadingMsg.text('Starting up...');
-            loadingMsg.appendTo(dialog);
-    
-            loadingBg.appendTo($('body'));
-        };
-        
+
         
         // Hide the loading animation
         canvas.hideLoadingDialog = function() {                

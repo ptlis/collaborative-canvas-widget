@@ -349,8 +349,6 @@ define( ['jquery', 'require'],
 
                     if(canvasStorage.method === 'localStorage') {
     
-                        canvas.showLoadingDialog();
-    
                         // Update this browser context if changes are made on other
                         $(window)
                             .off('storage')
@@ -383,8 +381,6 @@ define( ['jquery', 'require'],
     
                     // Update this widget if changes are detected
                     if(canvasStorage.method === 'wave') {
-    
-                        canvas.showLoadingDialog();
     
                         wave.setStateCallback(function() {
                             if(!canvasStorage.ready) {
@@ -421,7 +417,6 @@ define( ['jquery', 'require'],
                     var canvas  = require('canvas');
     
                     if(!canvasStorage.ready) {
-                        canvas.showLoadingDialog();
     
                         canvasStorage.space     = new openapp.oo.Resource(openapp.param.space());
                         canvasStorage.user      = new openapp.oo.Resource(openapp.param.user());
