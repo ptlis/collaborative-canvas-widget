@@ -16,6 +16,14 @@
         background-image:       url('../../../images/card_specific/multimedia/vimeo_icon_48x48.png');
     }
 
+    [data-carddeck="multimedia"][data-cardtype="widget"] .card_icon.icon_32x32 {
+        background-image:       url('../../../images/card_specific/multimedia/widget_icon_32x32.png');
+    }
+
+    [data-carddeck="multimedia"][data-cardtype="widget"] .card_icon.icon_48x48 {
+        background-image:       url('../../../images/card_specific/multimedia/widget_icon_48x48.png');
+    }
+
 
 
 //  Multimedia Deck
@@ -69,6 +77,14 @@
                 background-position:    -180px -90px;
             }
         }
+
+        &[data-cardtype="widget"] {
+            background-position:        -270px 0;
+
+            &:hover {
+                background-position:    -270px -90px;
+            }
+        }
     }
 
 
@@ -98,6 +114,10 @@
 
         &[data-cardtype="youtube"] {
             background-position:        -496px 0;
+        }
+
+        &[data-cardtype="widget"] {
+            background-position:        -744px 0;
         }
 
         .description {
@@ -307,7 +327,8 @@
 
 //  Styling for youtube & vimeo cards
     [data-carddeck="multimedia"][data-cardtype="youtube"],
-    [data-carddeck="multimedia"][data-cardtype="vimeo"] {
+    [data-carddeck="multimedia"][data-cardtype="vimeo"],
+    [data-carddeck="multimedia"][data-cardtype="widget"] {
         &[data-cardsize="medium"] {
             .card_std_medium();
 
@@ -322,7 +343,7 @@
                     cursor:             pointer;
                     .transform-origin(top);
 
-                    &.no_video {
+                    &.no_video, &.no_widget {
                         background-position:        0 -192px;
                         cursor:                     move;
 
@@ -508,7 +529,7 @@
                 margin-top:         10px;
             }
 
-            #url_container {
+            #url_container, #embed_container {
                 border-width:       0 0 2px 0;
                 border-color:       #000;
                 border-style:       solid;
@@ -519,7 +540,7 @@
                     margin-left:    55px;
                 }
 
-                #get_video {
+                #get_video, #get_widget {
                     float:                  right;
                     margin-top:             -5px;
                 }
@@ -563,7 +584,13 @@
         }
     }
 
-    #video_bg {
+    [data-carddeck="multimedia"][data-cardtype="widget"] {
+        .card_header, #embed_container {
+            background-color: #C0A0CB;
+        }
+    }
+
+    #video_bg, #widget_bg {
 
         .dialog {
             width:                      620px;
@@ -575,10 +602,12 @@
             }
         }
 
-        #video_container {
+        #video_container, #widget_container {
 
             iframe {
-                margin-top:             20px;
+                display:                block;
+                margin:                 20px auto 0 auto;
+                background-color:       #fff;
             }
 
         }

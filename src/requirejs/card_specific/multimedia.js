@@ -107,6 +107,109 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         }
                         imageCaption.appendTo(card);
                     }
+                    
+                    else if(cardType === 'widget') {
+                        var title           =   $('<div></div>', {
+                            'class':            'card_header'
+                        });
+                        title.appendTo(card);
+                        
+                        var iconImg                 = this.getIcon(cardType, size);
+                        iconImg.appendTo(title);
+
+
+                        if(size === 'large') {
+                            var closeButton     =   $('<div></div>', {
+                                'class':            'dialog_dismiss dismiss_button_32x32'
+                            });
+                            closeButton.appendTo(title);
+
+                            var titleLabel      =   $('<label></label>', {
+                                                        'for':              + 'title_entry'
+                                                    });
+                            titleLabel.text('Caption:');
+                            titleLabel.appendTo(title);
+
+                            var titleEntry      =   $('<input>', {
+                                                        'type':             'text',
+                                                        'id':               'title_entry',
+                                                        'class':            'text_input',
+                                                        'data-inputname':   'widget_title'
+                                                    });
+                            titleEntry.appendTo(title);
+                        }
+
+                        else if(size === 'medium') {
+                            var menuButton      =   $('<div></div>', {
+                                'class':            'menu_icon menu_button_32x32'
+                            });
+                            menuButton.appendTo(title);
+
+                            var titleElem       =   $('<h3></h3>', {
+                                                        'class':            'header',
+                                                        'data-inputname':   'widget_title'
+                                                });
+                            titleElem.appendTo(title);
+                        }
+
+                        var rawURLEntry;
+                        if(size === 'large') {
+                            var EmbedContainer  =   $('<div>', {
+                                                        'id':               'embed_container'
+                                                    });
+                            EmbedContainer.appendTo(card);
+
+                            var rawURLLabel     =   $('<label></label>', {
+                                                        'for':              'raw_entry'
+                                                    });
+                            rawURLLabel.text('iTEC Embed Code:');
+                            rawURLLabel.appendTo(EmbedContainer);
+
+                            var getWidgetButton =   $('<input>', {
+                                                        'type':             'button',
+                                                        'class':            'add_button_32x32',
+                                                        'id':               'get_widget'
+                                                    });
+                            getWidgetButton.appendTo(EmbedContainer);
+
+                            rawURLEntry         =   $('<input>', {
+                                                        'type':             'text',
+                                                        'id':               'raw_entry',
+                                                        'class':            'text_input',
+                                                        'data-inputname':   'embed_code'
+                                                    });
+                            rawURLEntry.appendTo(EmbedContainer);
+
+                            var iframe              =   $('<iframe></iframe>', {
+                                'frameborder':      '0'
+                            });
+                            iframe.appendTo(card);
+                            iframe.attr('width',    '620');
+                            iframe.attr('height',   '340');
+                        }
+
+                        else if(size === 'medium') {
+                            rawURLEntry         =   $('<input>', {
+                                                        'type':             'hidden',
+                                                        'id':               'raw_entry',
+                                                        'data-inputname':   'embed_code'
+                                                    });
+                            rawURLEntry.appendTo(card);
+
+                            var content         =   $('<div></div>', {
+                                                        'class':            'card_content'
+                                                    });
+
+                            content.appendTo(card);
+
+                            var playButton      =   $('<div></div>', {
+                                                        'class':            'play_button'
+                                                    });
+
+                            playButton.appendTo(content);
+                        }
+                        
+                    }
 
                     else if(cardType === 'youtube' || cardType === 'vimeo') {
                         var title           =   $('<div></div>', {
@@ -233,6 +336,11 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         extraFields.image       = '';
                         extraFields.caption     = '';
                     }
+                    
+                    else if(cardType === 'widget') {
+                        extraFields.widget_title    = '';
+                        extraFields.embed_code      = '';
+                    }
 
                     return extraFields;
                 },
@@ -256,6 +364,10 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         this.addVimeoEvents(cardElem, size);
                     }
 
+                    else if(cardType === 'widget') {
+                        this.addWidgetEvents(cardElem, size);
+                    }
+
                     canvasStorage.addChangeEvents(cardElem);
                 },
 
@@ -273,6 +385,11 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         cardElem.find('.play_button').off('click').addClass('no_video');
                     }
 
+                    else if(cardType === 'widget') {
+                        cardElem.find('#get_widget').off('click');
+                        cardElem.find('.play_button').off('click').addClass('no_widget');
+                    }
+
                     canvasStorage.removeChangeEvents(cardElem);
                 },
 
@@ -281,8 +398,8 @@ define( ['jquery', 'decks', 'canvasStorage'],
                     var cardType    = cardElem.data('cardtype');
                     var size        = cardElem.data('cardsize');
                     var playButton  = cardElem.find('.play_button');
-                    var URL;
-                    var videoId;
+                    var URL         = null;
+                    var videoId     = null;
 
                     if(cardType === 'youtube') {
 
@@ -377,6 +494,33 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                 .on('load', loadScaleFunc);
                         }
                     }
+
+                    else if(cardType === 'widget') {
+
+                        if(size === 'large') {
+                            $('#get_widget').click();
+                        }
+
+                        else if(size === 'medium') {
+                            var htmlFrag    = cardElem.find('#raw_entry').val();
+
+                            var width       = 0;
+                            var height      = 0;
+                            
+                            if(htmlFrag.length) {
+                                URL         = $(htmlFrag).attr('src');
+                                width       = $(htmlFrag).attr('width');
+                                height      = $(htmlFrag).attr('height');
+                            }
+
+                            if(URL) {
+                                playButton.removeClass('no_widget');
+                            }
+                            else {
+                                playButton.addClass('no_widget');
+                            }
+                        }
+                    }
                 },
 
 
@@ -396,6 +540,109 @@ define( ['jquery', 'decks', 'canvasStorage'],
 
                     return element;
                 },
+                
+                
+                addWidgetEvents : function(cardElem, size) {
+                    var htmlFrag    = cardElem.find('#raw_entry').val();
+
+                    var URL         = null;
+                    var width       = 0;
+                    var height      = 0;
+
+                    if(size === 'large') {
+                        var embedButton = cardElem.find('#get_widget');
+
+                        embedButton.on('click', function() {
+                            var iframe  = cardElem.find('iframe');
+                            
+                            if(htmlFrag.length) {
+                                URL         = $(htmlFrag).attr('src');
+                                width       = $(htmlFrag).attr('width');
+                                height      = $(htmlFrag).attr('height');
+                            }
+
+                            if(URL) {
+                                // TODO: Handle height & width?
+                                iframe.attr('src', URL);
+                            }                            
+                        });
+                    }
+                    
+                    else if(size === 'medium') {
+                        var playButton  = cardElem.find('.play_button');
+                        
+                        playButton.on('click', function() {
+                            
+                            if(htmlFrag.length) {
+                                URL         = $(htmlFrag).attr('src');
+                                width       = $(htmlFrag).attr('width');
+                                height      = $(htmlFrag).attr('height');
+                            }
+
+                            if(URL) {
+                                var dialogBg            =   $('<div></div>', {
+                                                            'id':       'widget_bg',
+                                                            'class':    'dialog_background'
+                                                        });
+                                dialogBg.appendTo($('body'));
+
+                                var selectorContainer   =   $('<div></div>', {
+                                                            'class':    'dialog_container'
+                                                        });
+                                selectorContainer.appendTo(dialogBg);
+
+                                var innerCont           =   $('<div></div>', {
+                                                                'class':        'dialog'
+                                                            });
+                                innerCont.appendTo(selectorContainer);
+
+                                var videoContainer      =   $('<div></div>', {
+                                                                'id':           'widget_container'
+                                                            });
+                                videoContainer.appendTo(innerCont);
+
+                                // Title & Close box
+                                var titleElem           =   $('<div></div>', {
+                                                                'class':        'dialog_title'
+                                                            });
+                                titleElem.appendTo(videoContainer);
+
+                                var title   = cardElem.find('.header').text();
+                                titleElem.text(title);
+
+                                var dismiss             =   $('<div></div>', {
+                                                                'class':    'dialog_dismiss dismiss_button_32x32'
+                                                            });
+                                dismiss.appendTo(videoContainer);
+
+
+                                // Widget itself
+                                var iframe              =   $('<iframe></iframe>', {
+                                                                'frameborder':      '0'
+                                                            });
+                                iframe.appendTo(videoContainer);
+                                iframe.attr('width',    width);
+                                iframe.attr('height',   height);
+                                iframe.attr('src',      URL);
+
+                                selectorContainer.css('display', 'none');
+                                selectorContainer.fadeIn(   250,
+                                                            function() {
+                                                        });
+
+                                dismiss
+                                    .off('click')
+                                    .on('click', function(event) {
+                                        dialogBg.fadeOut(  250,
+                                            function() {
+                                                dialogBg.remove();
+                                            });
+                                    });
+                            }
+                            
+                        });                        
+                    }
+                },
 
 
                 addYoutubeEvents : function(card, size) {
@@ -404,10 +651,8 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         var youtubeButton   = card.find('#get_video');
 
                         youtubeButton
-                            .off('click')
                             .on('click', function(event) {
                                 var URL     = card.find('#raw_entry').val();
-
 
                                 var iframe  = card.find('iframe');
 
@@ -435,7 +680,6 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         var playButton  = card.find('.play_button');
 
                         playButton
-                            .off('click')
                             .on('click', function(event) {
                                 var URL     = card.find('#raw_entry').val();
 
@@ -803,7 +1047,6 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                         'data-cardtype':    'image',
                                         'data-cardsize':    'preview'
                                     });
-
                     elements.push(span);
 
 
@@ -813,7 +1056,6 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                         'data-cardtype':    'youtube',
                                         'data-cardsize':    'preview'
                                     });
-
                     elements.push(span);
 
 
@@ -823,7 +1065,15 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                         'data-cardtype':    'vimeo',
                                         'data-cardsize':    'preview'
                                     });
+                    elements.push(span);
 
+
+                    // ITEC Widgets
+                    span        =   $('<span></span>', {
+                                        'data-carddeck':    'multimedia',
+                                        'data-cardtype':    'widget',
+                                        'data-cardsize':    'preview'
+                                    });
                     elements.push(span);
 
                     return elements;
@@ -903,22 +1153,26 @@ define( ['jquery', 'decks', 'canvasStorage'],
 
 
                 // Deck info
-                deck            : {
+                'deck'          : {
                     'title':        'Multimedia Deck',
                     'description':  'A deck that allows multimedia to be embedded within the canvas.'
                 },
 
-                card_types      : {
+                'card_types'    : {
                     'vimeo'     : {
-                        description         : 'Card that allows for embedding playable vimeo videos.'
+                        'description'       : 'Card that allows for embedding playable vimeo videos.'
                     },
 
                     'youtube'       : {
-                        description         : 'Card that allows for embedding playable youtube videos.'
+                        'description'       : 'Card that allows for embedding playable youtube videos.'
                     },
 
                     'image'     : {
-                        description         : 'Card that allows for uploading images to display on the canvas.'
+                        'description'       : 'Card that allows for uploading images to display on the canvas.'
+                    },
+                    
+                    'widget'    : {
+                        'description'       : 'Card that allows for embedding of iTEC widgets.'
                     }
                 },
 

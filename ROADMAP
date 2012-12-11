@@ -13,7 +13,7 @@ Supported Features:
     * ViewPoints Workshop Information Skills Cards.
     * Internally-created learning design cards.
     * Sticky note cards with selectable colours.
-    * Media cards (embed youtube, vimeo videos and images)
+    * Media cards (embed youtube vidieos, vimeo videos, images & iTEC widgets)
 * The user may seleect a subset of possible decks to use for the session.
     * This selection may be changed at any time
 * Connecting Lines can be drawn between cards.
@@ -31,9 +31,11 @@ Supported Features:
 * Import & Export capability to allow transfer of canvas data.
 
 
-Partially Complete Features:
-============================
+Work In Progress:
+=================
 
+* iTEC widgets; the dialog for viewing widgets must resize appropriately to
+  contain the widget fully.
 * Card customisation
     * In-application Card and deck creation / customization: much of the  code  is ready to support this feature, the difficult part is UI design.
     * In cards edit view the 'activity' should be customisable; replace with eg description, title etc...
@@ -64,9 +66,6 @@ TODO List:
     * won't work, because cards depends on decks?
     * if this is so, can probably remove this dependency.
 * Connection edit dismiss takes a *long* time - due to events?.
-* Think about:
-    * Double-click to add cards?
-    * Tick to close cards?
 * Add entry for mind-mapping to Explore card in HLM deck.
 * Reduce card sizes by 75%
 * Lighten time-period background color?
@@ -114,7 +113,6 @@ Next Features:
 * Contextual card information (eg starring, '!' for high priority)
 * Support for flickr
 * Sharing of customised card decks.
-* Embeddable widgets from ITEC widget store?
 
 
 Future features (time-permitting):
