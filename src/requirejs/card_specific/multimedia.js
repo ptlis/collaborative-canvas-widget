@@ -591,15 +591,15 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                                         });
                                 selectorContainer.appendTo(dialogBg);
 
-                                var innerCont           =   $('<div></div>', {
+                                var dialog              =   $('<div></div>', {
                                                                 'class':        'dialog'
                                                             });
-                                innerCont.appendTo(selectorContainer);
+                                dialog.appendTo(selectorContainer);
 
                                 var videoContainer      =   $('<div></div>', {
                                                                 'id':           'widget_container'
                                                             });
-                                videoContainer.appendTo(innerCont);
+                                videoContainer.appendTo(dialog);
 
                                 // Title & Close box
                                 var titleElem           =   $('<div></div>', {
@@ -624,6 +624,18 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                 iframe.attr('width',    width);
                                 iframe.attr('height',   height);
                                 iframe.attr('src',      URL);
+
+                                if(height > 340) {
+                                    var dialogHeight = dialog.height() + (height - 340);
+                                    dialog.css('height', dialogHeight);
+                                }
+                                
+console.log('width ' + width)
+                                if(width > 620) {
+                                    var dialogWidth = dialog.width() + (width - 620);
+console.log('new width ' + dialogWidth)
+                                    dialog.css('width', dialogWidth);
+                                }
 
                                 selectorContainer.css('display', 'none');
                                 selectorContainer.fadeIn(   250,

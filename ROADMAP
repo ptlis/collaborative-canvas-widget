@@ -34,11 +34,14 @@ Supported Features:
 Work In Progress:
 =================
 
-* iTEC widgets; the dialog for viewing widgets must resize appropriately to
-  contain the widget fully.
 * Card customisation
     * In-application Card and deck creation / customization: much of the  code  is ready to support this feature, the difficult part is UI design.
     * In cards edit view the 'activity' should be customisable; replace with eg description, title etc...
+
+
+TODO List:
+==========
+
 * Improvements to first-run
     * First page options:
         * Import Existing workspace.
@@ -50,14 +53,7 @@ Work In Progress:
         c. there’s no ‘right’ answer.
     * Hint tooltips:
         * On left bar, have an arrow pointing right with 'drag' text...
-* Import & Export broken on ROLE
-
-
-TODO List:
-==========
-
-* Deck selection requires the ability to re-order items in a list.
-* canvasStorage needs remMulti function
+* canvasStorage needs remMulti function (Required for wookie to prevent overloading server with rapid requests)
     * Use for canvasStorage.list.removeAll()
     * Use for connections.model.removeForCard()
     * Use for cards on containers.model.remove()
@@ -76,11 +72,13 @@ TODO List:
     * Need to update stored x & y coordinate of centerpoint as well as new width/height.
 * Temporary holding area for cards to keep (that have been filled out) but are not currently required.
 * Mechanism to indicate that activities take place across several time periods?
+* Deck selection requires the ability to re-order items in a list.
 
 
 Bug List
 ========
 
+* Import & Export broken on ROLE
 * Adding items to prompt template cards doesn't correctly save.
 * Context menus can fall off the bottom (and maybe side) of the screen.
 * Connection rendering problems (on copy or over time periods?)
