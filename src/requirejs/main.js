@@ -44,7 +44,7 @@ require([
                 var storageMethod;
 
                 // ROLE & iwc/openapp
-                if (typeof(ROLE) !== 'undefined' && ROLE === true) {ROLE)
+                if (typeof(ROLE) !== 'undefined' && ROLE === true) {
                     storageMethod   = 'role';
                     windowLoadFunc();
         
