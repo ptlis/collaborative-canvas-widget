@@ -256,7 +256,10 @@ define( ['jquery', 'require', 'connections', 'canvasStorage', 'util'],
                         // Allow cards to be draggable
                         cardElem.draggable({
                             'revert':   'invalid',
-                            'cancel':   '.menu_icon, .context-menu-list *, .context-menu-layer *'
+                            'cancel':   '.menu_icon, .context-menu-list *, .context-menu-layer *',
+                            'drag' : function(event, ui) {          
+                                $(window).trigger('widget:connection:view:move_for_card', [ui.helper.data('instanceid')]);
+                            }
                         });
                     }
             
