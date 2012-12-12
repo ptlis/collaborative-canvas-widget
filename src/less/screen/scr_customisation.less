@@ -21,6 +21,7 @@
             background-color:   #fff;
             border:             2px solid #1f6e8e;
             padding:            5px 10px;
+            cursor:             pointer;
             
             &:hover {
                 border-color:   #3AB0DE;
@@ -28,3 +29,38 @@
         }
     }
 }
+
+
+#customisation_deck_details {
+    width:              400px;
+    height:             400px;
+    
+    .dialog_title {
+        margin:         10px 52px 10px 10px;
+    }
+    
+    #deck_customisations {
+        margin:         10px;
+        padding:        10px;
+        background-color:   @dialog_fg;
+        
+        li:first-child {
+            margin-top:  0;
+        }
+        
+        li {
+            margin-top:         10px;
+            
+            label {
+                background-color:red;
+                width:          120px;
+                display:        inline-block;
+            }
+            
+            input {
+                border:         2px solid #126889;
+            }
+        }
+    }
+}
+
