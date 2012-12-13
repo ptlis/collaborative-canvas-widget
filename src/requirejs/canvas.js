@@ -2,25 +2,36 @@
 
 /*  Functionality that is required for the whole canvas. */
 define(
-    ['jquery', 'canvasStorage', 'decks'],
-    function($, canvasStorage, decks) {
+    ['jquery', 'canvasStorage'],
+    function($, canvasStorage) {
         'use strict';
 
         var canvas    = {};
-        
-        
+
+
         canvas.init = function() {
-            $('.zoom_in')
-                .off(   'mouseenter').on(   'mouseenter',       decks.handlers.bar.tooltipShow)
-                .off(   'mouseleave').on(   'mouseleave',       decks.handlers.bar.tooltipHide);
-    
+            var zoomInElem  = $('.zoom_in');
+            var zoomOutElem = $('.zoom_out');
+
+            zoomInElem
+                .off(   'mouseenter').on(   'mouseenter',   function(event) {
+                    $(window).trigger('widget:deck:view:tooltip_show', [zoomInElem]);
+                })
+                .off(   'mouseleave').on(   'mouseleave',   function(event) {
+                    $(window).trigger('widget:deck:view:tooltip_hide', [zoomInElem]);
+                });
+
             // Zooming out
-            $('.zoom_out')
-                .off(   'mouseenter').on(   'mouseenter',       decks.handlers.bar.tooltipShow)
-                .off(   'mouseleave').on(   'mouseleave',       decks.handlers.bar.tooltipHide);
+            zoomOutElem
+            .off(   'mouseenter').on(   'mouseenter',   function(event) {
+                $(window).trigger('widget:deck:view:tooltip_show', [zoomOutElem]);
+            })
+            .off(   'mouseleave').on(   'mouseleave',   function(event) {
+                $(window).trigger('widget:deck:view:tooltip_hide', [zoomOutElem]);
+            });
         };
-        
-        
+
+
         // Run test to see if the window is large enough to display dialogs
         // correctly.
         canvas.dimensionsCheck = function() {
@@ -73,12 +84,12 @@ define(
                 }
             }
         };
-        
-        
 
-        
+
+
+
         // Hide the loading animation
-        canvas.hideLoadingDialog = function() {                
+        canvas.hideLoadingDialog = function() {
             if(canvasStorage.runningVersion === null) {
 
                 $('#loading_dialog').fadeOut(
@@ -101,9 +112,9 @@ define(
                 );
             }
         };
-        
+
         canvas.init();
-        
+
         return canvas;
     }
 );
