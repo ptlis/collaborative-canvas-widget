@@ -630,10 +630,8 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                     dialog.css('height', dialogHeight);
                                 }
                                 
-console.log('width ' + width)
                                 if(width > 620) {
                                     var dialogWidth = dialog.width() + (width - 620);
-console.log('new width ' + dialogWidth)
                                     dialog.css('width', dialogWidth);
                                 }
 

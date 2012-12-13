@@ -27,10 +27,10 @@ define(
                 .off(   'widget:deck:view:remove')          .on('widget:deck:view:remove',          decks.view.remove)
                 .off(   'widget:deck:view:remove_all')      .on('widget:deck:view:remove_all',      decks.view.removeAll)
                 .off(   'widget:deck:view:update')          .on('widget:deck:view:update',          decks.view.update)
-                .off(   'widget:deck:view:tooltip_show')    .on('widget:deck:view:tooltip_show',   decks.view.tooltipShow)
-                .off(   'widget:deck:view:tooltip_hide')    .on('widget:deck:view:tooltip_hide',   decks.view.tooltipHide)
-                .off(   'widget:deck:view:hint_show')       .on('widget:deck:view:hint_show',      decks.view.hintShow)
-                .off(   'widget:deck:view:hint_hide')       .on('widget:deck:view:hint_hide',      decks.view.hintHide)
+                .off(   'widget:deck:view:tooltip_show')    .on('widget:deck:view:tooltip_show',    decks.view.tooltipShow)
+                .off(   'widget:deck:view:tooltip_hide')    .on('widget:deck:view:tooltip_hide',    decks.view.tooltipHide)
+                .off(   'widget:deck:view:hint_show')       .on('widget:deck:view:hint_show',       decks.view.hintShow)
+                .off(   'widget:deck:view:hint_hide')       .on('widget:deck:view:hint_hide',       decks.view.hintHide)
                 .off(   'widget:deck:view:create_dialog')   .on('widget:deck:view:create_dialog',   decks.view.createDialog);
         },
 

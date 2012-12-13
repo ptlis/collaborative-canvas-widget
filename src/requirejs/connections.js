@@ -21,7 +21,7 @@ define(
 
 
         /*  Path used when creating new connections */
-        newConnectionPath:  null,
+        connections.newConnectionPath = null;
 
 
         connections.init = function() {
@@ -83,8 +83,8 @@ define(
 
         connections.updateAll = function() {
             var storedConnections       = {};
-            var fromCardId;
-            var toCardId;
+            var fromCardId              = '';
+            var toCardId                = '';
 
 
             // Create storedConnections structure in same format as cardConnections
@@ -793,7 +793,7 @@ define(
             var pathData    = connections.calculatePath(    cards.getCardDimensions(cardElem.data('instanceid')),
                     cursorPos);
 
-            var colour;
+            var colour  = '#000000';
             if(cardElem.hasClass('create')) {
                 colour  = '#669900';
             }
