@@ -6,4 +6,4 @@
     name: "main",
     out: "../js/main-built.js",
     preserveLicenseComments: false
-})
+});

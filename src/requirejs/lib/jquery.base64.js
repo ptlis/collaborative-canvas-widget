@@ -89,7 +89,7 @@
             }
         }
         return string;
-    }
+    };
 
     $.extend({
         base64Encode: function(input) {
