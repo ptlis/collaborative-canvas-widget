@@ -79,7 +79,6 @@ Bug List
 ========
 
 * Import & Export broken on ROLE
-* Adding items to prompt template cards doesn't correctly save.
 * Context menus can fall off the bottom (and maybe side) of the screen.
 * Connection rendering problems (on copy or over time periods?)
 * Rendering bug in inputs in selection cards (needs to be wider..).
@@ -89,7 +88,7 @@ Bug List
 * ROLE desync handling...
 * (On ROLE / chrome?) Text entered into template cards has scroll-bar
 * Youtube / Vimeo cards:
-    * Sometimes card loses video URL - possibly related to connections?
+    * Sometimes card loses video URL - happens on drag
 * Updates don't work on localStorage?
 * z-indexes don't work on localStorage
 * When creating a connection the green path that indicates a new connection is behind the background.

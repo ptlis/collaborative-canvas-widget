@@ -395,23 +395,25 @@ define(
         
         
         cards.propagateData = function(cardElem) {
-            var decks       = require('decks'); // Pull in decks
-    
+            var decks       = require('decks');
+   
             var i;
             var j;
             var storageElem;
             var instanceId  = cardElem.data('instanceid');
             var cardData    = cards.model.get(instanceId);
             var extraData   = decks.getHandler(cardElem.data('carddeck')).getExtraFields(cardElem.data('cardtype'));
-    
+  
             // Hide paired elems
             cardElem.find('.group li').css('display', 'none');
     
             for(var index in extraData) {
+                
                 if(extraData.hasOwnProperty(index) && index in cardData) {
     
                     // Handle toggling of display of paired entries
                     if(index.substring(0, 7) === 'paired_' && !(index.indexOf('_comment', index.length - '_comment'.length) !== -1)) {
+
                         storageElem = cardElem.find('[data-paired_slave="card_' + instanceId + '_' + index + '_paired"]');
     
                         if(cardData[index] === 'true') {
@@ -1430,7 +1432,7 @@ define(
                             'type':                 'button',
                             'class':                'add add_button_32x32',
                             'data-paired_master':   'card_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex + '_paired',
-                            'data-inputname':       headingIndex + ':' + itemIndex + '_paired'
+                            'data-inputname':       'paired_' + headingIndex + ':' + itemIndex
                         });
                         input.appendTo(itemElem);
 
