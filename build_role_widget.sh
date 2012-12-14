@@ -81,3 +81,4 @@
 
 # Mark as ROLE widget
     sed -i '1s/^/var ROLE=true;\n/' role_widget/src/js/main-built.js
+

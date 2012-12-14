@@ -1,11 +1,14 @@
 #!/bin/bash
 
-# Export clean copy of widget
+# Copy widget data
 	if [ -e w3_widget ]
 	then
 		rm -rf w3_widget
 	fi
-	svn export -q svn://localhost/8LEM/prototype_17/ w3_widget
+	mkdir w3_widget
+	cp -R src w3_widget
+	cp compile_less.sh w3_widget
+	cp compile_requirejs.sh w3_widget
 
 
 # Compile LESS to CSS
@@ -14,10 +17,18 @@
     cd ..
     rm -rf w3_widget/src/less/
     rm w3_widget/compile_less.sh
+    
+    
+# Compile & compress requirejs deps
+	cd w3_widget/
+	./compile_requirejs.sh
+	cd ..
+	rm -rf w3_widget/src/requirejs/
+	rm w3_widget/compile_requirejs.sh
 
 
 # Generate real config.xml from template
-	SVN_VERSION=`svnversion .`
+	VERSION='0.1'
 
 	CMD="sed s/@@VERSION@@/${SVN_VERSION}/ w3_widget/src/wookie_template.xml"
 	$CMD > w3_widget/src/config.xml
@@ -32,7 +43,7 @@
 
 
 # Mark as wookie widget
-    sed -i '1s/^/var WOOKIE=true;\n/' w3_widget/src/js/util.js
+    sed -i '1s/^/var WOOKIE=true;\n/' role_widget/src/js/main-built.js
 
 
 # Remove previous widget
