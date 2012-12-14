@@ -1,6 +1,8 @@
 /*jshint jquery:true */
 
 
+
+        
 define(
     ['jquery', 'require', 'connections', 'canvasStorage', 'util'],
     function($, require, connections, canvasStorage, util) {
@@ -14,21 +16,27 @@ define(
         cards.handlers.deck = {};
         
         
-        /*  How far the cards have been zoomed in */
+    /*  How far the cards have been zoomed in */
         cards.zoomFactor          = '1';
         
-        
-        /*  Data in the clipboard */
+    /*  Data in the clipboard */
         cards.clipboardData = {
             'method':       '',
             'instanceId':   ''
         };
         
         
+    /*  Whether the download attribute is supported by the browser. */
         cards.downloadAttribute = false;
+        
+        
+    /*  Whether the files API is supported by the browser. */
         cards.filesApi          = false;
         
        
+    /*
+     *  Initialisation routine.
+     */
         cards.init = function() {
             var testAnchor  = document.createElement('a');
             if(typeof testAnchor.download !== 'undefined') {
@@ -70,7 +78,7 @@ define(
         };
         
         
-        /*  Convenience function, returns current card width, height, x offset & y offset */
+    /*  Convenience function, returns current card width, height, x offset & y offset */
         cards.getCardDimensions= function(cardId) {
             var dimensions      = {};
             var zoomFactorIndex = cards.zoomFactor.replace('.', '_');
@@ -253,8 +261,12 @@ define(
                 cardElem.draggable({
                     'revert':   'invalid',
                     'cancel':   '.menu_icon, .context-menu-list *, .context-menu-layer *',
-                    'drag' : function(event, ui) {          
+                    'drag':     function(event, ui) {          
                         $(window).trigger('widget:connection:view:move_for_card', [ui.helper.data('instanceid')]);
+                    },
+                    'stop':     function(event, ui) {
+                        $(window).trigger('widget:connection:view:move_for_card', [ui.helper.data('instanceid')]);
+                        $(window).trigger('widget:container:view:resize');
                     }
                 });
             }
