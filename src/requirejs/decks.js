@@ -95,10 +95,10 @@ define(
 
             // Tooltips
             deckElem
-                .on('mouseenter',   function(event) {
+                .on('mouseenter',   function() {
                     $(window).trigger('widget:deck:view:tooltip_show', [deckElem]);
                 })
-                .on('mouseleave',   function(event) {
+                .on('mouseleave',   function() {
                     $(window).trigger('widget:deck:view:tooltip_hide', [deckElem]);
                 });
 
@@ -373,6 +373,15 @@ define(
             for(i = 0; i < selectedDecks.length; i++) {
                 activeDecks[$(selectedDecks[i]).data('carddeck')]    = true;
             }
+            
+            
+            var triggerShow = function(event) {
+                $(window).trigger('widget:deck:view:hint_show', [$(event.target)]);
+            };
+            
+            var triggerHide = function(event) {
+                $(window).trigger('widget:deck:view:hint_hide', [$(event.target)]);
+            };
 
 
             var deckIcons   = decks.getDeckIcons(false);
@@ -391,12 +400,8 @@ define(
                 deckIcons[i].appendTo(li);
 
                 deckIcons[i]
-                    .off('mouseover')   .on('mouseover',    function(event) {
-                        $(window).trigger('widget:deck:view:hint_show', [$(event.target)]);
-                    })
-                    .off('mouseout')    .on('mouseout',    function() {
-                        $(window).trigger('widget:deck:view:hint_hide', [$(event.target)]);
-                    });
+                    .off('mouseover')   .on('mouseover',    triggerShow)
+                    .off('mouseout')    .on('mouseout',     triggerHide);
             }
 
             if(firstRun) {
