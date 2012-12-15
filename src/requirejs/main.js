@@ -16,6 +16,11 @@ requirejs.config({
             'deps':     ['jquery'],
             'exports':  'jquery.fn.contextMenu'
         },
+
+        'jquery.colorpicker': {
+            'deps':     ['jquery'],
+            'exports':  'jquery.fn.ColorPicker'
+        }
     }
 });
 
@@ -38,7 +43,8 @@ require(
         'card_specific/sticky',
 
         'lib/jquery.contextMenu',
-        'lib/jquery.ui'],
+        'lib/jquery.ui',
+        'lib/jquery.colorpicker'],
 
     function($, canvasStorage, canvas, decks, cards, containers) {
 

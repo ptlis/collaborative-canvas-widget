@@ -50,15 +50,41 @@
         
         li {
             margin-top:         10px;
+            height:             28px;
             
-            label {
-                background-color:red;
-                width:          120px;
-                display:        inline-block;
+            &.colour_container {
+                .input_container {
+                    width:      199px;
+                }
+                
+                #colour_sample {
+                    .text_entry();
+                    width:  23px;
+                    height: 23px;
+                    float:  right;
+                    border-left-width: 0;
+                }
             }
             
-            input {
-                border:         2px solid #126889;
+            label {
+                width:          120px;
+                display:        block;
+                float:          left;
+                padding:        2px 0;
+            }
+
+            .input_container {
+                .text_entry();
+                padding:            2px 5px;
+                border-color:       #126889;
+                display:            block;
+                float:              right;
+                width:              224px;
+                
+                input {
+                    background-color:   transparent;
+                    border-width:       0;
+                }
             }
         }
     }

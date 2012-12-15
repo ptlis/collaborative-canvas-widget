@@ -6,17 +6,15 @@ define(
     function($, util) {
         'use strict';
         
-        var customisation   = {};
+        var customisation       = {};
+        customisation.dialogs   = {};
 
         
-        customisation.init = function() {
+        customisation.init = function() {            
             $(window)
                 .off(   'widget:customisation:dialog:deck_selection')
                 .on(    'widget:customisation:dialog:deck_selection',   customisation.dialogs.deckSelection);
         };
-        
-        
-        customisation.dialogs   = {};
         
         
         customisation.dialogs.deckSelection = function() {
@@ -131,48 +129,114 @@ define(
                 });
             
             
-            var content     =   $('<ul></ul>', {
-                                    'id':       'deck_customisations'
-                                });
+            var content         =   $('<ul></ul>', {
+                                        'id':       'deck_customisations'
+                                    });
             content.appendTo(dialog);
             
             
-            // Deck Title & Description
-            var titleCont   =   $('<li></li>', {
-                                    'class':    'title_container'
-                                });
+        // Deck Title
+            var titleCont       =   $('<li></li>', {
+                                        'class':    'title_container'
+                                    });
             titleCont.appendTo(content);
             
-            var titleLabel  =   $('<label></label>', {
-                                    'for':      'title'
-                                });
+            var titleLabel      =   $('<label></label>', {
+                                        'for':      'title'
+                                    });
             titleLabel.text('Name:');
             titleLabel.appendTo(titleCont);
             
-            var titleEntry  =   $('<input>', {
-                                    'type':     'text',
-                                    'id':       'title'
-                                });
-            titleEntry.appendTo(titleCont);
+            var titleInputCont  =   $('<div></div>', {
+                                        'class':    'input_container'
+                                    });
+            titleInputCont.appendTo(titleCont);
+            var titleEntry      =   $('<input>', {
+                                        'type':     'text',
+                                        'id':       'title'
+                                    });
+            titleEntry.appendTo(titleInputCont);
 
-
-            var descCont    =   $('<li></li>', {
-                                    'class':    'desc_container'
-                                });
-            descCont.appendTo(content);
             
-            var descLabel   =   $('<label></label>', {
-                                    'for':      'desc'
-                                });
+        // Deck description
+            var descCont        =   $('<li></li>', {
+                                        'class':    'desc_container'
+                                    });
+            descCont.appendTo(content);
+
+            
+            var descLabel       =   $('<label></label>', {
+                                        'for':      'desc'
+                                    });
             descLabel.text('Description:');
             descLabel.appendTo(descCont);
+
+            var descInputCont  =   $('<div></div>', {
+                                        'class':    'input_container'
+                                    });
+            descInputCont.appendTo(descCont);
+            var descEntry       =   $('<input>', {
+                                        'type':     'text',
+                                        'id':       'desc'
+                                    });
+            descEntry.appendTo(descInputCont);
             
-            var descEntry  =   $('<input>', {
-                                    'type':     'text',
-                                    'id':       'desc'
+            
+        // Deck Colour
+            var colourCont  =   $('<li></li>', {
+                                    'class':    'colour_container'
                                 });
-            descEntry.appendTo(descCont);
+            colourCont.appendTo(content);
+
             
+            var colourLabel =   $('<label></label>', {
+                                    'for':      'colour'
+                                });
+            colourLabel.text('Colour:');
+            colourLabel.appendTo(colourCont);
+            
+
+            var colourSample    =   $('<div></div>', {
+                                        'id':       'colour_sample'
+                                    });
+            colourSample.appendTo(colourCont);
+
+            var colourInputCont =   $('<div></div>', {
+                                        'class':    'input_container'
+                                    });
+            colourInputCont.appendTo(colourCont);
+            var colourEntry     =   $('<input>', {
+                                        'type':     'text',
+                                        'id':       'colour'
+                                    });
+            colourEntry.appendTo(colourInputCont);
+            
+            
+            // Add colour picker
+            colourEntry.ColorPicker({
+                onSubmit: function(hsb, hex, rgb, el, parent) {
+                    $(el).val(hex);
+                    $(el).ColorPickerHide();
+                },
+                onBeforeShow: function () {
+                    $(this).ColorPickerSetColor(this.value);
+                },
+                onChange: function (hsb, hex, rgb) {
+                    colourSample.css('backgroundColor', '#' + hex);
+                    colourEntry.val('#' + hex);
+                },
+                onShow: function (picker) {
+                    $(picker).fadeIn(125);
+                    return false;
+                },
+                onHide: function (picker) {
+                    $(picker).fadeOut(125);
+                    return false;
+                },
+            })
+            .on('change', function(){
+                $(this).ColorPickerSetColor(this.value);
+            });
             
             // Transition between dialogs
             var oldDialog  = $('.dialog');

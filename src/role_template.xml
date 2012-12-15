@@ -46,6 +46,7 @@
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_context_menu.css">
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_connections.css">
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_icons.css">
+            <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_colorpicker.css">
             
             <!-- Deck & Card customisation -->
             <link type="text/css" rel="stylesheet" media="screen" href="css/screen/scr_customisation.css">
