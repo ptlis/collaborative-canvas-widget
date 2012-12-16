@@ -4,8 +4,7 @@
 requirejs.config({
     shim: {
         'jquery.base64': {
-            'deps':	    ['jquery'],
-            'exports':  'jquery.fn.base64'
+            'deps':	    ['jquery']
         },
 
         'jquery.ui': {
