@@ -377,7 +377,7 @@ define( ['jquery', 'decks', 'canvasStorage'],
                     var cardType    = $(cardElem).data('cardtype');
 
                     if(cardType === 'image' && size === 'large' && multimedia.filesSupport) {
-                        cardElem.find('.image_block')[0].removeEventListener('drop', multimedia.imageDropHandler);
+                        cardElem.find('.image_block').imgurUpload('destroy');
                     }
 
                     else if(cardType === 'youtube' || cardType === 'vimeo') {
@@ -919,6 +919,7 @@ define( ['jquery', 'decks', 'canvasStorage'],
                 addImageDropEvents : function(cardElem) {
 
                     var imgContainer    = cardElem.find('.image_block');
+                    var instanceId      = cardElem.data('instanceid');
 
                     imgContainer
                         .off('dragenter')
@@ -929,113 +930,70 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         .on('dragover', function(event) {
                             event.preventDefault();
                         });
-
-                    imgContainer[0].addEventListener('drop', multimedia.imageDropHandler);
-
-                },
-
-
-                imageDropHandler : function(event) {
-                    var instanceId  = $(event.target).parents('[data-prefix="card"]').data('instanceid');
-
-                    var fileReadComplete = function(event) {
-                        
-                        var beforeSend  = function() {
-                            var imgElem     =   $('<div></div>', {
-                                'class':    'loading_anim'
-                            });
-
-                            $('.drop_message').before(imgElem);
-
-                            $('.drop_message').text('Uploading...');
-                        };
-                        
-                        var success     = function(data, textStatus, jqXHR) {
-                            var imgElems    = $('[data-instanceid="' + instanceId + '"] [data-inputname="image"]');
-
-                            // Resize / position image appropriate when possible
-                            imgElems
-                                .off('load')
-                                .on('load', function(event) {
-                                    var contCard        = $(event.target).parents('[data-prefix="card"]');
-
-                                    var imageScaled     = multimedia.scaledDimensions($(event.target).width(), $(event.target).height(), contCard.find('.image_block').width(), contCard.find('.image_block').height());
-
-                                    $(event.target).attr('width',       imageScaled.width);
-                                    $(event.target).attr('height',      imageScaled.height);
-
-
-                                    $(event.target).css('left',         imageScaled.left + 'px');
-                                    $(event.target).css('top',          imageScaled.top + 'px');
-                                    $(event.target).css('visibility',   'visible');
-
-                                    $('.message_container').remove();
-                                });
-
-                            imgElems.attr('src', 'http://i.imgur.com/' + data.upload.image.hash + '.png');
-
-
-                            var extraFields = {
-                                'id':           instanceId,
-                                'image':        data.upload.image.hash
-                            };
-
-                            canvasStorage.list.update('card', extraFields);
-                        };
-                        
-                        var error       = function(jqXHR, textStatus, errorThrown) {
-                            $('.loading_anim').remove();
-                            $('.drop_message').text('Image upload failed');
-
-                            var errorImg                = $('<img>', {
-                                'src':      'images/layout/error_face.png',
-                                'width':    '32',
-                                'height':   '32'
-                            });
-                            $('.drop_message').before(errorImg);
-                        };
-                        
-                        $.imgurUpload({
-                            'image':        event.target.result.split(',')[1],
-                            'apiKey':       multimedia.apiKey,
-                            'beforeSend':   beforeSend,
-                            'success':      success,
-                            'error':        error
+                    
+                    
+                    var beforeSend  = function() {
+                        var imgElem     =   $('<div></div>', {
+                            'class':    'loading_anim'
                         });
+
+                        $('.drop_message').before(imgElem);
+
+                        $('.drop_message').text('Uploading...');
+                    };
+                    
+                    var success     = function(data, textStatus, jqXHR) {
+                        var imgElems    = $('[data-instanceid="' + instanceId + '"] [data-inputname="image"]');
+
+                        // Resize / position image appropriate when possible
+                        imgElems
+                            .off('load')
+                            .on('load', function(event) {
+                                var contCard        = $(event.target).parents('[data-prefix="card"]');
+
+                                var imageScaled     = multimedia.scaledDimensions($(event.target).width(), $(event.target).height(), contCard.find('.image_block').width(), contCard.find('.image_block').height());
+
+                                $(event.target).attr('width',       imageScaled.width);
+                                $(event.target).attr('height',      imageScaled.height);
+
+
+                                $(event.target).css('left',         imageScaled.left + 'px');
+                                $(event.target).css('top',          imageScaled.top + 'px');
+                                $(event.target).css('visibility',   'visible');
+
+                                $('.message_container').remove();
+                            });
+
+                        imgElems.attr('src', 'http://i.imgur.com/' + data.upload.image.hash + '.png');
+
+
+                        var extraFields = {
+                            'id':           instanceId,
+                            'image':        data.upload.image.hash
+                        };
+
+                        canvasStorage.list.update('card', extraFields);
+                    };
+                    
+                    var error       = function(jqXHR, textStatus, errorThrown) {
+                        $('.loading_anim').remove();
+                        $('.drop_message').text('Image upload failed');
+
+                        var errorImg                = $('<img>', {
+                            'src':      'images/layout/error_face.png',
+                            'width':    '32',
+                            'height':   '32'
+                        });
+                        $('.drop_message').before(errorImg);
                     };
 
-                    if(event.dataTransfer.files.length > 0) {
+                    imgContainer.imgurUpload({
+                        'apiKey':           multimedia.apiKey,
+                        'beforeSend':       beforeSend,
+                        'uploadSuccess':    success,
+                        'uploadError':      error
+                    });
 
-                        for (var i = 0; i < event.dataTransfer.files.length; i++) {
-
-                            if(event.dataTransfer.files[i].size < multimedia.maxFileSize) {
-
-                                var reader              = new FileReader();
-                                reader.index            = i;
-                                reader.file             = event.dataTransfer.files[i];
-
-                                switch(reader.file.type) {
-                                    case 'image/jpeg':
-                                    case 'image/jpg':
-                                    case 'image/png':
-                                    case 'image/gif':
-                                        $(reader)
-                                            .off('loadend')
-                                            .on('loadend', fileReadComplete);
-                                        reader.readAsDataURL(event.dataTransfer.files[i]);
-                                        break;
-
-                                    default:
-                                        alert('unsupported file type: supported types are JPEG, GIF or PNG');
-                                        break;
-                                }
-                            } else {
-                                alert('File is too big, needs to be below 1mb');
-                            }
-                        }
-                    }
-
-                    event.preventDefault();
                 },
 
 
