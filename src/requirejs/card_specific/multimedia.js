@@ -939,73 +939,68 @@ define( ['jquery', 'decks', 'canvasStorage'],
                     var instanceId  = $(event.target).parents('[data-prefix="card"]').data('instanceid');
 
                     var fileReadComplete = function(event) {
+                        
+                        var beforeSend  = function() {
+                            var imgElem     =   $('<div></div>', {
+                                'class':    'loading_anim'
+                            });
 
-                        var params      = {};
-                        params.key      = multimedia.apiKey;
-                        params.type     = 'base64';
-                        params.image    = event.target.result.split(',')[1];
+                            $('.drop_message').before(imgElem);
 
-                        $.ajax({
-                            url:        multimedia.apiEndpoint,
-                            type:       'POST',
-                            data:       params,
-                            dataType:   'json',
+                            $('.drop_message').text('Uploading...');
+                        };
+                        
+                        var success     = function(data, textStatus, jqXHR) {
+                            var imgElems    = $('[data-instanceid="' + instanceId + '"] [data-inputname="image"]');
 
-                            beforeSend : function() {
-                                var imgElem     =   $('<div></div>', {
-                                    'class':    'loading_anim'
+                            // Resize / position image appropriate when possible
+                            imgElems
+                                .off('load')
+                                .on('load', function(event) {
+                                    var contCard        = $(event.target).parents('[data-prefix="card"]');
+
+                                    var imageScaled     = multimedia.scaledDimensions($(event.target).width(), $(event.target).height(), contCard.find('.image_block').width(), contCard.find('.image_block').height());
+
+                                    $(event.target).attr('width',       imageScaled.width);
+                                    $(event.target).attr('height',      imageScaled.height);
+
+
+                                    $(event.target).css('left',         imageScaled.left + 'px');
+                                    $(event.target).css('top',          imageScaled.top + 'px');
+                                    $(event.target).css('visibility',   'visible');
+
+                                    $('.message_container').remove();
                                 });
 
-                                $('.drop_message').before(imgElem);
-
-                                $('.drop_message').text('Uploading...');
-                            },
-
-                            success : function(data, textStatus, jqXHR) {
-                                var imgElems    = $('[data-instanceid="' + instanceId + '"] [data-inputname="image"]');
-
-                                // Resize / position image appropriate when possible
-                                imgElems
-                                    .off('load')
-                                    .on('load', function(event) {
-                                        var contCard        = $(event.target).parents('[data-prefix="card"]');
-
-                                        var imageScaled     = multimedia.scaledDimensions($(event.target).width(), $(event.target).height(), contCard.find('.image_block').width(), contCard.find('.image_block').height());
-
-                                        $(event.target).attr('width',       imageScaled.width);
-                                        $(event.target).attr('height',      imageScaled.height);
+                            imgElems.attr('src', 'http://i.imgur.com/' + data.upload.image.hash + '.png');
 
 
-                                        $(event.target).css('left',         imageScaled.left + 'px');
-                                        $(event.target).css('top',          imageScaled.top + 'px');
-                                        $(event.target).css('visibility',   'visible');
+                            var extraFields = {
+                                'id':           instanceId,
+                                'image':        data.upload.image.hash
+                            };
 
-                                        $('.message_container').remove();
-                                    });
+                            canvasStorage.list.update('card', extraFields);
+                        };
+                        
+                        var error       = function(jqXHR, textStatus, errorThrown) {
+                            $('.loading_anim').remove();
+                            $('.drop_message').text('Image upload failed');
 
-                                imgElems.attr('src', 'http://i.imgur.com/' + data.upload.image.hash + '.png');
-
-
-                                var extraFields = {
-                                    'id':           instanceId,
-                                    'image':        data.upload.image.hash
-                                };
-
-                                canvasStorage.list.update('card', extraFields);
-                            },
-
-                            error : function(jqXHR, textStatus, errorThrown) {
-                                $('.loading_anim').remove();
-                                $('.drop_message').text('Image upload failed');
-
-                                var errorImg                = $('<img>', {
-                                    'src':      'images/layout/error_face.png',
-                                    'width':    '32',
-                                    'height':   '32'
-                                });
-                                $('.drop_message').before(errorImg);
-                            }
-
+                            var errorImg                = $('<img>', {
+                                'src':      'images/layout/error_face.png',
+                                'width':    '32',
+                                'height':   '32'
+                            });
+                            $('.drop_message').before(errorImg);
+                        };
+                        
+                        $.imgurUpload({
+                            'image':        event.target.result.split(',')[1],
+                            'apiKey':       multimedia.apiKey,
+                            'beforeSend':   beforeSend,
+                            'success':      success,
+                            'error':        error
                         });
                     };
 

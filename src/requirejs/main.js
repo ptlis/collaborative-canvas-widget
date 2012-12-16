@@ -20,6 +20,11 @@ requirejs.config({
         'jquery.colorpicker': {
             'deps':     ['jquery'],
             'exports':  'jquery.fn.ColorPicker'
+        },
+
+        'jquery.imgurUpload': {
+            'deps':     ['jquery'],
+            'exports':  'jquery.fn.imgurUpload'
         }
     }
 });
@@ -44,7 +49,8 @@ require(
 
         'lib/jquery.contextMenu',
         'lib/jquery.ui',
-        'lib/jquery.colorpicker'],
+        'lib/jquery.colorpicker',
+        'lib/jquery.imgurUpload'],
 
     function($, canvasStorage, canvas, decks, cards, containers) {
 
