@@ -171,7 +171,7 @@ define(
             descLabel.text('Description:');
             descLabel.appendTo(descCont);
 
-            var descInputCont  =   $('<div></div>', {
+            var descInputCont   =   $('<div></div>', {
                                         'class':    'input_container'
                                     });
             descInputCont.appendTo(descCont);
@@ -183,18 +183,16 @@ define(
             
             
         // Deck Colour
-            var colourCont  =   $('<li></li>', {
-                                    'class':    'colour_container'
-                                });
+            var colourCont      =   $('<li></li>', {
+                                        'class':    'colour_container'
+                                    });
             colourCont.appendTo(content);
-
             
-            var colourLabel =   $('<label></label>', {
-                                    'for':      'colour'
-                                });
+            var colourLabel     =   $('<label></label>', {
+                                        'for':      'colour'
+                                    });
             colourLabel.text('Colour:');
             colourLabel.appendTo(colourCont);
-            
 
             var colourSample    =   $('<div></div>', {
                                         'id':       'colour_sample'
@@ -211,6 +209,87 @@ define(
                                     });
             colourEntry.appendTo(colourInputCont);
             
+        // Deck Icon (32x32)
+            var iconSmlCont     =   $('<li></li>', {
+                                        'class':    'icon_small_container'
+                                    });
+            iconSmlCont.appendTo(content);
+            
+            var iconSmlLabel    =   $('<label></label>');
+            iconSmlLabel.text('Icon (32x32):');
+            iconSmlLabel.appendTo(iconSmlCont);
+            
+            var iconSmlShow     =   $('<div></div>', {
+                                        'id':       'icon_small',
+                                        'class':    'icon_display'
+                                    });
+            iconSmlShow.appendTo(iconSmlCont);
+            
+            var iconSmlDrop     =   $('<div></div>', {
+                                        'id':       'icon_small_drop'
+                                    });
+            iconSmlDrop.text('Add icon');
+            iconSmlDrop.appendTo(iconSmlCont);
+            
+        // Deck Icon (48x48)
+            var iconLrgCont     =   $('<li></li>', {
+                                        'class':    'icon_large_container'
+                                    });
+            iconLrgCont.appendTo(content);
+            
+            var iconLrgLabel    =   $('<label></label>');
+            iconLrgLabel.text('Icon (48x48):');
+            iconLrgLabel.appendTo(iconLrgCont);
+            
+            var iconLrgShow     =   $('<div></div>', {
+                                        'id':       'icon_large',
+                                        'class':    'icon_display'
+                                    });
+            iconLrgShow.appendTo(iconLrgCont);
+            
+            var iconLrgDrop     =   $('<div></div>', {
+                                        'id':       'icon_large_drop'
+                                    });
+            iconLrgDrop.text('Add icon');
+            iconLrgDrop.appendTo(iconLrgCont);
+            
+            
+        // Events
+            var success = function(dropElem, data) {
+                dropElem.text('Done');
+                
+                console.log(dropElem.parent().find('.icon_display')[0])
+                dropElem.parent().find('.icon_display').css('background-image', 'url("http://i.imgur.com/' + data.upload.image.hash + '.png")');
+            };
+            
+            var error   = function(dropElem, errMsg) {
+                dropElem.text('Add icon');
+                alert(errMsg);
+            };
+            
+            var beforeSend  = function(dropElem) {
+                dropElem.text('Uploading...');
+            };
+
+            // Upload small image
+            iconSmlDrop.imgurUpload({
+                'apiKey':           util.imgurApiKey,
+                'beforeSend':       beforeSend,
+                'uploadSuccess':    success,
+                'error':            error,
+                'exactWidth':       32,
+                'exactHeight':      32
+            });
+            
+            // Upload large image
+            iconLrgDrop.imgurUpload({
+                'apiKey':           util.imgurApiKey,
+                'beforeSend':       beforeSend,
+                'uploadSuccess':    success,
+                'error':            error,
+                'exactWidth':       48,
+                'exactHeight':      48
+            });
             
             // Add colour picker
             colourEntry.ColorPicker({
@@ -232,7 +311,7 @@ define(
                 onHide: function (picker) {
                     $(picker).fadeOut(125);
                     return false;
-                },
+                }
             })
             .on('change', function(){
                 $(this).ColorPickerSetColor(this.value);
