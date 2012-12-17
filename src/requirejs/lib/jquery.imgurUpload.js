@@ -5,15 +5,25 @@
     var maxFileSize     = '10000000';   // Imgur max upload size is 10Mb
     
     $.fn.imgurUpload = function(options) {
+        
+        var dropElem    = this;
+        
         if(typeof options === 'string' && options === 'destroy') {
-            this[0].removeEventListener('drop', dropHandler);
+            this
+                .off('dragenter.imgurUpload')
+                .off('dragover.imgurUpload')
+                .off('dragleave.imgurUpload')
+                .off('drop.imgurUpload');
             return;
         }
         
+
         if(options.apiKey === undefined) {
             $.error('Missing required option "apiKey"');
         }
         
+        
+        // Default handlers (useful when testing)
         var settings    = $.extend({
             'beforeSend':       function() {},
             'uploadSuccess':    function(response) {
@@ -24,14 +34,6 @@
                     alert('request successful');
                 }
             },
-            'uploadError':      function(errMsg) {
-                if(typeof window.console !== 'undefiend') {
-                    console.log('request failed "' + errMsg + '"');
-                }
-                else {
-                    alert('request failed "' + errMsg + '"');
-                }
-            },
             'dndSuccess':       function(filesData) {
                 if(typeof window.console !== 'undefiend') {
                     console.log('drop successful');
@@ -40,54 +42,88 @@
                     alert('drop successful');
                 }
             },
-            'dndError':         function(errMsg) {
+            'error':            function(errMsg) {
                 if(typeof window.console !== 'undefiend') {
-                    console.log('drop failed "' + errMsg + '"');
+                    console.log('error: "' + errMsg + '"');
                 }
                 else {
-                    alert('drop failed "' + errMsg + '"');
+                    alert('error: "' + errMsg + '"');
                 }
             }
         }, options);
         
+        
         var fileReadComplete    = function(event) {
-            var httpParams      = {};
-            httpParams.image    = event.target.result.split(',')[1];
-            httpParams.key      = settings.apiKey;
-            httpParams.type     = 'base64';
+            $('<img>')
+                .on('load', function(event) {
+                    var image   = $(event.target);
+                    var width   = image.width();
+                    var height  = image.height();
 
-            $.ajax({
-                url:        'https://api.imgur.com/2/upload.json',
-                type:       'POST',
-                data:       httpParams,
-                dataType:   'json',
+                    // Validate width & height
+                    if(typeof settings.maxWidth !== 'undefined' && width > settings.maxWidth) {
+                        settings.error(dropElem, 'Image width is ' + width + 'px, which exceeds the maximum width of ' + settings.maxWidth + 'px');
+                    }
+                    
+                    else if(typeof settings.maxHeight !== 'undefined' && height > settings.maxHeight) {
+                        settings.error(dropElem, 'Image height is ' + height + 'px, which exceeds the maximum height of ' + settings.maxHeight + 'px');
+                    }
+                    
+                    else if(typeof settings.exactWidth !== 'undefined' && width !== settings.exactWidth) {
+                        settings.error(dropElem, 'Image width is ' + width + 'px, the image width must be ' + settings.exactWidth + 'px');
+                    }
+                    
+                    else if(typeof settings.exactHeight !== 'undefined' && height !== settings.exactHeight) {
+                        settings.error(dropElem, 'Image height is ' + height + 'px, the image height must be ' + settings.exactHeight + 'px');
+                    }
+                    
+                    else {
+                        var httpParams      = {};
+                        httpParams.image    = image.attr('src').split(',')[1];
+                        httpParams.key      = settings.apiKey;
+                        httpParams.type     = 'base64';
+    
+                        $.ajax({
+                            url:        'https://api.imgur.com/2/upload.json',
+                            type:       'POST',
+                            data:       httpParams,
+                            dataType:   'json',
+    
+                            beforeSend : function() {
+                                settings.beforeSend(dropElem);
+                            },
+    
+                            success : function(data, textStatus, jqXHR) {
+                                settings.uploadSuccess(dropElem, data);
+                            },
+    
+                            error : function(jqXHR, textStatus, errorThrown) {
+                                settings.error(dropElem, errorThrown);
+                            }
+                        });
+                    }
 
-                beforeSend : function() {                
-                    settings.beforeSend();
-                },
-
-                success : function(data, textStatus, jqXHR) {
-                    settings.uploadSuccess(data);
-                },
-
-                error : function(jqXHR, textStatus, errorThrown) {
-                    settings.uploadError(errorThrown);
-                }
-            });
+                    image.remove();
+                })
+                .attr('src', event.target.result)
+                .css('display', 'none')
+                .appendTo('body');
         };
         
         var dropHandler = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
 
-            if(event.dataTransfer.files.length > 0) {
-                for(var i = 0; i < event.dataTransfer.files.length; i++) {
-                    if(event.dataTransfer.files[i].size > maxFileSize) {
-                        settings.dndError('Max filesize of 10Mb exceeded.');
+            if(event.originalEvent.dataTransfer.files.length > 0) {
+                for(var i = 0; i < event.originalEvent.dataTransfer.files.length; i++) {
+                    if(event.originalEvent.dataTransfer.files[i].size > maxFileSize) {
+                        settings.error('Max filesize of 10Mb exceeded.');
                     }
                     
                     else {
                         var reader              = new FileReader();
                         reader.index            = i;
-                        reader.file             = event.dataTransfer.files[i];
+                        reader.file             = event.originalEvent.dataTransfer.files[i];
 
                         switch(reader.file.type) {
                             case 'image/jpeg':
@@ -97,22 +133,46 @@
                                 $(reader)
                                     .off('loadend')
                                     .on('loadend', fileReadComplete);
-                                reader.readAsDataURL(event.dataTransfer.files[i]);
+                                reader.readAsDataURL(event.originalEvent.dataTransfer.files[i]);
                                 break;
 
                             default:
-                                settings.dndError('Unsupported file type: supported types are JPEG, GIF or PNG.');
+                                settings.error('Unsupported file type: supported types are JPEG, GIF or PNG.');
                                 break;
                         }
                     }
                 }
             }
-
-            event.preventDefault();
         };
 
-        this[0].addEventListener('drop', dropHandler);
-        
+        this
+            .off('dragenter.imgurUpload')
+            .on('dragenter.imgurUpload', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if(typeof settings.dragEnter !== 'undefined') {
+                    settings.dragEnter(dropElem);
+                }
+            })
+            .off('dragover.imgurUpload')
+            .on('dragover.imgurUpload', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if(typeof settings.dragOver !== 'undefined') {
+                    settings.dragOver(dropElem);
+                }
+            })
+            .off('dragleave.imgurUpload')
+            .on('dragleave.imgurUpload', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if(typeof settings.dragLeave !== 'undefined') {
+                    settings.dragLeave(dropElem);
+                }
+            })
+            .off('drop.imgurUpload')
+            .on('drop.imgurUpload', dropHandler);
+
         return this;
     };
 })(jQuery);
