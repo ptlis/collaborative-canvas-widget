@@ -253,6 +253,47 @@ define(
             iconLrgDrop.text('Add icon');
             iconLrgDrop.appendTo(iconLrgCont);
             
+        // Preview of card appearance
+            var previewCont     =   $('<li></li>', {
+                                        'class':    'preview_container'
+                                    });
+            previewCont.appendTo(content);
+            
+            var previewLabel    =   $('<label></label>');
+            previewLabel.text('Preview:');
+            previewLabel.appendTo(previewCont);
+            
+            var previewArea     =   $('<div></div>', {
+                                        'class':    'preview'
+                                    });
+            previewArea.appendTo(previewCont);
+            
+            var previewDeck     =   $('<span></span>', {
+                                        'data-prefix':      'deck',
+                                        'data-cardsize':    'small',
+                                        'data-template':    'selectable_prompts'
+                                    });
+            previewDeck.appendTo(previewArea);
+            
+        // Next & Back Buttons
+            var buttonCont      =   $('<div></div>', {
+                                        'class':    'button_container'
+                                    });
+            buttonCont.appendTo(dialog);
+            
+            var backButton      =   $('<div></div>', {
+                                        'id':       'back_button'
+                                    });
+            backButton.text('Back');
+            backButton.appendTo(buttonCont);
+            
+            var nextButton      =   $('<div></div>', {
+                                        'id':       'next_button'
+                                    });
+            nextButton.text('Next');
+            nextButton.appendTo(buttonCont);
+            
+            
             
         // Events
             var success = function(dropElem, data) {
@@ -260,6 +301,10 @@ define(
                 
                 console.log(dropElem.parent().find('.icon_display')[0])
                 dropElem.parent().find('.icon_display').css('background-image', 'url("http://i.imgur.com/' + data.upload.image.hash + '.png")');
+
+                if(dropElem.attr('id') ===  'icon_small_drop') {
+                    previewDeck.css('background-image', 'url("http://i.imgur.com/' + data.upload.image.hash + '.png")');
+                }
             };
             
             var error   = function(dropElem, errMsg) {
@@ -303,6 +348,7 @@ define(
                 onChange: function (hsb, hex, rgb) {
                     colourSample.css('backgroundColor', '#' + hex);
                     colourEntry.val('#' + hex);
+                    previewDeck.css('backgroundColor', '#' + hex);
                 },
                 onShow: function (picker) {
                     $(picker).fadeIn(125);

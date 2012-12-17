@@ -33,7 +33,7 @@
 
 #customisation_deck_details {
     width:              400px;
-    height:             400px;
+    height:             406px;
     
     .dialog_title {
         margin:         10px 52px 10px 10px;
@@ -51,6 +51,20 @@
         li {
             margin-top:         10px;
             height:             28px;
+            
+            &.colour_container {
+                .input_container {
+                    width:      199px;
+                }
+                
+                #colour_sample {
+                    .text_entry();
+                    width:  23px;
+                    height: 23px;
+                    float:  right;
+                    border-left-width: 0;
+                }
+            }
             
             &.icon_small_container {
                 height: 36px;
@@ -94,17 +108,11 @@
                 }
             }
             
-            &.colour_container {
-                .input_container {
-                    width:      199px;
-                }
+            &.preview_container {
+                height:         55px;
                 
-                #colour_sample {
-                    .text_entry();
-                    width:  23px;
-                    height: 23px;
-                    float:  right;
-                    border-left-width: 0;
+                .preview {
+                    margin-left:    122px;
                 }
             }
             
@@ -128,6 +136,15 @@
                     border-width:       0;
                 }
             }
+        }
+    }
+        
+    .button_container {
+        text-align:         center;
+        
+        div {
+            display:        inline-block;
+            margin:         0 5px;
         }
     }
 }
