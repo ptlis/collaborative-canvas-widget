@@ -1,15 +1,11 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'decks', 'canvasStorage'],
-        function($, decks, canvasStorage) {
+define( ['jquery', 'decks', 'canvasStorage', 'util'],
+        function($, decks, canvasStorage, util) {
             'use strict';
-            
 
             var multimedia = {
-
-                apiKey          : '2c4844024aa5812e18679fbae4350877',
-                apiEndpoint     : 'http://api.imgur.com/2/upload.json',
 
                 /* Does the browser support the files api? */
                 filesSupport    : false,
@@ -880,7 +876,6 @@ define( ['jquery', 'decks', 'canvasStorage'],
                 },
 
 
-
                 scaledDimensions : function(oldWidth, oldHeight, maxWidth, maxHeight) {
 
                     if(oldWidth < 1 || oldHeight < 1 || maxWidth < 1 || maxHeight < 1) {
@@ -917,22 +912,10 @@ define( ['jquery', 'decks', 'canvasStorage'],
 
 
                 addImageDropEvents : function(cardElem) {
-
                     var imgContainer    = cardElem.find('.image_block');
-                    var instanceId      = cardElem.data('instanceid');
-
-                    imgContainer
-                        .off('dragenter')
-                        .on('dragenter', function(event) {
-                            event.preventDefault();
-                        })
-                        .off('dragover')
-                        .on('dragover', function(event) {
-                            event.preventDefault();
-                        });
+                    var instanceId      = cardElem.data('instanceid');                    
                     
-                    
-                    var beforeSend  = function() {
+                    var beforeSend  = function(dropElem) {
                         var imgElem     =   $('<div></div>', {
                             'class':    'loading_anim'
                         });
@@ -942,7 +925,7 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         $('.drop_message').text('Uploading...');
                     };
                     
-                    var success     = function(data, textStatus, jqXHR) {
+                    var success     = function(dropElem, data) {
                         var imgElems    = $('[data-instanceid="' + instanceId + '"] [data-inputname="image"]');
 
                         // Resize / position image appropriate when possible
@@ -975,9 +958,9 @@ define( ['jquery', 'decks', 'canvasStorage'],
                         canvasStorage.list.update('card', extraFields);
                     };
                     
-                    var error       = function(jqXHR, textStatus, errorThrown) {
+                    var error       = function(dropElem, errorMsg) {
                         $('.loading_anim').remove();
-                        $('.drop_message').text('Image upload failed');
+                        $('.drop_message').text('Image upload failed "' + errorMsg);
 
                         var errorImg                = $('<img>', {
                             'src':      'images/layout/error_face.png',
@@ -988,10 +971,10 @@ define( ['jquery', 'decks', 'canvasStorage'],
                     };
 
                     imgContainer.imgurUpload({
-                        'apiKey':           multimedia.apiKey,
+                        'apiKey':           util.imgurApiKey,
                         'beforeSend':       beforeSend,
                         'uploadSuccess':    success,
-                        'uploadError':      error
+                        'error':            error
                     });
 
                 },
