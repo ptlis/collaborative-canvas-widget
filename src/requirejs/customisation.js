@@ -18,23 +18,11 @@ define(
         
         
         customisation.dialogs.deckSelection = function() {
-            // Background & dialog
-            var bgElem          =   $('<div></div>',  {
-                                        'class':       'dialog_background'
-                                    });
-            bgElem.css('display', 'none');
-            bgElem.appendTo($('body'));
-
-            var dialogCont      =   $('<div></div>', {
-                                        'class':       'dialog_container'
-                                    });
-            dialogCont.appendTo(bgElem);
             
             var dialog          =   $('<div></div>', {
                                         'class':    'dialog',
                                         'id':       'customisation_deck_selection'
                                     });
-            dialog.appendTo(dialogCont);
             
             
             // Title & Dismiss button
@@ -48,15 +36,6 @@ define(
                                         'class':    'dialog_dismiss dismiss_button_32x32'
                                     });
             dismissButton.appendTo(dialog);
-            
-            dismissButton
-                .off('click')
-                .on('click', function() {
-                    bgElem.fadeOut( 250,
-                        function() {
-                            bgElem.remove();
-                        });
-                });
             
 
             // Customisation options
@@ -86,10 +65,49 @@ define(
             duplicateDeck.text('Duplicate & Edit Preset Deck');
             duplicateDeck.appendTo(options);
             
+
+            
+            // Transition between dialogs
+            var oldDialog  = $('.dialog');
+            var bgElem;
+            
+            if(oldDialog.length) {
+                bgElem      = $('.dialog_background');
+                oldDialog.fadeOut(  250,
+                    function() {
+                        oldDialog.remove();
+                        dialog.appendTo('.dialog_container');
+                        dialog.fadeIn( 250);
+                    });
+            }
+            
+            else {
+                // Background & dialog
+                bgElem                  =   $('<div></div>',  {
+                                            'class':       'dialog_background'
+                                        });
+                bgElem.css('display', 'none');
+                bgElem.appendTo($('body'));
+
+                var dialogCont      =   $('<div></div>', {
+                                            'class':       'dialog_container'
+                                        });
+                dialogCont.appendTo(bgElem);
+                dialog.appendTo(dialogCont);
+                
+                bgElem.fadeIn(  250,
+                    function() {
+                    });
+            }
             
 
-            bgElem.fadeIn(  250,
-                function() {
+            dismissButton
+                .off('click')
+                .on('click', function() {
+                    bgElem.fadeOut( 250,
+                        function() {
+                            bgElem.remove();
+                        });
                 });
         };
         
@@ -228,7 +246,7 @@ define(
             var iconSmlDrop     =   $('<div></div>', {
                                         'id':       'icon_small_drop'
                                     });
-            iconSmlDrop.text('Add icon');
+            iconSmlDrop.text('Drop icon here');
             iconSmlDrop.appendTo(iconSmlCont);
             
         // Deck Icon (48x48)
@@ -250,7 +268,7 @@ define(
             var iconLrgDrop     =   $('<div></div>', {
                                         'id':       'icon_large_drop'
                                     });
-            iconLrgDrop.text('Add icon');
+            iconLrgDrop.text('Drop icon here');
             iconLrgDrop.appendTo(iconLrgCont);
             
         // Preview of card appearance
@@ -313,6 +331,10 @@ define(
             };
             
             var beforeSend  = function(dropElem) {
+                var loadingElem =   $('<div></div>', {
+                                        'class':    'loading_anim'
+                                    });
+                
                 dropElem.text('Uploading...');
             };
 
@@ -337,6 +359,10 @@ define(
             });
             
             // Add colour picker
+            colourSample.on('click', function(event) {
+                colourEntry.trigger('click');
+            });
+            
             colourEntry.ColorPicker({
                 onSubmit: function(hsb, hex, rgb, el, parent) {
                     $(el).val(hex);
@@ -361,6 +387,11 @@ define(
             })
             .on('change', function(){
                 $(this).ColorPickerSetColor(this.value);
+            });
+            
+            // Back Button
+            backButton.on('click', function() {
+                customisation.dialogs.deckSelection();
             });
             
             // Transition between dialogs
