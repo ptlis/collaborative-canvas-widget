@@ -64,6 +64,17 @@ define(
             }
         };
 
+
+        util.dialogDismiss = function() {
+            var bgElem  = $('.dialog_background');
+            bgElem.fadeOut( 250,
+                function() {
+                    bgElem.remove();
+                });
+        };
+
+
+
         return util;
     }
 );

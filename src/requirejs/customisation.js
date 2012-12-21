@@ -17,13 +17,13 @@ define(
         };
 
 
+        /* Select deck customisation action. */
         customisation.dialogs.deckSelection = function() {
 
             var dialog          =   $('<div></div>', {
                                         'class':    'dialog',
                                         'id':       'customisation_deck_selection'
                                     });
-
 
             // Title & Dismiss button
             var title           =   $('<div></div>', {
@@ -67,19 +67,14 @@ define(
 
             dismissButton
                 .off('click')
-                .on('click', function() {
-                    var bgElem  = $('.dialog_background');
-                    bgElem.fadeOut( 250,
-                        function() {
-                            bgElem.remove();
-                        });
-                });
+                .on('click', util.dialogDismiss);
 
             util.dialogTransition(dialog);
         };
 
 
-        customisation.dialogs.deckCustomisation = function(newDeck, deckName) {
+        /* Customisation options for the deck itself (title, colour, icon etc) */
+        customisation.dialogs.deckCustomisation = function(newDeck, deckId) {
             var dialog          =   $('<div></div>', {
                                         'class':    'dialog',
                                         'id':       'customisation_deck_details'
@@ -310,11 +305,12 @@ define(
                 'exactHeight':      48
             });
 
-            // Add colour picker
+            // When user clicks on colour sample open the colour picker
             colourSample.on('click', function(event) {
                 colourEntry.trigger('click');
             });
 
+            // Colour picker
             colourEntry.ColorPicker({
                 onSubmit: function(hsb, hex, rgb, el, parent) {
                     $(el).val(hex);
@@ -336,9 +332,6 @@ define(
                     $(picker).fadeOut(125);
                     return false;
                 }
-            })
-            .on('change', function(){
-                $(this).ColorPickerSetColor(this.value);
             });
 
             // Back Button
@@ -346,28 +339,67 @@ define(
                 customisation.dialogs.deckSelection();
             });
 
+            // Next Button
+            nextButton.on('click', function() {
+                customisation.dialogs.deckCardsManagement();
+            });
+
+            // Dismiss button
             dismissButton
                 .off('click')
-                .on('click', function() {
-                    var bgElem  = $('.dialog_background');
-                    bgElem.fadeOut( 250,
-                        function() {
-                            bgElem.remove();
-                        });
-                });
+                .on('click', util.dialogDismiss);
 
             util.dialogTransition(dialog);
         };
 
 
-        customisation.dialogs.cardManagement = function() {
+        customisation.dialogs.deckCardsManagement = function(deckId) {
+            var dialog          =   $('<div></div>', {
+                                        'class':    'dialog',
+                                        'id':       'customisation_deck_cards_management'
+                                    });
+            dialog.css('display', 'none');
 
-        };
+            // Title & Dismiss button
+            var title           =   $('<div></div>', {
+                                        'class':    'dialog_title'
+                                    });
+            title.text('Manage cards in deck');
+            title.appendTo(dialog);
+
+            var dismissButton   =   $('<div></div>', {
+                                        'class':    'dialog_dismiss dismiss_button_32x32'
+                                    });
+            dismissButton.appendTo(dialog);
 
 
-        /* Dialog to provide the ability to customise the cards in a deck. */
-        customisation.dialogs.deckCardsCustomisation = function(deckName) {
 
+        // Back Button
+            var buttonCont      =   $('<div></div>', {
+                                        'class':    'button_container'
+                                    });
+            buttonCont.appendTo(dialog);
+
+            var backButton      =   $('<div></div>', {
+                                        'id':       'back_button'
+                                    });
+            backButton.text('Back');
+            backButton.appendTo(buttonCont);
+
+
+        // Events
+            backButton
+                .off('click')
+                .on('click', function() {
+                    customisation.dialogs.deckCustomisation(false, deckId);
+                });
+
+            // Dismiss button
+            dismissButton
+                .off('click')
+                .on('click', util.dialogDismiss);
+
+            util.dialogTransition(dialog);
         };
 
 
