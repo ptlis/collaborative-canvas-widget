@@ -319,29 +319,14 @@ define( ['jquery', 'require'],
                     }
                 },
 
+
                 standardPropagate : function() {
 
-
-                    var cards               = require('cards');
-                    var connections         = require('connections');
-                    var containers          = require('containers');
-                    var decks               = require('decks');
-                    var fields              = require('fields');
-
-                    // Handle containers
-                    containers.updateAll();
-
-                    // Handle fields
-                    fields.updateAll();
-
-                    // Handle cards
-                    cards.updateAll();
-
-                    // Connections
-                    connections.updateAll();
-
-                    // Decks
-                    decks.updateAll();
+                    $(window).trigger('widget:container:view:update_all');
+                    $(window).trigger('widget:field:view:update_all');
+                    $(window).trigger('widget:card:view:update_all');
+                    $(window).trigger('widget:connection:view:update_all');
+                    $(window).trigger('widget:deck:view:update_all');
 
                     // Handle container resizing
                     $(window).trigger('widget:container:view:resize');

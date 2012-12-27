@@ -10,8 +10,8 @@ define(
         var containers      = {};
         containers.model    = {};
         containers.view     = {};
-    
-        
+
+
         containers.init = function() {
             $(window)
                 .off(   'widget:container:model:new')               .on('widget:container:model:new',               containers.model.add)
@@ -26,21 +26,22 @@ define(
                 .off(   'widget:container:view:remove_request')     .on('widget:container:view:remove_request',     containers.removeRequest)
                 .off(   'widget:container:view:resize')             .on('widget:container:view:resize',             containers.view.resizeAll)
                 .off(   'widget:container:view:remove_all')         .on('widget:container:view:remove_all',         containers.view.removeAll)
-                .off(   'widget:container:view:update')             .on('widget:container:view:update',             containers.view.update);
+                .off(   'widget:container:view:update')             .on('widget:container:view:update',             containers.view.update)
+                .off(   'widget:container:view:update_all')         .on('widget:container:view:update_all',         containers.view.updateAll);
         };
-        
-        
+
+
         containers.dropHandler = function(event, ui) {
             var dropPosY;
             var dropPosX;
             var cell    = $(this);
-            
+
             if(ui.draggable.data('prefix') === 'card') {
                 var cardElem    = ui.draggable;
                 var cellId      = cell.parents('.cell_container').data('instanceid');
                 var oldCellId   = cardElem.parents('.cell_container').data('instanceid');
 
-                
+
                 // If the cell changes some hairy math must be done to position the card correctly
                 if(cellId !== oldCellId) {
 
@@ -67,13 +68,13 @@ define(
 
                 $(window).trigger('widget:card:model:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY / cards.zoomFactor, cardElem.css('z-index')]);
                 $(window).trigger('widget:card:view:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY, cardElem.css('z-index')]);
-                
+
             }
-            
+
             else if(ui.draggable.data('prefix') === 'deck') {
-                
+
                 var deck                = ui.draggable.data('carddeck');
-                
+
                 var bgElem              =   $('<div></div>', {
                                                 'class':        'dialog_background'
                                             });
@@ -105,7 +106,7 @@ define(
                             });
                         });
 
-                    
+
                     dropPosY            = ui.position.top - cell.offset().top;
                     dropPosX            = ui.position.left - cell.offset().left;
 
@@ -114,8 +115,8 @@ define(
                     });
                 }
             };
-    
-   
+
+
             containers.createDialog = function(firstRun) {
                 var bgElem;
                 var dialogCont;
@@ -179,7 +180,7 @@ define(
                 var titleVal        = $(event.target).val();
 
                 titleElem.val(titleVal);
-                
+
                 $(window).trigger('widget:container:model:change_title', [instanceId, titleVal]);
             };
 
@@ -237,7 +238,7 @@ define(
             var i;
             var containerArr    = containers.model.getAll();
 
-            containers.updateAll(containerArr);
+            $(window).trigger('widget:container:view:update_all', [containerArr]);
 
             var li;
             var input;
@@ -346,59 +347,8 @@ define(
         };
 
 
-        containers.updateAll = function(containersData) {
-            var i;
-            var addedContainers         = [];
-            var removedContainers       = [];
-
-            // Find added fields
-            if(typeof(containersData) === 'undefined') {
-                containersData          = containers.model.getAll();
-            }
-
-            // Find added containers
-            for(i = 0; i < containersData.length; i++) {
-                // Element exists in storage but not on page
-                if($('[data-instanceid="' + containersData[i].id + '"]').length < 1)  {
-                    addedContainers.push(containersData[i]);
-                }
-            }
-
-
-            // Find removed containers
-            var displayedContainers     = $('.cell_container');
-            var currentContainerId;
-            var containerData;
-            for(i = 0; i < displayedContainers.length; i++) {
-                currentContainerId      = $(displayedContainers[i]).data('instanceid');
-
-                containerData           = containers.model.get(currentContainerId);
-
-                // Element exists on page but not in storage
-                if(containerData === null) {
-                    removedContainers.push(containerData);
-                }
-            }
-
-
-            // Remove containers
-            for(i = 0; i < removedContainers.length; i++) {
-                $(window).trigger('widget:container:view:remove', [removedContainers[i]]);
-            }
-
-
-            // Add containers
-            for(i = 0; i < addedContainers.length; i++) {
-                $(window).trigger('widget:container:view:add', [addedContainers[i]]);
-            }
-
-            // Trigger resize
-            $(window).trigger('widget:container:view:resize');
-        };
-
-
         containers.addEvents = function(containerElem) {
-            
+
 
             containers.removeEvents(containerElem);
 
@@ -633,9 +583,9 @@ define(
 
             canvasStorage.list.update('container', extraFields);
         };
-        
-        
-/* View */        
+
+
+/* View */
 
         /* Create a new container */
         containers.view.add = function(event, containerData) {
@@ -736,7 +686,7 @@ define(
         };
 
 
-        containers.view.resizeAll = function() { 
+        containers.view.resizeAll = function() {
             // Iterate over cards in cells & see if any cell can be shrunk to still fit them
             var outerCells  = $('.cell_outer');
             for(var i = 0; i < outerCells.length; i++) {
@@ -750,11 +700,62 @@ define(
         containers.view.update = function(event, containerData) {
             $('[data-instanceid="' + containerData.id + '"] .cell_label').val(containerData.time_period_title);
         };
-        
-        
+
+
+        containers.view.updateAll = function(event, containersData) {
+            var i;
+            var addedContainers         = [];
+            var removedContainers       = [];
+
+            // Find added fields
+            if(typeof(containersData) === 'undefined') {
+                containersData          = containers.model.getAll();
+            }
+
+            // Find added containers
+            for(i = 0; i < containersData.length; i++) {
+                // Element exists in storage but not on page
+                if($('[data-instanceid="' + containersData[i].id + '"]').length < 1)  {
+                    addedContainers.push(containersData[i]);
+                }
+            }
+
+
+            // Find removed containers
+            var displayedContainers     = $('.cell_container');
+            var currentContainerId;
+            var containerData;
+            for(i = 0; i < displayedContainers.length; i++) {
+                currentContainerId      = $(displayedContainers[i]).data('instanceid');
+
+                containerData           = containers.model.get(currentContainerId);
+
+                // Element exists on page but not in storage
+                if(containerData === null) {
+                    removedContainers.push(containerData);
+                }
+            }
+
+
+            // Remove containers
+            for(i = 0; i < removedContainers.length; i++) {
+                $(window).trigger('widget:container:view:remove', [removedContainers[i]]);
+            }
+
+
+            // Add containers
+            for(i = 0; i < addedContainers.length; i++) {
+                $(window).trigger('widget:container:view:add', [addedContainers[i]]);
+            }
+
+            // Trigger resize
+            $(window).trigger('widget:container:view:resize');
+        };
+
+
         // Initialise container handlers
         containers.init();
-        
+
 
         return containers;
     }

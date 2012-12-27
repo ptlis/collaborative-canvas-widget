@@ -63,6 +63,7 @@ define(
                 .off(   'widget:card:view:to_front')        .on('widget:card:view:to_front',            cards.view.toFront)
                 .off(   'widget:card:view:post_propagate')  .on('widget:card:view:post_propagate',      cards.view.postPropagate)
                 .off(   'widget:card:view:update')          .on('widget:card:view:update',              cards.view.update)
+                .off(   'widget:card:view:update_all')      .on('widget:card:view:update_all',          cards.view.updateAll)
                 .off(   'widget:card:view:edit')            .on('widget:card:view:edit',                cards.view.edit);
 
 
@@ -332,54 +333,6 @@ define(
                 cardElem.find('.dialog_dismiss')
                     .off('click');
             }
-        };
-
-
-        cards.updateAll = function() {
-            var addedCards              = [];
-            var removedCards            = [];
-            var storedCards             = cards.model.getAll();
-            var displayedCards          = cards.getCardElems();
-            var i;
-
-            // Find cards in storage but not in HTML document
-            var cachedCardData;
-            for(i = 0; i < storedCards.length; i++) {
-                // Element exists in storage but not on page
-                cachedCardData  = cards.cache.getCachedCardData(storedCards[i].id);
-
-                if(cachedCardData === null)  {
-                    addedCards.push(storedCards[i]);
-                }
-            }
-
-
-            // Find cards in HTML document but not in storage
-            var cardId;
-            for(i = 0; i < displayedCards.length; i++) {
-                cardId              = $(displayedCards[i]).data('instanceid');
-
-                var cardData        = cards.model.get(cardId);
-
-                if(cardData === null || cardData.length < 1) {
-                    removedCards.push({'id': cardId});
-                }
-            }
-
-
-            // Add cards
-            for(i = 0; i < addedCards.length; i++) {
-                addedCards[i].size  = 'medium';
-                $(window).trigger('widget:card:view:add', [addedCards[i]]);
-            }
-
-
-            // Remove cards
-            for(i = 0; i < removedCards.length; i++) {
-                $(window).trigger('widget:card:view:remove', [removedCards[i]]);
-            }
-
-            $(window).trigger('widget:container:view:resize');
         };
 
 
@@ -893,6 +846,54 @@ define(
                     }
                 }
             }
+        };
+
+
+        cards.view.updateAll = function() {
+            var addedCards              = [];
+            var removedCards            = [];
+            var storedCards             = cards.model.getAll();
+            var displayedCards          = cards.getCardElems();
+            var i;
+
+            // Find cards in storage but not in HTML document
+            var cachedCardData;
+            for(i = 0; i < storedCards.length; i++) {
+                // Element exists in storage but not on page
+                cachedCardData  = cards.cache.getCachedCardData(storedCards[i].id);
+
+                if(cachedCardData === null)  {
+                    addedCards.push(storedCards[i]);
+                }
+            }
+
+
+            // Find cards in HTML document but not in storage
+            var cardId;
+            for(i = 0; i < displayedCards.length; i++) {
+                cardId              = $(displayedCards[i]).data('instanceid');
+
+                var cardData        = cards.model.get(cardId);
+
+                if(cardData === null || cardData.length < 1) {
+                    removedCards.push({'id': cardId});
+                }
+            }
+
+
+            // Add cards
+            for(i = 0; i < addedCards.length; i++) {
+                addedCards[i].size  = 'medium';
+                $(window).trigger('widget:card:view:add', [addedCards[i]]);
+            }
+
+
+            // Remove cards
+            for(i = 0; i < removedCards.length; i++) {
+                $(window).trigger('widget:card:view:remove', [removedCards[i]]);
+            }
+
+            $(window).trigger('widget:container:view:resize');
         };
 
 

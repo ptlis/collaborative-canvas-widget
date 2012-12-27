@@ -30,64 +30,8 @@ define(
                 .off(   'widget:field:view:remove')         .on('widget:field:view:remove',            fields.view.remove)
                 .off(   'widget:field:view:remove_all')     .on('widget:field:view:remove_all',        fields.view.removeAll)
                 .off(   'widget:field:view:update')         .on('widget:field:view:update',            fields.view.update)
+                .off(   'widget:field:view:update_all')     .on('widget:field:view:update_all',        fields.view.updateAll)
                 .off(   'widget:field:view:create_dialog')  .on('widget:field:view:create_dialog',     fields.view.createDialog);
-        };
-
-
-        fields.updateAll = function(fieldsData) {
-            var i;
-            var addedFields         = [];
-            var removedFields       = [];
-
-
-            // Find added fields
-            if(typeof(fieldsData) === 'undefined') {
-                fieldsData          = fields.model.getAll();
-            }
-
-            for(i = 0; i < fieldsData.length; i++) {
-                // Element exists in storage but not on page
-                if($('[data-instanceid="' + fieldsData[i].id + '"]').length < 1)  {
-                    addedFields.push(fieldsData[i]);
-                }
-            }
-
-            // Find removed fields
-            var displayedFields         = $('#field_container').children();
-            var currentFieldId;
-            var fieldData;
-            var fieldElem;
-
-            for(i = 0; i < displayedFields.length; i++) {
-                fieldElem       = $(displayedFields[i]);
-
-                currentFieldId      = fieldElem.data('instanceid');
-
-                fieldData           = fields.model.get(currentFieldId);
-
-                // Element exists on page but not in storage
-                if(fieldData === null) {
-                    removedFields.push({'id': currentFieldId});
-                }
-            }
-
-
-            // Remove fields
-            for(i = 0; i < removedFields.length; i++) {
-                $(window).trigger('widget:field:view:remove', [removedFields[i]]);
-            }
-
-
-            // Update titles
-            for(i = 0; i < fieldsData.length; i++) {
-                $(window).trigger('widget:field:view:update',     [fieldsData[i]]);
-            }
-
-
-            // Add fields
-            for(i = 0; i < addedFields.length; i++) {
-                $(window).trigger('widget:field:view:add', [addedFields[i]]);
-            }
         };
 
 
@@ -159,6 +103,63 @@ define(
         fields.view.update = function(event, fieldData) {
             $('[data-instanceid="' + fieldData.id + '"] label').text(fieldData.title + ':');
             $('[data-instanceid="' + fieldData.id + '"] input').val(fieldData.data);
+        };
+
+
+        fields.view.updateAll = function(event, fieldsData) {
+            var i;
+            var addedFields         = [];
+            var removedFields       = [];
+
+
+            // Find added fields
+            if(typeof(fieldsData) === 'undefined') {
+                fieldsData          = fields.model.getAll();
+            }
+
+            for(i = 0; i < fieldsData.length; i++) {
+                // Element exists in storage but not on page
+                if($('[data-instanceid="' + fieldsData[i].id + '"]').length < 1)  {
+                    addedFields.push(fieldsData[i]);
+                }
+            }
+
+            // Find removed fields
+            var displayedFields         = $('#field_container').children();
+            var currentFieldId;
+            var fieldData;
+            var fieldElem;
+
+            for(i = 0; i < displayedFields.length; i++) {
+                fieldElem       = $(displayedFields[i]);
+
+                currentFieldId      = fieldElem.data('instanceid');
+
+                fieldData           = fields.model.get(currentFieldId);
+
+                // Element exists on page but not in storage
+                if(fieldData === null) {
+                    removedFields.push({'id': currentFieldId});
+                }
+            }
+
+
+            // Remove fields
+            for(i = 0; i < removedFields.length; i++) {
+                $(window).trigger('widget:field:view:remove', [removedFields[i]]);
+            }
+
+
+            // Update titles
+            for(i = 0; i < fieldsData.length; i++) {
+                $(window).trigger('widget:field:view:update',     [fieldsData[i]]);
+            }
+
+
+            // Add fields
+            for(i = 0; i < addedFields.length; i++) {
+                $(window).trigger('widget:field:view:add', [addedFields[i]]);
+            }
         };
 
 
@@ -289,7 +290,7 @@ define(
             }
 
             else {
-                fields.updateAll(fieldArr);
+                $(window).trigger('widget:field:view:update_all', [fieldArr]);
             }
 
             var li;
@@ -390,7 +391,7 @@ define(
                         else {
                             dialog.fadeOut(250, function() {
                                 dialog.remove();
-                                fields.updateAll();
+                                $(window).trigger('widget:field:view:update_all');
 
                                 containers.createDialog(firstRun);
                             });
@@ -420,7 +421,7 @@ define(
                         else {
                             dialog.fadeOut(250, function() {
                                 bgElem.remove();
-                                fields.updateAll();
+                                $(window).trigger('widget:field:view:update_all');
                             });
                         }
                     });

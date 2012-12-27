@@ -40,6 +40,7 @@ define(
                 .off(   'widget:connection:view:remove_all')        .on('widget:connection:view:remove_all',        connections.view.removeAll)
                 .off(   'widget:connection:view:update_all_paths')  .on('widget:connection:view:update_all_paths',  connections.view.updateAllPaths)
                 .off(   'widget:connection:view:update')            .on('widget:connection:view:update',            connections.view.update)
+                .off(   'widget:connection:view:update_all')        .on('widget:connection:view:update_all',        connections.view.updateAll)
                 .off(   'widget:connection:view:to_front')          .on('widget:connection:view:to_front',          connections.view.toFront);
 
             connections.raphaelCanvas   = Raphael('contain_drag', 0, 0);
@@ -79,65 +80,6 @@ define(
             connectionLabelElem.find('.remove_button')
             .off('click');
         };
-
-
-        connections.updateAll = function() {
-            var storedConnections       = {};
-            var fromCardId              = '';
-            var toCardId                = '';
-
-
-            // Create storedConnections structure in same format as cardConnections
-            var tmpConnections          = connections.model.getAll();
-            for(var i = 0; i < tmpConnections.length; i++) {
-                if(!(tmpConnections[i].from in storedConnections)) {
-                    storedConnections[tmpConnections[i].from]   =   {};
-                }
-
-                storedConnections[tmpConnections[i].from][tmpConnections[i].to] = tmpConnections[i];
-            }
-
-            // Find connections in storage but not on page
-            for(fromCardId in storedConnections) {
-                if(storedConnections.hasOwnProperty(fromCardId)) {
-
-                    for(toCardId in storedConnections[fromCardId]) {
-                        if(storedConnections[fromCardId].hasOwnProperty(toCardId)) {
-
-                            if(!(fromCardId in connections.cachedConnections && toCardId in connections.cachedConnections[fromCardId])) {
-                                storedConnections[fromCardId][toCardId].newConnection    = false;
-
-                                $(window).trigger('widget:connection:view:add',
-                                        [
-                                         storedConnections[fromCardId][toCardId]
-                                         ]);
-                            }
-                        }
-                    }
-                }
-            }
-
-
-
-
-            // Find connections on page but not in storage
-            for(fromCardId in connections.cachedConnections) {
-                if(connections.cachedConnections.hasOwnProperty(fromCardId)) {
-
-                    for(toCardId in connections.cachedConnections[fromCardId]) {
-                        if(connections.cachedConnections[fromCardId].hasOwnProperty(toCardId)) {
-
-                            if(!(fromCardId in storedConnections && toCardId in storedConnections[fromCardId])) {
-
-                                $(window).trigger('widget:connection:view:remove', [storedConnections[fromCardId][toCardId]]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            $(window).trigger('widget:connection:view:update_all_paths');
-        },
 
 
         connections.calculatePath = function(pos1, pos2) {
@@ -390,7 +332,7 @@ define(
 
 
 /* View */
-        
+
     connections.view.add = function(event, connectionData) {
 
             var cards               = require('cards');
@@ -409,17 +351,17 @@ define(
                 case '0.25':
                     width   = 2;
                     break;
-    
+
                 case '0.375':
                 case '0.5':
                     width   = 3;
                     break;
-    
+
                 case '0.625':
                 case '0.75':
                     width   = 4;
                     break;
-    
+
                 case '0.875':
                 default:
                     width   = 5;
@@ -532,17 +474,17 @@ define(
                 case '0.25':
                     width   = 2;
                     break;
-    
+
                 case '0.375':
                 case '0.5':
                     width   = 3;
                     break;
-    
+
                 case '0.625':
                 case '0.75':
                     width   = 4;
                     break;
-    
+
                 case '0.875':
                 default:
                     width   = 5;
@@ -650,6 +592,65 @@ define(
         };
 
 
+        connections.view.updateAll = function() {
+            var storedConnections       = {};
+            var fromCardId              = '';
+            var toCardId                = '';
+
+
+            // Create storedConnections structure in same format as cardConnections
+            var tmpConnections          = connections.model.getAll();
+            for(var i = 0; i < tmpConnections.length; i++) {
+                if(!(tmpConnections[i].from in storedConnections)) {
+                    storedConnections[tmpConnections[i].from]   =   {};
+                }
+
+                storedConnections[tmpConnections[i].from][tmpConnections[i].to] = tmpConnections[i];
+            }
+
+            // Find connections in storage but not on page
+            for(fromCardId in storedConnections) {
+                if(storedConnections.hasOwnProperty(fromCardId)) {
+
+                    for(toCardId in storedConnections[fromCardId]) {
+                        if(storedConnections[fromCardId].hasOwnProperty(toCardId)) {
+
+                            if(!(fromCardId in connections.cachedConnections && toCardId in connections.cachedConnections[fromCardId])) {
+                                storedConnections[fromCardId][toCardId].newConnection    = false;
+
+                                $(window).trigger('widget:connection:view:add',
+                                        [
+                                         storedConnections[fromCardId][toCardId]
+                                         ]);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+
+            // Find connections on page but not in storage
+            for(fromCardId in connections.cachedConnections) {
+                if(connections.cachedConnections.hasOwnProperty(fromCardId)) {
+
+                    for(toCardId in connections.cachedConnections[fromCardId]) {
+                        if(connections.cachedConnections[fromCardId].hasOwnProperty(toCardId)) {
+
+                            if(!(fromCardId in storedConnections && toCardId in storedConnections[fromCardId])) {
+
+                                $(window).trigger('widget:connection:view:remove', [storedConnections[fromCardId][toCardId]]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            $(window).trigger('widget:connection:view:update_all_paths');
+        };
+
+
         connections.view.toFront = function(event, connectionId, zIndex) {
             var labelCont   = $('[data-instanceid="' + connectionId + '"]');
 
@@ -658,13 +659,13 @@ define(
 
 
 /* Handlers */
-        
+
         connections.handlers.scrollRunningId    = null;
         connections.handlers.lastY              = 0;
         connections.handlers.lastX              = 0;
         connections.handlers.proximity          = 50;
 
-        
+
         connections.handlers.startCursorScroll = function(currentX, currentY) {
             if(connections.handlers.scrollRunningId === null) {
                 var canvasElem      = $('#canvas');
@@ -1158,12 +1159,12 @@ define(
                 $('.connections_dialog').remove();
             });
         };
-        
-        
+
+
         // Initialise deck handlers
         connections.init();
 
-        
+
         return connections;
     }
 );

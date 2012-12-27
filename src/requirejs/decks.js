@@ -27,6 +27,7 @@ define(
                 .off(   'widget:deck:view:remove')          .on('widget:deck:view:remove',          decks.view.remove)
                 .off(   'widget:deck:view:remove_all')      .on('widget:deck:view:remove_all',      decks.view.removeAll)
                 .off(   'widget:deck:view:update')          .on('widget:deck:view:update',          decks.view.update)
+                .off(   'widget:deck:view:update_all')      .on('widget:deck:view:update_all',      decks.view.updateAll)
                 .off(   'widget:deck:view:tooltip_show')    .on('widget:deck:view:tooltip_show',    decks.view.tooltipShow)
                 .off(   'widget:deck:view:tooltip_hide')    .on('widget:deck:view:tooltip_hide',    decks.view.tooltipHide)
                 .off(   'widget:deck:view:hint_show')       .on('widget:deck:view:hint_show',       decks.view.hintShow)
@@ -120,7 +121,47 @@ define(
         };
 
 
-        decks.updateAll = function() {
+        decks.view.add = function(event, deckData) {
+            // Create tooltip
+            var hint    = decks.availableDecks[deckData.id].createHintDeck();
+            hint.removeClass('deck_hint').addClass('deck_tooltip');
+
+            // create deck icon
+            var icon    = decks.availableDecks[deckData.id].createDeckIcon();
+
+            var li      = $('<li></li>');
+
+            icon.appendTo(li);
+            hint.appendTo(li);
+
+            decks.addEvents(icon);
+
+            li.appendTo($('#deck_selector'));
+        };
+
+
+        decks.view.remove = function(event, deckData) {
+            var deckElem    = $('#deck_selector [data-carddeck="' + deckData.id + '"]');
+
+            deckElem.parents('li').remove();
+        };
+
+
+        decks.view.removeAll = function() {
+            var deckElems   = $('#deck_selector [data-prefix="deck"]');
+
+            for(var i = 0; i < deckElems.length; i++) {
+                $(deckElems[i]).remove();
+            }
+        };
+
+
+        decks.view.update = function(event, deckData) {
+
+        };
+
+
+        decks.view.updateAll = function() {
             var addedDeckIds    = [];
             var removedDecks  = [];
             var storedDecks     = decks.model.getAll();
@@ -161,46 +202,6 @@ define(
             for(i = 0; i < removedDecks.length; i++) {
                 $(window).trigger('widget:deck:view:remove',    [removedDecks[i]]);
             }
-        };
-
-
-        decks.view.add = function(event, deckData) {
-            // Create tooltip
-            var hint    = decks.availableDecks[deckData.id].createHintDeck();
-            hint.removeClass('deck_hint').addClass('deck_tooltip');
-
-            // create deck icon
-            var icon    = decks.availableDecks[deckData.id].createDeckIcon();
-
-            var li      = $('<li></li>');
-
-            icon.appendTo(li);
-            hint.appendTo(li);
-
-            decks.addEvents(icon);
-
-            li.appendTo($('#deck_selector'));
-        };
-
-
-        decks.view.remove = function(event, deckData) {
-            var deckElem    = $('#deck_selector [data-carddeck="' + deckData.id + '"]');
-
-            deckElem.parents('li').remove();
-        };
-
-
-        decks.view.removeAll = function() {
-            var deckElems   = $('#deck_selector [data-prefix="deck"]');
-
-            for(var i = 0; i < deckElems.length; i++) {
-                $(deckElems[i]).remove();
-            }
-        };
-
-
-        decks.view.update = function(event, deckData) {
-
         };
 
 
@@ -373,12 +374,12 @@ define(
             for(i = 0; i < selectedDecks.length; i++) {
                 activeDecks[$(selectedDecks[i]).data('carddeck')]    = true;
             }
-            
-            
+
+
             var triggerShow = function(event) {
                 $(window).trigger('widget:deck:view:hint_show', [$(event.target)]);
             };
-            
+
             var triggerHide = function(event) {
                 $(window).trigger('widget:deck:view:hint_hide', [$(event.target)]);
             };
