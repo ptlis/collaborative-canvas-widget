@@ -35,6 +35,8 @@ require(
         'decks',
         'cards',
         'containers',
+        'customDecks',
+        'customCards',
         'fields',
         'connections',
         'customisation',
@@ -46,6 +48,7 @@ require(
         'card_specific/multimedia',
         'card_specific/sticky',
 
+        // jQuery library shims
         'lib/jquery.contextMenu',
         'lib/jquery.ui',
         'lib/jquery.colorpicker',

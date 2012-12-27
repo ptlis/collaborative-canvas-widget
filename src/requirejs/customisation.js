@@ -17,6 +17,8 @@ define(
         };
 
 
+    /* Dialogs */
+
         /* Select deck customisation action. */
         customisation.dialogs.deckSelection = function() {
 
@@ -73,7 +75,7 @@ define(
         };
 
 
-        /* Customisation options for the deck itself (title, colour, icon etc) */
+        /* Customisation options for the deck itself (name, colour, icon etc) */
         customisation.dialogs.deckCustomisation = function(newDeck, deckId) {
             var dialog          =   $('<div></div>', {
                                         'class':    'dialog',
@@ -106,26 +108,26 @@ define(
 
 
         // Deck Title
-            var titleCont       =   $('<li></li>', {
-                                        'class':    'title_container'
+            var nameCont        =   $('<li></li>', {
+                                        'class':    'name_container'
                                     });
-            titleCont.appendTo(content);
+            nameCont.appendTo(content);
 
-            var titleLabel      =   $('<label></label>', {
-                                        'for':      'title'
+            var nameLabel       =   $('<label></label>', {
+                                        'for':      'name'
                                     });
-            titleLabel.text('Name:');
-            titleLabel.appendTo(titleCont);
+            nameLabel.text('Name:');
+            nameLabel.appendTo(nameCont);
 
-            var titleInputCont  =   $('<div></div>', {
+            var nameInputCont   =   $('<div></div>', {
                                         'class':    'input_container'
                                     });
-            titleInputCont.appendTo(titleCont);
-            var titleEntry      =   $('<input>', {
+            nameInputCont.appendTo(nameCont);
+            var nameEntry       =   $('<input>', {
                                         'type':     'text',
-                                        'id':       'title'
+                                        'id':       'name'
                                     });
-            titleEntry.appendTo(titleInputCont);
+            nameEntry.appendTo(nameInputCont);
 
 
         // Deck description
@@ -269,7 +271,11 @@ define(
             var success = function(dropElem, data) {
                 dropElem.text('Done');
 
-                dropElem.parent().find('.icon_display').css('background-image', 'url("http://i.imgur.com/' + data.upload.image.hash + '.png")');
+                var imgURL      = 'http://i.imgur.com/' + data.upload.image.hash + '.png';
+
+                var iconElem    = dropElem.parent().find('.icon_display');
+                iconElem.css('background-image', 'url("' + imgURL + '")');
+                iconElem.attr('data-imgsrc', imgURL);
 
                 if(dropElem.attr('id') ===  'icon_small_drop') {
                     previewDeck.css('background-image', 'url("http://i.imgur.com/' + data.upload.image.hash + '.png")');
@@ -341,6 +347,15 @@ define(
 
             // Next Button
             nextButton.on('click', function() {
+                var instanceId      = util.uidGenerator();
+                var name            = nameEntry.val();
+                var desc            = descEntry.val();
+                var colour          = colourEntry.val();
+                var icon32x32URL    = iconSmlShow.data('imgsrc');
+                var icon48x48URL    = iconLrgShow.data('imgsrc');
+
+                $(window).trigger('widget:custom_deck:model:new', [instanceId, name, desc, colour, icon32x32URL, icon48x48URL]);
+
                 customisation.dialogs.deckCardsManagement();
             });
 

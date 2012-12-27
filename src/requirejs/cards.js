@@ -1,39 +1,37 @@
 /*jshint jquery:true */
 
 
-
-        
 define(
     ['jquery', 'require', 'connections', 'canvasStorage', 'util'],
     function($, require, connections, canvasStorage, util) {
         'use strict';
-        
+
         var cards       = {};
         cards.model     = {};
         cards.view      = {};
         cards.cache     = {};
         cards.handlers  = {};
         cards.handlers.deck = {};
-        
-        
+
+
     /*  How far the cards have been zoomed in */
         cards.zoomFactor          = '1';
-        
+
     /*  Data in the clipboard */
         cards.clipboardData = {
             'method':       '',
             'instanceId':   ''
         };
-        
-        
+
+
     /*  Whether the download attribute is supported by the browser. */
         cards.downloadAttribute = false;
-        
-        
+
+
     /*  Whether the files API is supported by the browser. */
         cards.filesApi          = false;
-        
-       
+
+
     /*
      *  Initialisation routine.
      */
@@ -42,11 +40,11 @@ define(
             if(typeof testAnchor.download !== 'undefined') {
                 cards.downloadAttribute = true;
             }
-    
+
             if(window.File && window.FileReader && window.FileList && window.Blob) {
                 cards.filesApi          = true;
             }
-    
+
             // Handle events
             $(window)
                 .off(   'widget:card:model:new')            .on('widget:card:model:new',                cards.model.add)
@@ -55,7 +53,7 @@ define(
                 .off(   'widget:card:model:move')           .on('widget:card:model:move',               cards.model.move)
                 .off(   'widget:card:model:change_type')    .on('widget:card:model:change_type',        cards.model.changeType)
                 .off(   'widget:card:model:to_front')       .on('widget:card:model:to_front',           cards.model.toFront)
-    
+
                 .off(   'widget:card:view:add')             .on('widget:card:view:add',                 cards.view.add)
                 .off(   'widget:card:view:remove_request')  .on('widget:card:view:remove_request',      cards.removeRequest)
                 .off(   'widget:card:view:remove')          .on('widget:card:view:remove',              cards.view.remove)
@@ -66,18 +64,18 @@ define(
                 .off(   'widget:card:view:post_propagate')  .on('widget:card:view:post_propagate',      cards.view.postPropagate)
                 .off(   'widget:card:view:update')          .on('widget:card:view:update',              cards.view.update)
                 .off(   'widget:card:view:edit')            .on('widget:card:view:edit',                cards.view.edit);
-    
-    
+
+
             // Zooming in
             $('.zoom_in')
                 .off(   'click').on(        'click',            cards.handlers.zoomIn);
-    
+
             // Zooming out
             $('.zoom_out')
                 .off(   'click').on(        'click',            cards.handlers.zoomOut);
         };
-        
-        
+
+
     /*  Convenience function, returns current card width, height, x offset & y offset */
         cards.getCardDimensions= function(cardId) {
             var dimensions      = {};
@@ -85,29 +83,29 @@ define(
             var cardData        = cards.cache.getCachedCardData(cardId);
             var allContPos      = $('#contain_drag').offset();
             var cardContPos     = cardData.elem.parents('.cell_outer').offset();
-    
+
             if(zoomFactorIndex in cardData && cardData.hasOwnProperty(zoomFactorIndex)) {
                 dimensions  = cardData[zoomFactorIndex];
             }
-    
+
             else {
                 dimensions  = cards.cache.addZoomedDimensions(cardId, cardData.elem);
             }
-    
+
             dimensions.x    = parseInt(cardData.elem.css('left').replace('px', ''), 10);
             dimensions.y    = parseInt(cardContPos.top - allContPos.top + parseInt(cardData.elem.css('top').replace('px', ''), 10), 10);
-   
+
             return dimensions;
         };
-        
-        
+
+
         cards.getCardElem = function(cardId) {
             var cachedCardData  = cards.cache.getCachedCardData(cardId);
-    
+
             return cachedCardData.elem;
         };
-        
-        
+
+
         cards.getCardElems = function() {
             var cardElems   = [];
             for(var cardId in cards.cache.cachedCards) {
@@ -115,30 +113,30 @@ define(
                     cardElems.push(cards.cache.cachedCards[cardId].elem);
                 }
             }
-    
+
             return cardElems;
         };
-        
-        
+
+
         cards.removeRequest = function(event, cardId) {
             if(confirm('Are you sure you want to remove this card?')) {
                 $(window).trigger('widget:card:model:delete',  [cardId]);
             }
         };
-        
-        
+
+
         cards.addEvents = function(cardElem) {
             cards.removeEvents(cardElem);
-            
+
             var decks       = require('decks'); // Pull in decks
-    
+
             // Card-specific events
             var deckHandler = decks.getHandler(cardElem.data('carddeck'));
             deckHandler.addEvents(cardElem);
-    
+
             var size        = cardElem.data('cardsize');
             if(size === 'medium') {
-    
+
                 // Context menu options
                 var options = {
                     zIndex:     999999999,
@@ -174,7 +172,7 @@ define(
                                 $(window).trigger('widget:card:view:remove_request',   [cardElem.data('instanceid')]);
                                 break;
                         }
-    
+
                         if($(options.selector).length > 0) {
                             $(options.selector).contextMenu('hide');
                         }
@@ -200,11 +198,11 @@ define(
                                 var cardElems       = $('#canvas [data-prefix="card"][data-cardsize="medium"]');
                                 var connectionsArr  = connections.model.getForCard(cardElem.data('instanceid'));
                                 var disabled        = true;
-    
+
                                 if(cardElems.length > 1 && ((cardElems.length - 1) > connectionsArr.length)) {
                                     disabled        = false;
                                 }
-    
+
                                 return disabled;
                             }
                         },
@@ -215,7 +213,7 @@ define(
                         }
                     }
                 };
-    
+
                 // Menu button
                 options.selector    = '[data-instanceid="' + cardElem.data('instanceid') + '"][data-cardsize="medium"] .menu_icon';
                 options.trigger     = 'left';
@@ -223,14 +221,14 @@ define(
                 options.position    = function(options, xClickOffset, yClickOffset) {
                     var iconElem    = cardElem.find('.menu_icon');
                     var menuElem    = cardElem.find('.menu_icon .context-menu-list');
-    
+
                     var xOffset     = iconElem.outerWidth() - menuElem.outerWidth();
                     var yOffset     = yClickOffset - iconElem.offset().top;
-    
+
                     menuElem.css({top: yOffset, left: xOffset});
                 };
                 $.contextMenu(options);
-    
+
                 // Right-click context
                 options.selector    = '[data-instanceid="' + cardElem.data('instanceid') + '"][data-cardsize="medium"]';
                 options.trigger     = 'right';
@@ -238,15 +236,15 @@ define(
                 options.appendTo    = '[data-instanceid="' + cardElem.data('instanceid') + '"][data-cardsize="medium"]';
                 options.position    = function(options, xClickOffset, yClickOffset) {
                     var menuElem    = cardElem.find('.right_click');
-    
+
                     var xOffset     = xClickOffset - cardElem.offset().left - (menuElem.outerWidth() / 2);
                     var yOffset     = yClickOffset - cardElem.offset().top;
-    
+
                     // Handle menu overlapping right edge of screen
                     if(xClickOffset + (menuElem.outerWidth() / 2) > cardElem.parents('.cell_inner').width() + cardElem.parents('.cell_inner').offset().left) {
                         xOffset = cardElem.outerWidth() - menuElem.outerWidth();
                     }
-    
+
                     menuElem.css({top: yOffset, left: xOffset});
                 };
                 $.contextMenu(options);
@@ -256,12 +254,12 @@ define(
                     .on('click', function() {
                         $(window).trigger('widget:card:model:to_front', [cardElem.data('instanceid')]);
                     });
-    
+
                 // Allow cards to be draggable
                 cardElem.draggable({
                     'revert':   'invalid',
                     'cancel':   '.menu_icon, .context-menu-list *, .context-menu-layer *',
-                    'drag':     function(event, ui) {          
+                    'drag':     function(event, ui) {
                         $(window).trigger('widget:connection:view:move_for_card', [ui.helper.data('instanceid')]);
                     },
                     'stop':     function(event, ui) {
@@ -270,21 +268,21 @@ define(
                     }
                 });
             }
-    
+
             if(size === 'large') {
-    
+
                 // Remove Paired Elements
                 cardElem.find('[data-paired_master]')
                     .on('click',        cards.handlers.pairedElementRemove);
-    
+
                 // Add Paired Elements Dialog
                 cardElem.find('.edit_selections')
                     .on('click',       cards.handlers.pairedElementDialog);
-    
+
                 // Dismiss dialog
                 cardElem.find('.dialog_dismiss')
                     .on('click',        cards.handlers.editDismiss);
-    
+
                 cardElem.find('.icon-info')
                     .on('mouseover',    function(event) {
                         $(event.target).find('.card_tooltip')
@@ -296,126 +294,126 @@ define(
                     });
             }
         };
-        
-        
+
+
         cards.removeEvents = function(cardElem) {
             var decks       = require('decks'); // Pull in decks
-    
+
             // Card-specific events
             var deckHandler = decks.getHandler(cardElem.data('carddeck'));
             deckHandler.removeEvents(cardElem);
-    
+
             var size        = cardElem.data('cardsize');
             if(size === 'medium') {
-    
+
                 // Menu button
                 $.contextMenu('destroy', '[data-instanceid="' + cardElem.data('instanceid') + '"][data-cardsize="medium"] .menu_icon');
-    
+
                 // Right-click context
                 $.contextMenu('destroy', '[data-instanceid="' + cardElem.data('instanceid') + '"][data-cardsize="medium"]');
-    
+
                 // Drag & bring to front events
                 cardElem
                     .off('click');
-                
+
                 // TODO: Remove card drag events
             }
-    
+
             if(size === 'large') {
                 // Remove Paired Elements
                 cardElem.find('[data-paired_master]')
                     .off('click');
-    
+
                 // Add Paired Elements Dialog
                 cardElem.find('.edit_selections')
                     .off('click');
-    
+
                 // Dismiss dialog
                 cardElem.find('.dialog_dismiss')
                     .off('click');
             }
         };
-        
-        
+
+
         cards.updateAll = function() {
             var addedCards              = [];
             var removedCards            = [];
             var storedCards             = cards.model.getAll();
             var displayedCards          = cards.getCardElems();
             var i;
-    
+
             // Find cards in storage but not in HTML document
             var cachedCardData;
             for(i = 0; i < storedCards.length; i++) {
                 // Element exists in storage but not on page
                 cachedCardData  = cards.cache.getCachedCardData(storedCards[i].id);
-    
+
                 if(cachedCardData === null)  {
                     addedCards.push(storedCards[i]);
                 }
             }
-    
-    
+
+
             // Find cards in HTML document but not in storage
             var cardId;
             for(i = 0; i < displayedCards.length; i++) {
                 cardId              = $(displayedCards[i]).data('instanceid');
-    
+
                 var cardData        = cards.model.get(cardId);
-    
+
                 if(cardData === null || cardData.length < 1) {
                     removedCards.push({'id': cardId});
                 }
             }
-    
-    
+
+
             // Add cards
             for(i = 0; i < addedCards.length; i++) {
                 addedCards[i].size  = 'medium';
                 $(window).trigger('widget:card:view:add', [addedCards[i]]);
             }
-    
-    
+
+
             // Remove cards
             for(i = 0; i < removedCards.length; i++) {
                 $(window).trigger('widget:card:view:remove', [removedCards[i]]);
             }
-    
+
             $(window).trigger('widget:container:view:resize');
         };
-        
-        
+
+
         cards.propagateDataAll = function() {
             var placedCards             = $('[data-prefix="card"]');
-    
+
             for(var i = 0; i < placedCards.length; i++) {
                 cards.propagateData($(placedCards[i]));
             }
         };
-        
-        
+
+
         cards.propagateData = function(cardElem) {
             var decks       = require('decks');
-   
+
             var i;
             var j;
             var storageElem;
             var instanceId  = cardElem.data('instanceid');
             var cardData    = cards.model.get(instanceId);
             var extraData   = decks.getHandler(cardElem.data('carddeck')).getExtraFields(cardElem.data('cardtype'));
-  
+
             // Hide paired elems
             cardElem.find('.group li').css('display', 'none');
-    
+
             for(var index in extraData) {
-                
+
                 if(extraData.hasOwnProperty(index) && index in cardData) {
-    
+
                     // Handle toggling of display of paired entries
                     if(index.substring(0, 7) === 'paired_' && !(index.indexOf('_comment', index.length - '_comment'.length) !== -1)) {
 
                         storageElem = cardElem.find('[data-paired_slave="card_' + instanceId + '_' + index + '_paired"]');
-    
+
                         if(cardData[index] === 'true') {
                             storageElem.css('display', 'block');
                         }
@@ -423,17 +421,17 @@ define(
                             storageElem.css('display', 'hidden');
                         }
                     }
-    
+
                     // Push standard stored data into elems
                     else {
                         storageElem = cardElem.find('[data-inputname="' + index + '"]');
-    
+
                         if(storageElem.prop('tagName').toLowerCase() === 'textarea' || (storageElem.prop('tagName').toLowerCase() === 'input' && (storageElem.attr('type') === 'text' || storageElem.attr('type') === 'hidden'))) {
                             storageElem.val(cardData[index]);
                         }
-    
+
                         else if(storageElem.prop('tagName').toLowerCase() === 'img') {
-    
+
                             var imgURL  = '';
                             if(cardElem.data('cardsize') === 'medium') {
                                 imgURL  = 'http://i.imgur.com/' + cardData[index] + 'm.png';
@@ -441,57 +439,57 @@ define(
                             else if(cardElem.data('cardsize') === 'large') {
                                 imgURL  = 'http://i.imgur.com/' + cardData[index] + '.png';
                             }
-    
+
                             if(cardData[index] !== null && cardData[index].length > 0 && storageElem.attr('src') !== imgURL && imgURL.length) {
                                 storageElem.attr('src', imgURL);
                             }
                         }
-    
+
                         else {
                             storageElem.text(cardData[index]);
                         }
                     }
                 }
             }
-    
+
             // Show no items message when required
             var groupElems  = cardElem.find('.group');
             var groupEntryElems;
             var displayedCount;
-    
+
             for(i = 0; i < groupElems.length; i++) {
                 groupEntryElems = $(groupElems[i]).find('[data-paired_slave]');
                 displayedCount  = 0;
-    
+
                 for(j = 0; j < groupEntryElems.length; j++) {
                     if($(groupEntryElems[j]).css('display') === 'block') {
                         displayedCount++;
                     }
                 }
-    
+
                 if(displayedCount === 0) {
                     $(groupElems[i]).find('.no_items').css('display', 'block');
                 }
             }
-    
-    
+
+
             // update positioning if the card has already been stored (& cardsize is medium)
             if(cardData && cardElem.data('cardsize') === 'medium' && !cardElem.hasClass('dragging')) {
-    
+
                 // Set new scaling factor
                 cardElem.attr('data-scalefactor', cards.zoomFactor);
-    
-    
+
+
                 // Handle user inputs etc
                 $(window).trigger('widget:card:view:post_propagate', [cardElem]);
-    
+
                 // Trigger updates
                 $(window).trigger('widget:card:view:move', [cardData.id, cardData.cell_id, cardData.pos_x, cardData.pos_y * cards.zoomFactor, cardData.z_index]);
                 $(window).trigger('widget:card:view:change_type', [cardData.id, cardData.cardtype]);
             }
         };
-        
-        
+
+
         cards.model.getFields = function() {
             return {
                 cell_id:    '',
@@ -502,8 +500,8 @@ define(
                 z_index:    ''
             };
         };
-        
-        
+
+
         cards.model.add = function(event, instanceId, cellId, xPos, yPos, deck, cardType, zIndex, presetData) {
             var extraFields         = cards.model.getFields();
             extraFields.id          = instanceId;
@@ -525,8 +523,8 @@ define(
 
             canvasStorage.list.add('card', extraFields);
         };
-        
-        
+
+
         cards.model.remove = function(event, cardId) {
             $(window).trigger('widget:connection:model:delete_for_card', [cardId]);
 
@@ -535,15 +533,15 @@ define(
 
             canvasStorage.list.remove('card', extraFields);
         };
-        
-        
+
+
         cards.model.removeAll = function() {
             $(window).trigger('widget:connection:model:remove_all');
 
             canvasStorage.list.removeAll('card', cards.model.getFields());
         };
-        
-        
+
+
         cards.model.changeType = function(event, cardId, cardType) {
             var extraFields = {
                 'id':       cardId,
@@ -552,8 +550,8 @@ define(
 
             canvasStorage.list.update('card', extraFields);
         };
-        
-        
+
+
         cards.model.move = function(event, cardId, cellId, xPosPercent, yPos, zIndex) {
             // Clear existing timer, ready to be reset
             if(typeof(canvasStorage.delayIds) !== 'undefined' && typeof(canvasStorage.delayIds['move_' + cardId]) !== 'undefined') {
@@ -575,8 +573,8 @@ define(
 
             }, canvasStorage.changeDelay * 1000);
         };
-        
-        
+
+
         cards.model.toFront = function(event, cardId) {
             var nextZIndex  = canvasStorage.util.getNextZIndex();
 
@@ -589,18 +587,18 @@ define(
 
             $(window).trigger('widget:card:view:to_front', [cardId, nextZIndex]);
         };
-        
-        
+
+
         cards.model.get = function(cardId) {
             return canvasStorage.list.get('card', cardId);
         };
-        
-        
+
+
         cards.model.getAll = function() {
             return canvasStorage.list.getAll('card');
         };
-        
-        
+
+
         /*  Cached card data, optimisation to prevent expensive [data-*="*"] lookups.
          *
          *   Format:
@@ -613,8 +611,8 @@ define(
          *   }
          */
         cards.cache.cachedCards     = {};
-        
-        
+
+
         cards.cache.addZoomedDimensions = function(cardId, cardElem) {
             var zoomFactorIndex = cards.zoomFactor.replace('.', '_');
 
@@ -633,8 +631,8 @@ define(
 
             return dimensions;
         };
-        
-        
+
+
         cards.cache.addCachedCardData = function(cardId, cardElem) {
             if(!(cardId in cards.cache.cachedCards && cards.cache.cachedCards.hasOwnProperty(cardId))) {
                 cards.cache.cachedCards[cardId] = {};
@@ -644,8 +642,8 @@ define(
 
             cards.cache.addZoomedDimensions(cardId, cardElem);
         };
-        
-        
+
+
         cards.cache.getCachedCardData = function(cardId) {
             var cardData    = null;
             if(cardId in cards.cache.cachedCards && cards.cache.cachedCards.hasOwnProperty(cardId)) {
@@ -654,13 +652,13 @@ define(
 
             return cardData;
         };
-        
-        
+
+
         cards.cache.deleteCachedCardData = function(cardId) {
             delete cards.cache.cachedCards[cardId];
         };
-        
-        
+
+
         cards.view.add = function(event, cardData) {
             var decks       = require('decks'); // Pull in decks
 
@@ -688,8 +686,8 @@ define(
 
             $(window).trigger('widget:card:view:post_propagate', [cardElem]);
         };
-        
-        
+
+
         cards.view.remove = function(event, cardData) {
             var cardElems   = $('[data-instanceid="' + cardData.id + '"]');
             var cardElem;
@@ -712,8 +710,8 @@ define(
 
             cards.cache.deleteCachedCardData(cardData.id);
         };
-        
-        
+
+
         cards.view.removeAll = function() {
             var cardElems   = $('[data-prefix="card"]');
             var cardElem;
@@ -736,14 +734,14 @@ define(
                 cards.cache.deleteCachedCardData(cardElem.data('instanceid'));
             }
         };
-        
-        
+
+
         cards.view.changeType = function(event, cardId, cardType) {
             var cardElems       = $('[data-instanceid="' + cardId + '"]');
             cardElems.attr('data-cardtype', cardType);
         };
-        
-        
+
+
         cards.view.move = function(event, cardId, cellId, xPosPercent, yPos, zIndex) {
             var cellElem        = $('[data-instanceid="' + cellId + '"] .cell_inner');
             var cardElem        = cards.getCardElem(cardId);
@@ -778,8 +776,8 @@ define(
             cardElem.css('top',     topOffset + 'px');
             cardElem.css('z-index', zIndex);
         };
-        
-        
+
+
         cards.view.toFront = function(event, cardId, zIndex) {
             var cardElem        = cards.getCardElem(cardId);
             cardElem.css('z-index', zIndex);
@@ -787,7 +785,7 @@ define(
 
 
         cards.view.postPropagate = function(event, cardElem) {
-            
+
 
             var decks       = require('decks'); // Pull in decks
 
@@ -795,8 +793,8 @@ define(
 
             deckHandler.postPropagate(cardElem);
         };
-        
-        
+
+
         cards.view.update = function(event, cardData) {
             var decks       = require('decks'); // Pull in decks
 
@@ -896,8 +894,8 @@ define(
                 }
             }
         };
-                
-                
+
+
         cards.view.edit = function(event, cardId) {
             // Create background & card
             var newBg   = false;
@@ -932,10 +930,10 @@ define(
                 bgElem.fadeIn(250,  function() {
                 });
             }
-            
+
         };
-        
-        
+
+
         // TODO: This shouldn't be here
         cards.handlers.exportDialog = function(event) {
             var bgElem                  =   $('<div></div>', {
@@ -1030,11 +1028,11 @@ define(
                         });
                 });
         };
-        
-        
+
+
             // TODO: This shouldn't be here
         cards.handlers.importDialog = function(event) {
-                    
+
 
             var bgElem                  =   $('<div></div>', {
                 'class':    'dialog_background'
@@ -1171,8 +1169,8 @@ define(
                         });
                 });
         };
-        
-        
+
+
         cards.handlers.editDismiss = function(event) {
             var medCard         = cards.getCardElem($(event.target).parents('[data-prefix="card"]').data('instanceid'));
 
@@ -1185,14 +1183,14 @@ define(
                     $(window).trigger('widget:card:view:post_propagate', [medCard]);
                 });
         };
-        
-        
+
+
         cards.handlers.copy = function(cardElem) {
             cards.clipboardData.method      = 'copy';
             cards.clipboardData.instanceId  = cardElem.data('instanceid');
         };
-        
-        
+
+
         cards.handlers.cut = function(cardElem) {
             // remove opacity from previously cut card
             $('.to_cut').removeClass('to_cut');
@@ -1202,8 +1200,8 @@ define(
 
             cardElem.addClass('to_cut');
         };
-        
-        
+
+
         cards.handlers.paste = function(cellId, dropPosX, dropPosY) {
             var decks       = require('decks'); // Pull in decks
 
@@ -1263,13 +1261,13 @@ define(
 
             $(window).trigger('widget:container:view:resize');
         };
-        
-        
+
+
         cards.handlers.changeActiveDecks = function() {
             $(window).trigger('widget:deck:view:create_dialog', [false]);
         },
-        
-        
+
+
         cards.handlers.zoomIn = function() {
             // Floating point math has interesting consequences >_>
             switch(cards.zoomFactor) {
@@ -1312,8 +1310,8 @@ define(
 
             $(window).trigger('widget:container:view:resize');
         };
-        
-        
+
+
         cards.handlers.zoomOut = function() {
             // Floating point math has interesting consequences >_>
             switch(cards.zoomFactor) {
@@ -1356,8 +1354,8 @@ define(
 
             $(window).trigger('widget:container:view:resize');
         };
-        
-        
+
+
         cards.handlers.pairedElementDialog = function(event) {
             var decks       = require('decks'); // Pull in decks
 
@@ -1466,8 +1464,8 @@ define(
                         });
                 });
         };
-        
-        
+
+
         cards.handlers.pairedElementAdd = function(event) {
             canvasStorage.changeHandlers.addEntry(event);
 
@@ -1484,8 +1482,8 @@ define(
                     dialogContainer.remove();
                 });
         };
-        
-        
+
+
         cards.handlers.pairedElementRemove = function(event) {
             canvasStorage.changeHandlers.removeEntry(event);
 
@@ -1518,8 +1516,8 @@ define(
                 }
             }
         };
-                
-                
+
+
         cards.handlers.deck.cardMouseOver = function(event) {
             var decks       = require('decks'); // Pull in decks
 
@@ -1532,8 +1530,8 @@ define(
             deckHint.css('display', 'none');
             cardHint.appendTo(wheelContainer);
         };
-   
-    
+
+
         cards.handlers.deck.cardMouseOut = function(event) {
             var wheelContainer  = $('.card_selector_box');
             var deckHint        = wheelContainer.find('.deck_hint');
@@ -1541,8 +1539,8 @@ define(
             deckHint.css('display', 'block');
             wheelContainer.find('.hint').remove();
         };
-    
-    
+
+
         cards.handlers.deck.cardClicked = function(event, dropPosX, dropPosY, cell) {
             var cardType            = $(event.target).data('cardtype');
             var deck                = $(event.target).data('carddeck');
@@ -1555,7 +1553,7 @@ define(
 
             $(window).trigger('widget:card:model:new', [instanceId, cellId, leftOffsetPercent.toString(), (dropPosY / cards.zoomFactor).toString(), deck, cardType, nextZIndex]);
 
-            
+
             var dialog  = $('.dialog');
             dialog.fadeOut( 250,
                 function() {
@@ -1566,8 +1564,8 @@ define(
 
             $(window).trigger('widget:container:view:resize');
         };
-    
-    
+
+
         cards.handlers.deck.selectorWheel = function(deck, dropPosX, dropPosY, cell) {
             var decks       = require('decks'); // Pull in decks
 
@@ -1662,11 +1660,11 @@ define(
             startTime    = Date.now();
             window.setTimeout(updateCircle, 33);
         };
-        
-        
+
+
         // Initialise card handlers
         cards.init();
-        
+
 
         return cards;
     }
