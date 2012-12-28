@@ -728,48 +728,6 @@ define( ['jquery', 'require', 'storage/lsStorage', 'storage/roleStorage', 'stora
 
 
 
-    /*  List notification functions */
-
-        /*  Array of queued notifications awaiting publishing*/
-            canvasStorage.list.notifications.queued = [];
-
-
-        /* Add a notification to the queued list */
-            canvasStorage.list.notifications.add = function(action, itemData, namespace) {
-                var intentData = {
-                    'ns'        : namespace,
-                    'action'    : action,
-                    'data'      : itemData
-                };
-
-                canvasStorage.list.notifications.queued.push(intentData);
-            };
-
-
-        /* Publish queued notifications. */
-            canvasStorage.list.notifications.publish = function() {
-                var intent  = {
-                    'component':    '',
-                    'data':         'http://ptlis.net/dummy',
-                    'dataType':     'text/json',
-                    'action':       'UPDATE',
-                    'flags':        ['PUBLISH_GLOBAL'],
-                    'extras':       {
-                        'user':     openapp.param.user(),
-                        'data':     canvasStorage.list.notifications.queued
-                    }
-                };
-
-                if(iwc.util.validateIntent(intent)) {
-                    canvasStorage.iwcClient.publish(intent);
-
-                    canvasStorage.list.notifications.queued = [];
-                }
-                else {
-                    throw 'Invalid / malformed intent';
-                }
-            };
-
 
 
 
@@ -923,49 +881,6 @@ define( ['jquery', 'require', 'storage/lsStorage', 'storage/roleStorage', 'stora
                     if(typeof(completeCallback) !== 'undefined') {
                         completeCallback();
                     }
-                }
-
-                else if(canvasStorage.method === 'role') {
-
-                    var type    = 'ptlis.net:' + prefix  + '';
-
-                    canvasStorage.roleResources[prefix + 'List'].getRepresentation('rdfjson', function(listRepresentation) {
-
-                        if('firstItemId' in listRepresentation && listRepresentation.hasOwnProperty('firstItemId')) {
-                            canvasStorage.list.cache.setFirstItemId(prefix, listRepresentation.firstItemId);
-                        }
-
-                        var cacheFunc   = function(prefix, resourceArr, index) {
-
-                            resourceArr[index].getRepresentation('rdfjson', function(representation) {
-                                canvasStorage.list.cache.cacheItem(prefix, representation, resourceArr[index].getURI());
-
-                                // Cache initialised
-                                if(index + 1 === resourceArr.length) {
-                                    canvasStorage.cacheInitialised[prefix]  = true;
-
-                                    canvasStorage.list.cache.setLastItemId(prefix, representation.id);
-                                }
-                            });
-                        };
-
-                        canvasStorage.roleResources[prefix + 'List'].getSubResources({
-                            'relation': openapp.ns.role + 'data',
-                            'type':     type,
-                            'onAll':    function(listResArr) {
-
-                                if(listResArr.length > 0) {
-                                    for(var i = 0; i < listResArr.length; i++) {
-                                        cacheFunc(prefix, listResArr, i);
-                                    }
-                                }
-
-                                else {
-                                    canvasStorage.cacheInitialised[prefix]  = true;
-                                }
-                            }
-                        });
-                    });
                 }
 
             };
