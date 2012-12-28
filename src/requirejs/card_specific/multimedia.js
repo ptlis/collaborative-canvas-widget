@@ -10,7 +10,6 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
                 /* Does the browser support the files api? */
                 filesSupport    : false,
 
-            // TODO: imageData should not be passed here.
                 createCard      : function(cardType, instanceId, size, cell) {
                     multimedia.filesSupport = (function(undefined) {
                         return $('<input type="file">')
@@ -103,13 +102,13 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
                         }
                         imageCaption.appendTo(card);
                     }
-                    
+
                     else if(cardType === 'widget') {
                         var title           =   $('<div></div>', {
                             'class':            'card_header'
                         });
                         title.appendTo(card);
-                        
+
                         var iconImg                 = this.getIcon(cardType, size);
                         iconImg.appendTo(title);
 
@@ -204,7 +203,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
 
                             playButton.appendTo(content);
                         }
-                        
+
                     }
 
                     else if(cardType === 'youtube' || cardType === 'vimeo') {
@@ -332,7 +331,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
                         extraFields.image       = '';
                         extraFields.caption     = '';
                     }
-                    
+
                     else if(cardType === 'widget') {
                         extraFields.widget_title    = '';
                         extraFields.embed_code      = '';
@@ -502,7 +501,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
 
                             var width       = 0;
                             var height      = 0;
-                            
+
                             if(htmlFrag.length) {
                                 URL         = $(htmlFrag).attr('src');
                                 width       = $(htmlFrag).attr('width');
@@ -536,8 +535,8 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
 
                     return element;
                 },
-                
-                
+
+
                 addWidgetEvents : function(cardElem, size) {
                     var htmlFrag    = cardElem.find('#raw_entry').val();
 
@@ -550,7 +549,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
 
                         embedButton.on('click', function() {
                             var iframe  = cardElem.find('iframe');
-                            
+
                             if(htmlFrag.length) {
                                 URL         = $(htmlFrag).attr('src');
                                 width       = $(htmlFrag).attr('width');
@@ -560,15 +559,15 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
                             if(URL) {
                                 // TODO: Handle height & width?
                                 iframe.attr('src', URL);
-                            }                            
+                            }
                         });
                     }
-                    
+
                     else if(size === 'medium') {
                         var playButton  = cardElem.find('.play_button');
-                        
+
                         playButton.on('click', function() {
-                            
+
                             if(htmlFrag.length) {
                                 URL         = $(htmlFrag).attr('src');
                                 width       = $(htmlFrag).attr('width');
@@ -625,7 +624,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
                                     var dialogHeight = dialog.height() + (height - 340);
                                     dialog.css('height', dialogHeight);
                                 }
-                                
+
                                 if(width > 620) {
                                     var dialogWidth = dialog.width() + (width - 620);
                                     dialog.css('width', dialogWidth);
@@ -645,8 +644,8 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
                                             });
                                     });
                             }
-                            
-                        });                        
+
+                        });
                     }
                 },
 
@@ -913,8 +912,8 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
 
                 addImageDropEvents : function(cardElem) {
                     var imgContainer    = cardElem.find('.image_block');
-                    var instanceId      = cardElem.data('instanceid');                    
-                    
+                    var instanceId      = cardElem.data('instanceid');
+
                     var beforeSend  = function(dropElem) {
                         var imgElem     =   $('<div></div>', {
                             'class':    'loading_anim'
@@ -924,7 +923,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
 
                         $('.drop_message').text('Uploading...');
                     };
-                    
+
                     var success     = function(dropElem, data) {
                         var imgElems    = $('[data-instanceid="' + instanceId + '"] [data-inputname="image"]');
 
@@ -957,7 +956,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
 
                         canvasStorage.list.update('card', extraFields);
                     };
-                    
+
                     var error       = function(dropElem, errorMsg) {
                         $('.loading_anim').remove();
                         $('.drop_message').text('Image upload failed "' + errorMsg);
@@ -1116,7 +1115,7 @@ define( ['jquery', 'decks', 'canvasStorage', 'util'],
                     'image'     : {
                         'description'       : 'Card that allows for uploading images to display on the canvas.'
                     },
-                    
+
                     'widget'    : {
                         'description'       : 'Card that allows for embedding of iTEC widgets.'
                     }
