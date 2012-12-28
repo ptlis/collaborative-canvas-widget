@@ -6,7 +6,6 @@ define( ['jquery', 'require', 'util'],
             'use strict';
 
             var roleStorage     = {};
-            roleStorage.util    = {};
 
         /*  ROLE shared space. */
             roleStorage.space   = null;
@@ -84,9 +83,8 @@ define( ['jquery', 'require', 'util'],
 
                                     var collector   = util.collector(roleStorage.storedLists.length, initComplete);
                                     for(var index in roleStorage.storedLists) {
-
+                                        getListResources(index, collector);
                                     }
-                                    /*roleStorage.util.getListResources(canvasStorage.storedLists, 0);*/
                                 });
                         }
 
@@ -104,7 +102,7 @@ define( ['jquery', 'require', 'util'],
                                     var collector   = util.collector(roleStorage.storedLists.length, initComplete);
 
                                     for(var index in roleStorage.storedLists) {
-                                        roleStorage.util.createListResource(prefix, collector);
+                                        createListResource(prefix, collector);
                                     }
                                 }
                             });
@@ -176,10 +174,10 @@ define( ['jquery', 'require', 'util'],
                 }
             };
 
-    /*  Util. */
+    /*  Functions belonging to closure to prevent calling from outside module. */
 
         /*  Create list Resource. */
-            roleStorage.util.createListResource = function(prefix, collector) {
+            var createListResource = function(prefix, collector) {
                 var type            = 'ptlis.net:' + prefix  + '_list';
                 var canvasStorage   = require('canvasStorage');
 
@@ -198,7 +196,7 @@ define( ['jquery', 'require', 'util'],
 
 
         /*  Recursively retrieve list resources. */
-            roleStorage.util.getListResources = function(prefix, collector) {
+            var getListResources = function(prefix, collector) {
                 var type            = 'ptlis.net:' + prefix  + '_list';
                 var canvasStorage   = require('canvasStorage');
 
@@ -215,7 +213,7 @@ define( ['jquery', 'require', 'util'],
 
                         // Resource doesn't exist
                         else {
-                            roleStorage.util.createListResource(prefix, collector);
+                            createListResource(prefix, collector);
                         }
                     }
                 });
