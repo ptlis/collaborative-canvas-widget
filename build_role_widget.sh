@@ -1,19 +1,24 @@
 #!/bin/bash
 
+	# If the URL was not passed as a parameter then prompt for it
+	if [[ -z "$1" ]]; then
+		# Get path for absolute URL
+		read -p "Provide absolute path for widget (including trailing slash): "
 
-# Get path for absolute URL
-	read -p "Provide absolute path for widget (including trailing slash): "
+		WEB_PATH=$REPLY
+
+	# If the URL was passed, store it.
+	else
+		WEB_PATH=$1
+	fi
 
 
 # Validate path
-    regex='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]/'
-    if [[ $REPLY =~ $regex ]]
-    then
-        WEB_PATH=$REPLY
-    else
-        echo "Absolute path not valid"
-        exit
-    fi
+	REGEX='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]/'
+	if [[ ! $WEB_PATH =~ $REGEX ]];then
+	    echo "Absolute path not valid"
+	    exit
+	fi
 
 
 # Copy widget data
