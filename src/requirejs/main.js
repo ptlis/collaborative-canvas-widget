@@ -206,8 +206,9 @@ require(
 
             canvas.dimensionsCheck();
         }
-        function ROLEUpdate(intent) {
 
+
+        function ROLEUpdate(intent) {
             canvasStorage.space.refresh();
 
             // Only update if the notification was published by a different user
@@ -215,7 +216,6 @@ require(
                 var prefix;
 
                 for(var i = 0; i < intent.extras.data.length; i++) {
-
                     switch(intent.extras.data[i].ns) {
                         case 'ptlis.net:base':
                             if(intent.extras.data[i].data.action === 'UPDATE_Z_INDEX') {
@@ -244,8 +244,10 @@ require(
 
                             switch(intent.extras.data[i].action) {
                                 case 'ADD':
-                                    canvasStorage.list.cache.cacheItem(prefix, intent.extras.data[i].data.data, intent.extras.data[i].data.uri);
-                                    $(window).trigger('widget:' + prefix + ':view:add', [intent.extras.data[i].data.data]);
+                                    var cardData    = intent.extras.data[i].data.data;
+                                    canvasStorage.list.cache.cacheItem(prefix, cardData, intent.extras.data[i].data.uri);
+                                    cardData.size   = 'medium';
+                                    $(window).trigger('widget:' + prefix + ':view:add', [cardData]);
                                     break;
 
                                 case 'UPDATE':
