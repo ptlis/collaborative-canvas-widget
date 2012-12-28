@@ -2,8 +2,8 @@
 
 
 define(
-    [],
-    function() {
+    ['jquery'],
+    function($) {
 		'use strict';
 
         function clearData() {

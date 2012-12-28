@@ -1,8 +1,8 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'require', 'util'],
-        function($, require, util) {
+define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
+        function($, require, util, canvasStorage) {
             'use strict';
 
             var roleStorage     = {};
@@ -26,22 +26,10 @@ define( ['jquery', 'require', 'util'],
                 customCardList  : null
             };
 
-        /*  The list of data stored. */
-            roleStorage.storedLists       = [
-                'card',
-                'connection',
-                'container',
-                'deck',
-                'field',
-                'custom_deck',
-                'custom_card'
-            ];
-
 
         /*  Initialisation */
             roleStorage.init = function() {
                 var canvas          = require('canvas');
-                var canvasStorage   = require('canvasStorage');
 
                 roleStorage.space   = new openapp.oo.Resource(openapp.param.space());
                 roleStorage.user    = new openapp.oo.Resource(openapp.param.user());
@@ -51,6 +39,7 @@ define( ['jquery', 'require', 'util'],
 
                 // Called when cache has been initialised
                 var initComplete    = function() {
+                    canvasStorage.ready             = true;
                     canvasStorage.standardPropagate();
                     canvas.hideLoadingDialog();
 
@@ -59,7 +48,8 @@ define( ['jquery', 'require', 'util'],
                 };
 
 
-                canvasStorage.space.getSubResources({
+
+                roleStorage.space.getSubResources({
                     'relation': openapp.ns.role + 'data',
                     'type':     'ptlis.net:base',
                     'onAll':    function(baseArr) {
@@ -67,13 +57,11 @@ define( ['jquery', 'require', 'util'],
                         // Resource already exists, store
                         if(baseArr.length) {
                             // There should only ever be 1 base resource
-                            canvasStorage.roleResources.base      = baseArr[0];
+                            roleStorage.resources.base      = baseArr[0];
 
-                            canvasStorage.roleResources.base.getRepresentation(
+                            roleStorage.resources.base.getRepresentation(
                                 'rdfjson',
                                 function(representation) {
-                                    canvasStorage.ready     = true;
-
                                     if('data_version' in representation && representation.hasOwnProperty('data_version')) {
                                         canvasStorage.runningVersion    = representation.data_version;
                                     }
@@ -82,9 +70,9 @@ define( ['jquery', 'require', 'util'],
                                         canvasStorage.cachedZIndex      = representation.z_index;
                                     }
 
-                                    var collector   = util.collector(roleStorage.storedLists.length, initComplete);
-                                    for(var index in roleStorage.storedLists) {
-                                        getListResource(index, collector);
+                                    var collector   = util.collector(canvasStorage.storedLists.length, initComplete);
+                                    for(var index in canvasStorage.storedLists) {
+                                        getListResource(canvasStorage.storedLists[index], collector);
                                     }
                                 });
                         }
@@ -96,14 +84,13 @@ define( ['jquery', 'require', 'util'],
                                 type:           'ptlis.net:base',
                                 representation: JSON.stringify({}),
                                 callback: function(subResource) {
-                                    canvasStorage.ready     = true;
 
-                                    canvasStorage.roleResources.base      = new openapp.oo.Resource(subResource.getURI());
+                                    roleStorage.resources.base      = new openapp.oo.Resource(subResource.getURI());
 
-                                    var collector   = util.collector(roleStorage.storedLists.length, initComplete);
+                                    var collector   = util.collector(canvasStorage.storedLists.length, initComplete);
 
-                                    for(var index in roleStorage.storedLists) {
-                                        createListResource(prefix, collector);
+                                    for(var index in canvasStorage.storedLists) {
+                                        createListResource(canvasStorage.storedLists[index], collector);
                                     }
                                 }
                             });
@@ -121,7 +108,6 @@ define( ['jquery', 'require', 'util'],
                 // Only update if the notification was published by a different user
                 if(intent.extras.user !== openapp.param.user()) {
                     var prefix;
-                    var canvasStorage   = require('canvasStorage');
 
                     for(var i = 0; i < intent.extras.data.length; i++) {
                         switch(intent.extras.data[i].ns) {
@@ -188,15 +174,447 @@ define( ['jquery', 'require', 'util'],
         /*  Add the item in the specified position in prefix relative to the
             given item. */
             roleStorage.list.addPositioned = function(prefix, newItemData, position, relativeToId) {
-                var canvasStorage   = require('canvasStorage');
-
                 if(!canvasStorage.ready) {
                     throw 'canvasStorage not initialised';
                 }
 
                 var firstId             = canvasStorage.list.cache.getFirstItemId(prefix);
                 var relativeToItemData  = canvasStorage.list.cache.getCachedItemId(prefix, relativeToId);
+                var type                = 'ptlis.net:' + prefix;
+                var listResource        = roleStorage.resources[prefix + 'List'];
+                var relativeToItemResource;
+                var prevItemData;
+                var nextItemData;
+                newItemData.prev    = null;
+                newItemData.next    = null;
 
+                switch(position) {
+                    case 'above':
+
+                        // First element (set this id to new first id)
+                        if(relativeToId === firstId) {
+
+                            var representation  = {
+                                'firstItemId':  newItemData.id
+                            };
+
+                            listResource.setRepresentation(
+                                representation,
+                                'application/json'
+                            );
+                            canvasStorage.list.cache.setFirstItemId(prefix, newItemData.id);
+                            addNotification('CHANGE_FIRST_ID', representation, 'ptlis.net:' + prefix + '_list');
+                        }
+
+                        // Any other (Update previous element)
+                        else {
+                            prevItemData            = canvasStorage.list.cache.getCachedItemId(prefix, relativeToItemData.data.prev);
+                            prevItemData.data.next  = newItemData.id;
+
+                            var prevItemResource    = new openapp.oo.Resource(prevItemData.uri);
+                            prevItemResource.setRepresentation(
+                                prevItemData.data,
+                                'application/json'
+                            );
+                            canvasStorage.list.cache.cacheItem(prefix, prevItemData.data, prevItemData.uri);
+                            addNotification('UPDATE', prevItemData, 'ptlis.net:' + prefix);
+
+                            newItemData.prev                                   = relativeToItemData.data.prev;
+                        }
+
+                        // Update the 'relative to' element
+                        relativeToItemData.data.prev    = newItemData.id;
+                        relativeToItemResource          = new openapp.oo.Resource(relativeToItemData.uri);
+                        relativeToItemResource.setRepresentation(
+                            relativeToItemData.data,
+                            'application/json'
+                        );
+                        canvasStorage.list.cache.cacheItem(prefix, relativeToItemData.data, relativeToItemData.uri);
+                        addNotification('UPDATE', relativeToItemData, 'ptlis.net:' + prefix);
+
+                        // Add the element itself
+                        newItemData.next                                       = relativeToId;
+
+                        canvasStorage.list.cache.cacheItem(prefix, newItemData);   // Cache without URI first
+                        listResource.create({
+                            'relation':         openapp.ns.role + 'data',
+                            'type':             type,
+                            'representation':   newItemData,
+                            'callback':         function(subResource) {
+                                canvasStorage.list.cache.cacheItem(prefix, newItemData, subResource.getURI()); // Update cache with uri
+                                addNotification('ADD', canvasStorage.list.cache.getCachedItemId(prefix, newItemData.id), 'ptlis.net:' + prefix);
+                                publishNotifications();
+                            }
+                        });
+
+                        break;
+
+                    case 'below':
+                        // Relative to any element other than the final one
+                        if(relativeToItemData.data.next !== null) {
+
+                            nextItemData            = canvasStorage.list.cache.getCachedItemId(prefix, relativeToItemData.data.next);
+                            nextItemData.data.prev  = newItemData.id;
+
+                            var nextItemResource    = new openapp.oo.Resource(nextItemData.uri);
+                            nextItemResource.setRepresentation(
+                                nextItemData.data,
+                                'application/json'
+                            );
+                            canvasStorage.list.cache.cacheItem(prefix, nextItemData.data, nextItemData.uri);
+                            addNotification('UPDATE', nextItemData, 'ptlis.net:' + prefix);
+
+                            newItemData.next                                = nextItemData.data.id;
+                        }
+
+                        // Relative to the final element
+                        else {
+                            canvasStorage.list.cache.setLastItemId(prefix, newItemData.id);
+                        }
+
+                        relativeToItemData.data.next                        = newItemData.id;
+                        relativeToItemResource                              = new openapp.oo.Resource(relativeToItemData.uri);
+                        relativeToItemResource.setRepresentation(
+                            relativeToItemData.data,
+                            'application/json'
+                        );
+                        canvasStorage.list.cache.cacheItem(prefix, relativeToItemData.data, relativeToItemData.uri);
+                        addNotification('UPDATE', relativeToItemData, 'ptlis.net:' + prefix);
+
+                        // Add the element itself
+                        newItemData.prev                        = relativeToId;
+
+                        canvasStorage.list.cache.cacheItem(prefix, newItemData);   // Cache without URI first
+                        listResource.create({
+                            'relation':         openapp.ns.role + 'data',
+                            'type':             type,
+                            'representation':   newItemData,
+                            'callback':         function(subResource) {
+                                canvasStorage.list.cache.cacheItem(prefix, newItemData, subResource.getURI()); // Update cache with uri
+                                addNotification('ADD', canvasStorage.list.cache.getCachedItemId(prefix, newItemData.id), 'ptlis.net:' + prefix);
+                                publishNotifications();
+                            }
+                        });
+
+                        break;
+
+                }
+            };
+
+
+        /*  Add the item to the end of the prefix list. */
+            roleStorage.list.add = function(prefix, newItemData) {
+                if(!canvasStorage.ready) {
+                    throw 'canvasStorage not initialised';
+                }
+
+
+                var listResource    = roleStorage.resources[prefix + 'List'];
+
+                newItemData.next    = null;
+                newItemData.prev    = null;
+
+                // Items already exist in cache, find the last item
+                if(lastItemId) {
+                    lastItemData    = canvasStorage.list.cache.getCachedItemId(prefix, lastItemId);
+                }
+
+                // Items already exist, update last item's next value
+                if(lastItemData) {
+                    lastItemData.data.next      = newItemData.id;
+                    newItemData.prev            = lastItemData.data.id;
+
+                    var lastItemResource    = new openapp.oo.Resource(lastItemData.uri);
+                    lastItemResource.setRepresentation(
+                        lastItemData.data,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.cacheItem(prefix, lastItemData.data, lastItemData.uri);
+                    addNotification('UPDATE', lastItemData, 'ptlis.net:' + prefix);
+                }
+
+                // No items exist, add first id
+                else {
+                    var representation  = {
+                        'firstItemId':  newItemData.id
+                    };
+
+                    listResource.setRepresentation(
+                        representation,
+                        'application/json'
+                    );
+
+                    canvasStorage.list.cache.setFirstItemId(prefix, newItemData.id);
+                    addNotification('CHANGE_FIRST_ID', representation, 'ptlis.net:' + prefix + '_list');
+                }
+
+                canvasStorage.list.cache.setLastItemId(prefix, newItemData.id);
+
+                var type    = 'ptlis.net:' + prefix;
+
+                canvasStorage.list.cache.cacheItem(prefix, newItemData);   // Cache without URI first
+                listResource.create({
+                    'relation':         openapp.ns.role + 'data',
+                    'type':             type,
+                    'representation':   newItemData,
+                    'callback':         function(subResource) {
+                        canvasStorage.list.cache.cacheItem(prefix, newItemData, subResource.getURI()); // Update cache
+                        addNotification('ADD', canvasStorage.list.cache.getCachedItemId(prefix, newItemData.id), 'ptlis.net:' + prefix);
+                        publishNotifications();
+                    }
+                });
+            };
+
+
+        /*  Bulk insert of several items into prefix. */
+            roleStorage.list.addMulti = function(prefix, newItemDataArr) {
+                if(!canvasStorage.ready) {
+                    throw 'canvasStorage not initialised';
+                }
+
+                var lastItemData    = null;
+                var lastItemId      = canvasStorage.list.cache.getLastItemId(prefix);
+                var listResource    = roleStorage.resources[prefix + 'List'];
+
+                // Items already exist, update last item's next value
+                if(lastItemId) {
+                    lastItemData    = canvasStorage.list.cache.getCachedItemId(prefix, lastItemId);
+                    lastItemData.data.next      = newItemDataArr[0].id;
+                    var lastItemResource    = new openapp.oo.Resource(lastItemData.uri);
+
+                    lastItemResource.setRepresentation(
+                        lastItemData.data,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.cacheItem(prefix, lastItemData.data, lastItemData.uri);
+                    addNotification('UPDATE', lastItemData, 'ptlis.net:' + prefix);
+                }
+
+                // No items exist, add first id
+                else {
+                    var representation  = {
+                        'firstItemId':  newItemDataArr[0].id
+                    };
+
+                    listResource.setRepresentation(
+                        representation,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.setFirstItemId(prefix, newItemDataArr[0].id);
+                    addNotification('CHANGE_FIRST_ID', representation, 'ptlis.net:' + prefix + '_list');
+                }
+
+                var createItem = function(prefix, itemData) {
+                    var type    = 'ptlis.net:' + prefix;
+
+                    canvasStorage.list.cache.cacheItem(prefix, itemData);   // Cache without URI first
+                    listResource.create({
+                        'relation':         openapp.ns.role + 'data',
+                        'type':             type,
+                        'representation':   itemData,
+                        'callback':         function(subResource) {
+                            canvasStorage.list.cache.cacheItem(prefix, itemData, subResource.getURI()); // Update cache with URI
+                            addNotification('ADD', canvasStorage.list.cache.getCachedItemId(prefix, itemData.id), 'ptlis.net:' + prefix);
+                            publishNotifications();
+                        }
+                    });
+
+                };
+
+                for(var i = 0; i < newItemDataArr.length; i++) {
+                    newItemDataArr[i].prev      = null;
+                    newItemDataArr[i].next      = null;
+
+                    // First added entry is special case
+                    if(i === 0 && lastItemData) {
+                        newItemDataArr[i].prev  = lastItemData.data.id;
+                    }
+
+                    else if(i > 0) {
+                        newItemDataArr[i].prev  = newItemDataArr[i - 1].id;
+                    }
+
+                    if(i + 1 < newItemDataArr.length) {
+                        newItemDataArr[i].next  = newItemDataArr[i + 1].id;
+                    }
+
+                    else {
+                        canvasStorage.list.cache.setLastItemId(prefix, newItemDataArr[i].id);
+                    }
+
+                    createItem(prefix, newItemDataArr[i]);
+                }
+            };
+
+
+        /* Remove the item from the prefix list. */
+            roleStorage.list.remove = function(prefix, remItemData) {
+                if(!canvasStorage.ready) {
+                    throw 'canvasStorage not initialised';
+                }
+
+                var itemData        = canvasStorage.list.cache.getCachedItemId(prefix, remItemData.id);
+                var prevData;
+                var nextData;
+
+                var listResource    = roleStorage.resources[prefix + 'List'];
+                var nextItemResource;
+                var prevItemResource;
+                var representation;
+
+                // Elements in middle of list
+                if(itemData.data.prev !== null && itemData.data.next !== null) {
+                    prevData                = canvasStorage.list.cache.getCachedItemId(prefix, itemData.data.prev);
+                    nextData                = canvasStorage.list.cache.getCachedItemId(prefix, itemData.data.next);
+
+                    prevData.data.next      = nextData.data.id;
+                    nextData.data.prev      = prevData.data.id;
+
+                    prevItemResource    = new openapp.oo.Resource(prevData.uri);
+                    prevItemResource.setRepresentation(
+                        prevData.data,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.cacheItem(prefix, prevData.data, prevData.uri);
+                    addNotification('UPDATE', prevData, 'ptlis.net:' + prefix);
+
+                    nextItemResource    = new openapp.oo.Resource(nextData.uri);
+                    nextItemResource.setRepresentation(
+                        nextData.data,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.cacheItem(prefix, nextData.data, nextData.uri);
+                    addNotification('UPDATE', nextData, 'ptlis.net:' + prefix);
+
+                }
+
+                // Only element in list
+                else if(itemData.data.prev === null && itemData.data.next === null){
+
+                    representation  = {
+                        'firstItemId':  null
+                    };
+
+                    listResource.setRepresentation(
+                        representation,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.setFirstItemId(prefix, null);
+                    canvasStorage.list.cache.setLastItemId(prefix, null);
+                    addNotification('CHANGE_FIRST_ID', representation, 'ptlis.net:' + prefix + '_list');
+                }
+
+                // First element
+                else if(itemData.data.prev === null) {
+
+                    representation  = {
+                        'firstItemId':  itemData.data.next
+                    };
+
+                    listResource.setRepresentation(
+                        representation,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.setFirstItemId(prefix, itemData.data.next);
+                    addNotification('CHANGE_FIRST_ID', representation, 'ptlis.net:' + prefix + '_list');
+
+
+                    nextData                = canvasStorage.list.cache.getCachedItemId(prefix, itemData.data.next);
+                    nextData.data.prev      = null;
+
+                    nextItemResource    = new openapp.oo.Resource(nextData.uri);
+                    nextItemResource.setRepresentation(
+                        nextData.data,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.cacheItem(prefix, nextData.data, nextData.uri);
+                    addNotification('UPDATE', nextData, 'ptlis.net:' + prefix);
+                }
+
+                // Last element
+                else {
+                    prevData                = canvasStorage.list.cache.getCachedItemId(prefix, itemData.data.prev);
+                    prevData.data.next      = null;
+
+                    prevItemResource    = new openapp.oo.Resource(prevData.uri);
+                    prevItemResource.setRepresentation(
+                        prevData.data,
+                        'application/json'
+                    );
+                    canvasStorage.list.cache.cacheItem(prefix, prevData.data, prevData.uri);
+                    addNotification('UPDATE', prevData, 'ptlis.net:' + prefix);
+
+                    canvasStorage.list.cache.setLastItemId(prefix, prevData.data.id);
+                }
+
+                var itemResource        = new openapp.oo.Resource(itemData.uri);
+                itemResource.del(function() {
+                });
+
+                canvasStorage.list.cache.deleteCachedItem(prefix, itemData.data.id);
+                addNotification('REMOVE', itemData, 'ptlis.net:' + prefix);
+                publishNotifications();
+            };
+
+
+        /*  Remove all items from the prefix list. */
+            roleStorage.list.removeAll = function(prefix, remItemData) {
+                if(!canvasStorage.ready) {
+                    throw 'canvasStorage not initialised';
+                }
+
+                var listResource    = roleStorage.resources[prefix + 'List'];
+
+                var type    = 'ptlis.net:' + prefix;
+
+                listResource.getSubResources({
+                    'relation': openapp.ns.role + 'data',
+                    'type':     type,
+                    'onAll':    function(listResArr) {
+                        var delCallback = function() {
+                        };
+
+                        for(var i = 0; i < listResArr.length; i++) {
+                            listResArr[i].del(delCallback);
+                        }
+
+                        canvasStorage.list.cache.data[prefix]   = {
+                            firstItemId:    null
+                        };
+                    }
+                });
+
+                var itemArr = canvasStorage.list.cache.getAllCachedItems(prefix);
+
+                for(var i = 0; i < itemArr.length; i++) {
+                    addNotification('REMOVE', itemArr[i], 'ptlis.net:' + prefix);
+                }
+                publishNotifications();
+            };
+
+
+        /*  Update item data in storage. */
+            roleStorage.list.update = function(prefix, itemData) {
+                if(!canvasStorage.ready) {
+                    throw 'canvasStorage not initialised';
+                }
+
+                var combinedData    = canvasStorage.list.cache.getCachedItemId(prefix, itemData.id);
+
+                for(var index in itemData) {
+                    if(itemData.hasOwnProperty(index) && index !== 'id') {
+                        combinedData.data[index]         = itemData[index];
+                    }
+                }
+
+                var itemResource    = new openapp.oo.Resource(combinedData.uri);
+                itemResource.setRepresentation(
+                    combinedData.data,
+                    'application/json'
+                );
+                canvasStorage.list.cache.cacheItem(prefix, combinedData.data, combinedData.uri);
+                addNotification('UPDATE', combinedData, 'ptlis.net:' + prefix);
+                publishNotifications();
             };
 
 
@@ -253,7 +671,6 @@ define( ['jquery', 'require', 'util'],
 
         /*  Cache initialisation. */
             var initialiseCache = function(prefix, completeCallback) {
-                var canvasStorage   = require('canvasStorage');
                 var type            = 'ptlis.net:' + prefix;
 
                 roleStorage.resources[prefix + 'List'].getRepresentation('rdfjson', function(listRepresentation) {
@@ -270,16 +687,7 @@ define( ['jquery', 'require', 'util'],
                             if(listResArr.length > 0) {
                                 var collector   = util.collector(listResArr.length, completeCallback);
                                 for(var i = 0; i < listResArr.length; i++) {
-                                    resourceArr[index].getRepresentation('rdfjson', function(representation) {
-                                        canvasStorage.list.cache.cacheItem(prefix, representation, resourceArr[index].getURI());
-
-                                        // Cache initialised
-                                        if(i + 1 === resourceArr.length) {
-                                            canvasStorage.list.cache.setLastItemId(prefix, representation.id);
-                                        }
-
-                                        collector();
-                                    });
+                                    getListItem(prefix, listResArr[i], collector);
                                 }
                             }
 
@@ -288,6 +696,20 @@ define( ['jquery', 'require', 'util'],
                             }
                         }
                     });
+                });
+            };
+
+
+        /*  Get the representation of a single item and add it to the cache. */
+            var getListItem = function(prefix, resource, collector) {
+                resource.getRepresentation('rdfjson', function(representation) {
+                    canvasStorage.list.cache.cacheItem(prefix, representation, resource.getURI());
+
+                    if(representation.next === null) {
+                        canvasStorage.list.cache.setLastItemId(prefix, representation.id);
+                    }
+
+                    collector();
                 });
             };
 
@@ -303,6 +725,7 @@ define( ['jquery', 'require', 'util'],
                     representation: JSON.stringify({}),
                     callback: function(subResource) {
                         roleStorage.resources[prefix + 'List']  = new openapp.oo.Resource(subResource.getURI());
+
                         initialiseCache(prefix, collector);
                     }
                 });
@@ -320,6 +743,7 @@ define( ['jquery', 'require', 'util'],
                     'relation': openapp.ns.role + 'data',
                     'type':     type,
                     'onAll':    function(listResArr) {
+
                         // Resource exists
                         if(listResArr.length) {
                             roleStorage.resources[prefix + 'List']  = new openapp.oo.Resource(listResArr[0].getURI());

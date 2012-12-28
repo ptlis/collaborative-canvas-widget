@@ -31,6 +31,9 @@ requirejs.config({
 require(
     [   'jquery',
         'storage/canvasStorage',
+        'storage/lsStorage',
+        'storage/roleStorage',
+        'storage/waveStorage',
         'canvas',
         'decks',
         'cards',
@@ -40,10 +43,6 @@ require(
         'fields',
         'connections',
         'customisation',
-
-        'storage/lsStorage',
-        'storage/roleStorage',
-        'storage/waveStorage',
 
         'card_specific/assessment',
         'card_specific/hlm',
@@ -58,26 +57,28 @@ require(
         'lib/jquery.colorpicker',
         'lib/jquery.imgurUpload'],
 
-    function($, canvasStorage, canvas, decks, cards, containers) {
-
+    function($, canvasStorage, lsStorage, roleStorage, waveStorage, canvas, decks, cards, containers) {
         var storageMethod;
+        var storageModule;
 
         // ROLE & iwc/openapp
         if (typeof(ROLE) !== 'undefined' && ROLE === true) {
             storageMethod   = 'role';
+            storageModule   = roleStorage;
             windowLoadFunc();
 
         // Wookie & wave
         } else if (typeof(WOOKIE) !== 'undefined' && WOOKIE === true) {
             storageMethod   = 'wave';
+            storageModule   = waveStorage;
             windowLoadFunc();
 
         // LocalStorage
         } else {
             storageMethod   = 'localStorage';
+            storageModule   = lsStorage;
             windowLoadFunc();
         }
-
 
         function windowLoadFunc() {
 
@@ -166,12 +167,10 @@ require(
             };
             $.contextMenu(options);
 
-
-            canvasStorage.init(storageMethod, firstRun);
-            canvasStorage.setLocalStorageUIUpdateFunc(localStoragePropagate);
+            canvasStorage.init(storageMethod, storageModule, firstRun);
+//            canvasStorage.setLocalStorageUIUpdateFunc(localStoragePropagate);
             canvasStorage.setWaveUIUpdateFunc(wavePropagate);
             canvasStorage.setWaveParticipantUpdateFunc(waveParticipantUpdate);
-//            canvasStorage.setROLEUIUpdateFunc(ROLEUpdate);
 
             $(window)
                 .off('resize')
@@ -214,15 +213,6 @@ require(
 
 
 
-
-        function localStoragePropagate(event) {
-
-            // Only fire when changed_element is updated (performance optimisation)
-            if(typeof(event) === 'undefined' || event.originalEvent.key === 'changed_element') {
-
-                canvasStorage.standardPropagate();
-            }
-        }
 
 
         function waveParticipantUpdate() {
