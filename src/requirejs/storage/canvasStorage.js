@@ -1,8 +1,8 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'require'],
-        function($, require) {
+define( ['jquery', 'require', 'storage/lsStorage', 'storage/roleStorage', 'storage/waveStorage'],
+        function($, require, lsStorage, roleStorage, waveStorage) {
             'use strict';
 
         /*  Abstraction of underlying storage mechanism */
@@ -35,39 +35,6 @@ define( ['jquery', 'require'],
         /*  The startup function */
             canvasStorage.firstRunFunc      = undefined;
 
-        /*  The list of data stored. */
-            canvasStorage.storedLists       = [
-                'card',
-                'connection',
-                'container',
-                'deck',
-                'field',
-                'custom_deck',
-                'custom_card'
-            ];
-
-        /*  Resource handles for ROLE. */
-            canvasStorage.roleResources     = {
-                base            : null,
-                cardList        : null,
-                connectionList  : null,
-                containerList   : null,
-                deckList        : null,
-                fieldList       : null,
-                customDeckList  : null,
-                customCardList  : null
-            };
-
-        /*  Tracking of cache initialisation. */
-            canvasStorage.cacheInitialised  = {
-                'card'          : false,
-                'connection'    : false,
-                'container'     : false,
-                'deck'          : false,
-                'field'         : false,
-                'custom_deck'   : false,
-                'custom_card'   : false
-            };
 
         /*  'namespaces' for canvasStorage features */
             canvasStorage.changeHandlers        = {};
@@ -444,172 +411,6 @@ define( ['jquery', 'require'],
                 var canvas  = require('canvas');
 
                 if(!canvasStorage.ready) {
-
-                    canvasStorage.space     = new openapp.oo.Resource(openapp.param.space());
-                    canvasStorage.user      = new openapp.oo.Resource(openapp.param.user());
-
-                    // Get Base resource
-                    canvasStorage.roleResources.base    = null;
-
-                    // Function to recursively create list resources
-                    var createListResource = function(createListArr, index) {
-
-                        var type    = 'ptlis.net:' + createListArr[index]  + '_list';
-
-                        canvasStorage.roleResources.base.refresh();
-
-                        canvasStorage.roleResources.base.create({
-                            relation:       openapp.ns.role + 'data',
-                            type:           type,
-                            representation: JSON.stringify({}),
-                            callback: function(subResource) {
-
-                                canvasStorage.roleResources[createListArr[index] + 'List']  = new openapp.oo.Resource(subResource.getURI());
-
-                                if(index + 1 < createListArr.length) {
-                                    canvasStorage.list.cache.initialise(createListArr[index]);
-
-                                    createListResource(createListArr, index + 1);
-                                }
-                                else {
-                                    canvasStorage.list.cache.initialise(createListArr[index]);
-                                }
-                            }
-                        });
-                    };
-
-
-                    // Function to recursively retrieve list resources
-                    var getListResources = function(getListArr, index) {
-
-                        var type    = 'ptlis.net:' + getListArr[index]  + '_list';
-
-                        canvasStorage.roleResources.base.getSubResources({
-                            'relation': openapp.ns.role + 'data',
-                            'type':     type,
-                            'onAll':    function(listResArr) {
-                                // There should only ever be one resource of this type
-                                if(listResArr.length) {
-
-                                    canvasStorage.roleResources[getListArr[index] + 'List']  = new openapp.oo.Resource(listResArr[0].getURI());
-
-                                    if(index + 1 < getListArr.length) {
-                                        canvasStorage.list.cache.initialise(getListArr[index]);
-
-                                        getListResources(getListArr, index + 1);
-                                    }
-
-                                    else {
-
-                                        canvasStorage.list.cache.initialise(getListArr[index]);
-                                    }
-                                }
-
-                                // Resource is missing, force recreation
-                                else {
-                                    if(index + 1 < getListArr.length) {
-                                        createListResource([getListArr[index]], 0);
-
-                                        getListResources(getListArr, index + 1);
-                                    }
-
-                                    else {
-                                        createListResource([getListArr[index]], 0);
-                                    }
-                                }
-
-                            }
-                        });
-                    };
-
-
-
-                    var checkCacheInitialisation    = function(param) {
-
-                        if(canvasStorage.cacheInitialised.card
-                                && canvasStorage.cacheInitialised.connection
-                                && canvasStorage.cacheInitialised.container
-                                && canvasStorage.cacheInitialised.deck
-                                && canvasStorage.cacheInitialised.field) {
-
-                            canvasStorage.standardPropagate();
-                            canvas.hideLoadingDialog();
-
-
-                            canvasStorage.iwcClient = new iwc.Client(['*']);
-                            canvasStorage.iwcClient.connect(uiUpdateFunc);
-                        }
-
-                        else {
-                            window.setTimeout(checkCacheInitialisation, 1000);
-                        }
-                    };
-
-                    window.setTimeout(checkCacheInitialisation, 1000);
-
-                    canvasStorage.space.getSubResources({
-                        'relation': openapp.ns.role + 'data',
-                        'type':     'ptlis.net:base',
-                        'onAll':    function(baseArr) {
-
-                            // Resource already exists
-                            if(baseArr.length) {
-
-
-    var recursiveDelete = function(resource) {
-        resource.getSubResources({
-            'relation': openapp.ns.role + 'data',
-            'onAll':    function(listResArr) {
-                for(var i = 0; i < listResArr.length; i++) {
-                    recursiveDelete(listResArr[i]);
-                }
-
-                resource.del(function(){
-                    alert('del');
-                });
-            }
-        });
-    };
-    /*recursiveDelete(baseArr[0]);
-    return;*/
-                                // There should only ever be 1 base resource
-                                canvasStorage.roleResources.base      = baseArr[0];
-
-                                canvasStorage.roleResources.base.getRepresentation(
-                                    'rdfjson',
-                                    function(representation) {
-                                        canvasStorage.ready     = true;
-
-                                        if('data_version' in representation && representation.hasOwnProperty('data_version')) {
-                                            canvasStorage.runningVersion    = representation.data_version;
-                                        }
-
-                                        if('z_index' in representation && representation.hasOwnProperty('z_index')) {
-                                            canvasStorage.cachedZIndex      = representation.z_index;
-                                        }
-
-                                        getListResources(canvasStorage.storedLists, 0);
-                                    });
-                            }
-
-                            // Create empty resource, first run
-                            else {
-
-                                canvasStorage.space.create({
-                                    relation:       openapp.ns.role + 'data',
-                                    type:           'ptlis.net:base',
-                                    representation: JSON.stringify({}),
-                                    callback: function(subResource) {
-                                        canvasStorage.ready     = true;
-
-                                        canvasStorage.roleResources.base      = new openapp.oo.Resource(subResource.getURI());
-
-                                        createListResource(canvasStorage.storedLists, 0);
-                                    }
-                                });
-                            }
-                        }
-                    });
                 }
             };
 

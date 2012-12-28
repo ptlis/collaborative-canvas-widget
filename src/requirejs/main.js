@@ -41,6 +41,10 @@ require(
         'connections',
         'customisation',
 
+        'storage/lsStorage',
+        'storage/roleStorage',
+        'storage/waveStorage',
+
         'card_specific/assessment',
         'card_specific/hlm',
         'card_specific/information_skills',
@@ -167,7 +171,7 @@ require(
             canvasStorage.setLocalStorageUIUpdateFunc(localStoragePropagate);
             canvasStorage.setWaveUIUpdateFunc(wavePropagate);
             canvasStorage.setWaveParticipantUpdateFunc(waveParticipantUpdate);
-            canvasStorage.setROLEUIUpdateFunc(ROLEUpdate);
+//            canvasStorage.setROLEUIUpdateFunc(ROLEUpdate);
 
             $(window)
                 .off('resize')
@@ -208,64 +212,7 @@ require(
         }
 
 
-        function ROLEUpdate(intent) {
-            canvasStorage.space.refresh();
 
-            // Only update if the notification was published by a different user
-            if(intent.extras.user !== openapp.param.user()) {
-                var prefix;
-
-                for(var i = 0; i < intent.extras.data.length; i++) {
-                    switch(intent.extras.data[i].ns) {
-                        case 'ptlis.net:base':
-                            if(intent.extras.data[i].data.action === 'UPDATE_Z_INDEX') {
-                                canvasStorage.cachedZIndex  = intent.extras.data[i].data.z_index;
-                            }
-                            break;
-
-                        case 'ptlis.net:card_list':
-                        case 'ptlis.net:connection_list':
-                        case 'ptlis.net:container_list':
-                        case 'ptlis.net:deck_list':
-                        case 'ptlis.net:field_list':
-                            prefix      = intent.extras.data[i].ns.replace('ptlis.net:', '').replace('_list', '');
-
-                            if(intent.extras.data[i].action === 'CHANGE_FIRST_ID') {
-                                canvasStorage.list.cache.setFirstItemId(prefix, intent.extras.data[i].data.firstItemId);
-                            }
-                            break;
-
-                        case 'ptlis.net:card':
-                        case 'ptlis.net:connection':
-                        case 'ptlis.net:container':
-                        case 'ptlis.net:deck':
-                        case 'ptlis.net:field':
-                            prefix      = intent.extras.data[i].ns.replace('ptlis.net:', '');
-
-                            switch(intent.extras.data[i].action) {
-                                case 'ADD':
-                                    var cardData    = intent.extras.data[i].data.data;
-                                    canvasStorage.list.cache.cacheItem(prefix, cardData, intent.extras.data[i].data.uri);
-                                    cardData.size   = 'medium';
-                                    $(window).trigger('widget:' + prefix + ':view:add', [cardData]);
-                                    break;
-
-                                case 'UPDATE':
-                                    canvasStorage.list.cache.cacheItem(prefix, intent.extras.data[i].data.data, intent.extras.data[i].data.uri);
-                                    $(window).trigger('widget:' + prefix + ':view:update', [intent.extras.data[i].data.data]);
-                                    break;
-
-                                case 'REMOVE':
-                                    canvasStorage.list.cache.deleteCachedItem(prefix, intent.extras.data[i].data.data.id);
-                                    $(window).trigger('widget:' + prefix + ':view:remove', [intent.extras.data[i].data.data]);
-                                    break;
-                            }
-                            break;
-                    }
-
-                }
-            }
-        }
 
 
         function localStoragePropagate(event) {
