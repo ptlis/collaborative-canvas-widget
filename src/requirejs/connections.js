@@ -2,7 +2,7 @@
 
 
 define(
-    ['jquery', 'require', 'canvasStorage', 'util', 'lib/raphael'],
+    ['jquery', 'require', 'storage/canvasStorage', 'util', 'lib/raphael'],
     function($, require, canvasStorage, util, raphael) {
         'use strict';
 

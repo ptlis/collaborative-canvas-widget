@@ -1,7 +1,7 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'decks', 'canvasStorage', 'util'],
+define( ['jquery', 'decks', 'storage/canvasStorage', 'util'],
         function($, decks, canvasStorage, util) {
             'use strict';
 

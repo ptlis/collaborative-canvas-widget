@@ -30,7 +30,7 @@ requirejs.config({
 
 require(
     [   'jquery',
-        'canvasStorage',
+        'storage/canvasStorage',
         'canvas',
         'decks',
         'cards',

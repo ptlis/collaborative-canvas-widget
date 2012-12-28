@@ -2,7 +2,7 @@
 
 /*  Functionality that is required for the whole canvas. */
 define(
-    ['jquery', 'canvasStorage'],
+    ['jquery', 'storage/canvasStorage'],
     function($, canvasStorage) {
         'use strict';
 
@@ -114,7 +114,7 @@ define(
 
         // Hide the loading animation
         canvas.hideLoadingDialog = function() {
-            if(canvasStorage.runningVersion === null) {
+            if(canvasStorage.getRunningVersion() === null) {
 
                 $('#loading_dialog').fadeOut(
                     250,

@@ -2,7 +2,7 @@
 
 
 define(
-    ['jquery', 'canvasStorage', 'util'],
+    ['jquery', 'storage/canvasStorage', 'util'],
     function($, canvasStorage, util) {
         'use strict';
 

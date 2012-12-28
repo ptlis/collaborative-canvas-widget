@@ -1,7 +1,7 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'decks', 'canvasStorage'],
+define( ['jquery', 'decks', 'storage/canvasStorage'],
         function($, decks, canvasStorage) {
             'use strict';
 
@@ -39,7 +39,7 @@ define( ['jquery', 'decks', 'canvasStorage'],
                                                 'class':                'title text_input',
                                                 'placeholder':          'enter title...',
                                                 'data-inputname':       'title'
-                                                    
+
                                             });
                         inputElem.appendTo(outerElem);
                     }
