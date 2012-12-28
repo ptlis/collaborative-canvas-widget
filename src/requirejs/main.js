@@ -105,7 +105,7 @@ require(
                             break;
 
                         case 'import':
-                            cards.handlers.importDialog();
+                            $(window).trigger('widget:canvas:view:import_dialog');
                             break;
 
                         case 'change_header':
@@ -113,7 +113,7 @@ require(
                             break;
 
                         case 'export':
-                            cards.handlers.exportDialog();
+                            $(window).trigger('widget:canvas:view:export_dialog');
                             break;
                     }
 
