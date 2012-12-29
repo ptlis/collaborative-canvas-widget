@@ -15,6 +15,9 @@ define(
                 .off(   'widget:custom_deck:model:new')     .on('widget:custom_deck:model:new',                customDecks.model.add);
         };
 
+
+
+
     /* Model*/
 
         /* Required fields for custom deck. */
@@ -39,36 +42,36 @@ define(
             extraFields.icon_32x32  = icon32x32URL;
             extraFields.icon_48x48  = icon48x48URL;
 
-            canvasStorage.list.add('custom_deck', extraFields);
+            canvasStorage.list.add('customDecks', extraFields);
         };
 
 
         /* Remove a custom deck. */
         customDecks.model.remove = function(event, deckId) {
-//            $(window).trigger('widget:connection:model:delete_for_card', [cardId]);
+//            $(window).trigger('widget:connections:model:delete_for_card', [cardId]);
 
             var extraFields     = customDecks.model.getFields();
             extraFields.id      = deckId;
 
-            canvasStorage.list.remove('custom_deck', extraFields);
+            canvasStorage.list.remove('customDecks', extraFields);
         };
 
 
         customDecks.model.removeAll = function() {
-//            $(window).trigger('widget:connection:model:remove_all');
+//            $(window).trigger('widget:connections:model:remove_all');
 
-            canvasStorage.list.removeAll('custom_deck', customDecks.model.getFields());
+            canvasStorage.list.removeAll('customDecks', customDecks.model.getFields());
         };
 
 
         /* Get the deck with the specified deck id. */
         customDecks.model.get = function(deckId) {
-            return canvasStorage.list.get('custom_deck', deckId);
+            return canvasStorage.list.get('customDecks', deckId);
         };
 
 
         customDecks.model.getAll = function() {
-            return canvasStorage.list.getAll('custom_deck');
+            return canvasStorage.list.getAll('customDecks');
         };
 
 

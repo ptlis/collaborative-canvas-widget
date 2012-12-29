@@ -26,22 +26,22 @@ define(
 
         connections.init = function() {
             $(window)
-                .off(   'widget:connection:model:new')              .on('widget:connection:model:new',              connections.model.add)
-                .off(   'widget:connection:model:delete')           .on('widget:connection:model:delete',           connections.model.remove)
-                .off(   'widget:connection:model:remove_all')       .on('widget:connection:model:remove_all',       connections.model.removeAll)
-                .off(   'widget:connection:model:delete_for_card')  .on('widget:connection:model:delete_for_card',  connections.model.removeForCard)
-                .off(   'widget:connection:model:to_front')         .on('widget:connection:model:to_front',         connections.model.toFront)
+                .off(   'widget:connections:model:new')             .on('widget:connections:model:new',             connections.model.add)
+                .off(   'widget:connections:model:delete')          .on('widget:connections:model:delete',          connections.model.remove)
+                .off(   'widget:connections:model:remove_all')      .on('widget:connections:model:remove_all',      connections.model.removeAll)
+                .off(   'widget:connections:model:delete_for_card') .on('widget:connections:model:delete_for_card', connections.model.removeForCard)
+                .off(   'widget:connections:model:to_front')        .on('widget:connections:model:to_front',        connections.model.toFront)
 
-                .off(   'widget:connection:view:add')               .on('widget:connection:view:add',               connections.view.add)
-                .off(   'widget:connection:view:move')              .on('widget:connection:view:move',              connections.view.move)
-                .off(   'widget:connection:view:edit_label')        .on('widget:connection:view:edit_label',        connections.view.editLabel)
-                .off(   'widget:connection:view:move_for_card')     .on('widget:connection:view:move_for_card',     connections.view.moveForCard)
-                .off(   'widget:connection:view:remove')            .on('widget:connection:view:remove',            connections.view.remove)
-                .off(   'widget:connection:view:remove_all')        .on('widget:connection:view:remove_all',        connections.view.removeAll)
-                .off(   'widget:connection:view:update_all_paths')  .on('widget:connection:view:update_all_paths',  connections.view.updateAllPaths)
-                .off(   'widget:connection:view:update')            .on('widget:connection:view:update',            connections.view.update)
-                .off(   'widget:connection:view:update_all')        .on('widget:connection:view:update_all',        connections.view.updateAll)
-                .off(   'widget:connection:view:to_front')          .on('widget:connection:view:to_front',          connections.view.toFront);
+                .off(   'widget:connections:view:add')              .on('widget:connections:view:add',              connections.view.add)
+                .off(   'widget:connections:view:move')             .on('widget:connections:view:move',             connections.view.move)
+                .off(   'widget:connections:view:edit_label')       .on('widget:connections:view:edit_label',       connections.view.editLabel)
+                .off(   'widget:connections:view:move_for_card')    .on('widget:connections:view:move_for_card',    connections.view.moveForCard)
+                .off(   'widget:connections:view:remove')           .on('widget:connections:view:remove',           connections.view.remove)
+                .off(   'widget:connections:view:remove_all')       .on('widget:connections:view:remove_all',       connections.view.removeAll)
+                .off(   'widget:connections:view:update_all_paths') .on('widget:connections:view:update_all_paths', connections.view.updateAllPaths)
+                .off(   'widget:connections:view:update')           .on('widget:connections:view:update',           connections.view.update)
+                .off(   'widget:connections:view:update_all')       .on('widget:connections:view:update_all',       connections.view.updateAll)
+                .off(   'widget:connections:view:to_front')         .on('widget:connections:view:to_front',         connections.view.toFront);
 
             connections.raphaelCanvas   = Raphael('contain_drag', 0, 0);
 
@@ -56,17 +56,17 @@ define(
             var connectionId    = connectionLabelElem.data('instanceid');
 
             connectionLabelElem.on('click', function() {
-                $(window).trigger('widget:connection:model:to_front', [connectionId]);
+                $(window).trigger('widget:connections:model:to_front', [connectionId]);
             });
 
             connectionLabelElem.find('.edit_button')
             .on('click', function() {
-                $(window).trigger('widget:connection:view:edit_label', [connectionId]);
+                $(window).trigger('widget:connections:view:edit_label', [connectionId]);
             });
 
             connectionLabelElem.find('.remove_button')
             .on('click', function() {
-                $(window).trigger('widget:connection:model:delete', [connectionId]);
+                $(window).trigger('widget:connections:model:delete', [connectionId]);
             });
         };
 
@@ -249,7 +249,7 @@ define(
             extraFields.label   = labelString;
             extraFields.z_index = canvasStorage.util.getNextZIndex().toString();
 
-            canvasStorage.list.add('connection', extraFields);
+            canvasStorage.list.add('connections', extraFields);
         };
 
 
@@ -257,12 +257,12 @@ define(
             var extraFields     = connections.model.getFields();
             extraFields.id      = connectionId;
 
-            canvasStorage.list.remove('connection', extraFields);
+            canvasStorage.list.remove('connections', extraFields);
         };
 
 
         connections.model.removeAll = function() {
-            canvasStorage.list.removeAll('connection', connections.model.getFields());
+            canvasStorage.list.removeAll('connections', connections.model.getFields());
         };
 
 
@@ -270,7 +270,7 @@ define(
             var cardConnections = connections.model.getForCard(cardId);
 
             for(var i = 0; i < cardConnections.length; i++) {
-                $(window).trigger('widget:connection:model:delete', [cardConnections[i].id]);
+                $(window).trigger('widget:connections:model:delete', [cardConnections[i].id]);
             }
         };
 
@@ -283,14 +283,14 @@ define(
                     'z_index':  nextZIndex
             };
 
-            canvasStorage.list.update('connection', extraFields);
+            canvasStorage.list.update('connections', extraFields);
 
-            $(window).trigger('widget:connection:view:to_front', [connectionId, nextZIndex]);
+            $(window).trigger('widget:connections:view:to_front', [connectionId, nextZIndex]);
         };
 
 
         connections.model.get = function(connectionId) {
-            return canvasStorage.list.get('connection', connectionId);
+            return canvasStorage.list.get('connections', connectionId);
         };
 
 
@@ -310,7 +310,7 @@ define(
 
 
         connections.model.getAll = function() {
-            return canvasStorage.list.getAll('connection');
+            return canvasStorage.list.getAll('connections');
         };
 
 
@@ -377,7 +377,7 @@ define(
             var labelCont           =   $('<div></div>', {
                 'class':            'connection_container',
                 'data-instanceid':  connectionData.id,
-                'data-prefix':      'connection'
+                'data-prefix':      'connections'
             });
 
             var labelElem           =   $('<div></div>', {
@@ -526,7 +526,7 @@ define(
                         if(connections.cachedConnections[fromCardId].hasOwnProperty(toCardId)) {
                             if(fromCardId === cardId || toCardId === cardId) {
                                 toCardDimensions    = cards.getCardDimensions(toCardId);
-                                $(window).trigger('widget:connection:view:move',
+                                $(window).trigger('widget:connections:view:move',
                                         [
                                          fromCardId,
                                          toCardId,
@@ -555,7 +555,7 @@ define(
                         if(connections.cachedConnections[fromCardId].hasOwnProperty(toCardId)) {
                             toCardDimensions    = cards.getCardDimensions(toCardId);
 
-                            $(window).trigger('widget:connection:view:move',
+                            $(window).trigger('widget:connections:view:move',
                                     [
                                      fromCardId,
                                      toCardId,
@@ -572,7 +572,7 @@ define(
         connections.view.update = function(event, connectionData) {
             var cards            = require('cards');
 
-            $(window).trigger('widget:connection:view:move',
+            $(window).trigger('widget:connections:view:move',
                     [
                      connectionData.from,
                      connectionData.to,
@@ -618,7 +618,7 @@ define(
                             if(!(fromCardId in connections.cachedConnections && toCardId in connections.cachedConnections[fromCardId])) {
                                 storedConnections[fromCardId][toCardId].newConnection    = false;
 
-                                $(window).trigger('widget:connection:view:add',
+                                $(window).trigger('widget:connections:view:add',
                                         [
                                          storedConnections[fromCardId][toCardId]
                                          ]);
@@ -640,14 +640,14 @@ define(
 
                             if(!(fromCardId in storedConnections && toCardId in storedConnections[fromCardId])) {
 
-                                $(window).trigger('widget:connection:view:remove', [storedConnections[fromCardId][toCardId]]);
+                                $(window).trigger('widget:connections:view:remove', [storedConnections[fromCardId][toCardId]]);
                             }
                         }
                     }
                 }
             }
 
-            $(window).trigger('widget:connection:view:update_all_paths');
+            $(window).trigger('widget:connections:view:update_all_paths');
         };
 
 
@@ -836,12 +836,12 @@ define(
             var connectionCreateFunc    = function(event) {
 
                 var cardElem;
-                if($(event.target).data('prefix') === 'card') {
+                if($(event.target).data('prefix') === 'cards') {
                     cardElem    = $(event.target);
                 }
 
                 else {
-                    cardElem    = $(event.target).parents('[data-prefix="card"]');
+                    cardElem    = $(event.target).parents('[data-prefix="cards"]');
                 }
 
                 var toCardId    = cardElem.data('instanceid');
@@ -851,7 +851,7 @@ define(
 
                 if(!lineExists) {
                     connectionId    = util.uidGenerator();
-                    $(window).trigger('widget:connection:model:new',
+                    $(window).trigger('widget:connections:model:new',
                             [
                              connectionId,
                              fromCardId,
@@ -875,7 +875,7 @@ define(
 
 
             // Disable card dragging & enable click for making connections
-            var cardElemArr   = $('[data-prefix="card"]');
+            var cardElemArr   = $('[data-prefix="cards"]');
             var innerCardElem;
             for(i = 0; i < cardElemArr.length; i++) {
                 innerCardElem   = $(cardElemArr[i]);
@@ -944,7 +944,7 @@ define(
                 var labelDialog =   $('<div></div>', {
                     'class':            'connections_dialog',
                     'data-instanceid':  innerConnectionId,
-                    'data-prefix':      'connection'
+                    'data-prefix':      'connections'
                 });
                 $('#contain_drag svg').after(labelDialog);
 
@@ -995,7 +995,7 @@ define(
                 .on('click', connections.handlers.connectionFinish);
 
                 // Push cards not part of connection behind background image
-                var cardElemArr   = $('[data-prefix="card"]');
+                var cardElemArr   = $('[data-prefix="cards"]');
                 var innerCardElem;
                 for(var i = 0; i < cardElemArr.length; i++) {
                     innerCardElem   = $(cardElemArr[i]);
@@ -1041,11 +1041,11 @@ define(
 
         connections.handlers.connectionCreate = function(event) {
             var toCardId;
-            if($(event.target).data('prefix') === 'card') {
+            if($(event.target).data('prefix') === 'cards') {
                 toCardId    = $(event.target).data('instanceid');
             }
             else {
-                toCardId    = $(event.target).parents('[data-prefix="card"]').data('instanceid');
+                toCardId    = $(event.target).parents('[data-prefix="cards"]').data('instanceid');
             }
 
             var fromCardId  = $('.connecting').data('instanceid');
@@ -1055,7 +1055,7 @@ define(
             if(!lineExists) {
                 var labelString     = null;
 
-                $(window).trigger('widget:connection:model:new',
+                $(window).trigger('widget:connections:model:new',
                         [
                          util.uidGenerator(),
                          fromCardId,
@@ -1109,7 +1109,7 @@ define(
                 }
 
                 // Reset cards (z-index, events etc)
-                var cardElems   = $('[data-prefix="card"]');
+                var cardElems   = $('[data-prefix="cards"]');
                 var cardElem;
                 for(i = 0; i < cardElems.length; i++) {
                     cardElem        = $(cardElems[i]);
@@ -1117,7 +1117,7 @@ define(
 
                     cards.addEvents(cardElem);
 
-                    $(window).trigger('widget:card:view:post_propagate', [cardElem]);
+                    $(window).trigger('widget:cards:view:post_propagate', [cardElem]);
 
                     cardElem.off('click.connections');
                     cardElem.find('.menu_icon').css('visibility', 'visible');

@@ -241,7 +241,7 @@ define(
             previewArea.appendTo(previewCont);
 
             var previewDeck     =   $('<span></span>', {
-                                        'data-prefix':      'deck',
+                                        'data-prefix':      'decks',
                                         'data-cardsize':    'small',
                                         'data-template':    'selectable_prompts'
                                     });

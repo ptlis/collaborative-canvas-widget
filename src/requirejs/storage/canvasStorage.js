@@ -34,13 +34,13 @@ define( ['jquery', 'require'],
 
         /*  The list of data stored. */
             canvasStorage.storedLists       = [
-                'card',
-                'connection',
-                'container',
-                'deck',
-                'field',
-                'custom_deck',
-                'custom_card'
+                'containers',
+                'cards',
+                'connections',
+                'decks',
+                'fields',
+                'customDecks',
+                'customCards'
             ];
 
         /*  Underlying storage module (handles differences between storage
@@ -66,6 +66,17 @@ define( ['jquery', 'require'],
                 storageModule.init();
             };
 
+        /*  Remove all data */
+            canvasStorage.clear = function() {
+                var prefix;
+                var module;
+                for(var index in canvasStorage.storedLists) {
+                    prefix              = canvasStorage.storedLists[index];
+                    module              = require(prefix);
+                    module.model.removeAll();
+                }
+            };
+
 
         /*  The startup function */
             canvasStorage.firstRun          = function() {
@@ -76,15 +87,15 @@ define( ['jquery', 'require'],
 
                 // First run
                 if(lsDataVersion === null) {
-                    $(window).trigger('widget:field:view:create_dialog', [true]);
+                    $(window).trigger('widget:fields:view:create_dialog', [true]);
                 }
 
                 // Older version found, offer to clear
                 else if(lsDataVersion !== canvasStorage.version) {
                     if(confirm('Data from an incompatible version of this app exists. Do you wish to clear it?')) {
-                        clearData();
+                        canvasStorage.clear();
 
-                        $(window).trigger('widget:field:view:create_dialog', [true]);
+                        $(window).trigger('widget:fields:view:create_dialog', [true]);
                     }
 
                 }
@@ -148,27 +159,23 @@ define( ['jquery', 'require'],
 
         /*  Generate JSON data structure containing all data */
             canvasStorage.exportData = function() {
-                var cards               = require('cards');
-                var connections         = require('connections');
-                var containers          = require('containers');
-                var decks               = require('decks');
-                var fields              = require('fields');
-
                 var allData             = {};
                 allData.data_version    = canvasStorage.getRunningVersion();
                 allData.z_index         = canvasStorage.cachedZIndex;
 
-                allData.cards           = cards.model.getAll();
-                allData.connections     = connections.model.getAll();
-                allData.containers      = containers.model.getAll();
-                allData.decks           = decks.model.getAll();
-                allData.fields          = fields.model.getAll();
+                var prefix;
+                var module;
+                for(var index in canvasStorage.storedLists) {
+                    prefix              = canvasStorage.storedLists[index];
+                    module              = require(prefix);
+                    allData[prefix]     = module.model.getAll();
+                }
 
                 return allData;
             };
 
 
-        /*  Import JSON datastructure & overwrite current data. */
+        /*  Import JSON data structure & overwrite current data. */
             canvasStorage.importData = function(importedData) {
                 if(importedData.data_version !== canvasStorage.version) {
                     throw 'Data version mismatch between import and application';
@@ -176,20 +183,30 @@ define( ['jquery', 'require'],
 
                 if(canvasStorage.method === 'wave' || canvasStorage.method === 'localStorage') {
 
-                    // localStorage clear
-                    if(canvasStorage.method === 'localStorage') {
-                        localStorage.clear();
-                    }
-
-                    // wave clear
-                    else {
-                        throw "'importData' not implemented for wave";
-                        // TODO: CLEAR
-                    }
+                    canvasStorage.clear();
 
 
-                    var i;
-                    var index;
+                    // Process a single list item from imported data.
+                    var processList = function(prefix, itemDataArr, processedData) {
+                        var itemId;
+
+                        for(var i = 0; i < itemDataArr.length; i++) {
+                            itemId  = itemDataArr[i].id;
+
+                            if(i === 0) {
+                                processedData[prefix + '_first']    = itemId;
+                            }
+
+                            for(var index in itemDataArr[i]) {
+                                if(itemDataArr[i].hasOwnProperty(index) && itemDataArr[i][index] !== null) {
+                                    processedData[prefix + '_' + itemId + '_' + index] = itemDataArr[i][index];
+                                }
+                            }
+                        }
+
+                        return processedData;
+                    };
+
 
                     // Process standard data
                     var processedData   = {
@@ -199,108 +216,14 @@ define( ['jquery', 'require'],
                     };
 
 
-
-                    // Process containers
-                    var containerId;
-                    for(i = 0; i < importedData.containers.length; i++) {
-                        containerId = importedData.containers[i].id;
-                        delete(importedData.containers[i].id);
-
-                        if(i === 0) {
-                            processedData.container_first   = containerId;
-                        }
-
-                        for(index in importedData.containers[i]) {
-                            if(importedData.containers[i].hasOwnProperty(index) && importedData.containers[i][index] !== null) {
-                                processedData['container_' + containerId + '_' + index] = importedData.containers[i][index];
-                            }
-                        }
-                    }
-
-
-                    // Process cards data.
-                    var cardId;
-                    for(i = 0; i < importedData.cards.length; i++) {
-                        cardId      = importedData.cards[i].id;
-                        delete(importedData.cards[i].id);
-
-                        if(i === 0) {
-                            processedData.card_first    = cardId;
-                        }
-
-                        for(index in importedData.cards[i]) {
-                            if(importedData.cards[i].hasOwnProperty(index) && importedData.cards[i][index] !== null) {
-                                if(typeof(importedData.cards[i][index]) === 'string') {
-                                    processedData['card_' + cardId + '_' + index]   = importedData.cards[i][index];
-                                }
-
-                                else if(typeof(importedData.cards[i][index]) === 'object') {
-                                    for(var innerIndex in importedData.cards[i][index]) {
-                                        if(importedData.cards[i][index].hasOwnProperty(innerIndex)) {
-                                            processedData['card_' + cardId + '_' + innerIndex]   = importedData.cards[i][index][innerIndex];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-
-                    // Process connections
-                    var connectionId;
-                    for(i = 0; i < importedData.connections.length; i++) {
-                        connectionId    = importedData.connections[i].id;
-                        delete(importedData.connections[i].id);
-
-                        if(i === 0) {
-                            processedData.connection_first  = connectionId;
-                        }
-
-                        for(index in importedData.connections[i]) {
-                            if(importedData.connections[i].hasOwnProperty(index) && importedData.connections[i][index] !== null) {
-                                processedData['connection_' + connectionId + '_' + index] = importedData.connections[i][index];
-                            }
-                        }
-                    }
-
-
-                    // Process decks
-                    var deckId;
-                    for(i = 0; i < importedData.decks.length; i++) {
-                        deckId    = importedData.decks[i].id;
-                        delete(importedData.decks[i].id);
-
-                        if(i === 0) {
-                            processedData.deck_first    = deckId;
-                        }
-
-                        for(index in importedData.decks[i]) {
-                            if(importedData.decks[i].hasOwnProperty(index) && importedData.decks[i][index] !== null) {
-                                processedData['deck_' + deckId + '_' + index] = importedData.decks[i][index];
-                            }
-                        }
-                    }
-
-
-                    // Process fields
-                    var fieldId;
-                    for(i = 0; i < importedData.fields.length; i++) {
-                        fieldId    = importedData.fields[i].id;
-                        delete(importedData.fields[i].id);
-
-                        if(i === 0) {
-                            processedData.field_first   = fieldId;
-                        }
-
-                        for(index in importedData.fields[i]) {
-                            if(importedData.fields[i].hasOwnProperty(index) && importedData.fields[i][index] !== null) {
-                                processedData['field_' + fieldId + '_' + index] = importedData.fields[i][index];
-                            }
-                        }
+                    // Iterate over lists
+                    var prefix;
+                    for(var index in canvasStorage.storedLists) {
+                        prefix          = canvasStorage.storedLists[index];
+                        processedData   = processList(prefix, importedData[prefix], processedData);
                     }
 
                     canvasStorage.util.storeDelta(processedData);
-
 
 
                     // Initialisation of cache
@@ -318,14 +241,14 @@ define( ['jquery', 'require'],
 
         /*  Trigger events to propagate updated data. */
             canvasStorage.standardPropagate = function() {
-                $(window).trigger('widget:container:view:update_all');
-                $(window).trigger('widget:field:view:update_all');
-                $(window).trigger('widget:card:view:update_all');
-                $(window).trigger('widget:connection:view:update_all');
-                $(window).trigger('widget:deck:view:update_all');
+                var prefix;
+                for(var index in canvasStorage.storedLists) {
+                    prefix          = canvasStorage.storedLists[index];
+                    $(window).trigger('widget:' + prefix + ':view:update_all');
+                }
 
                 // Handle container resizing
-                $(window).trigger('widget:container:view:resize');
+                $(window).trigger('widget:containers:view:resize');
             };
 
 
@@ -448,7 +371,7 @@ define( ['jquery', 'require'],
                     throw 'canvasStorage not initialised';
                 }
 
-                var data;
+                var data    = null;
 
                 if(canvasStorage.method === 'localStorage') {
                     data    = localStorage.getItem(key);
@@ -645,31 +568,31 @@ define( ['jquery', 'require'],
         */
 
             canvasStorage.list.cache.data = {
-                'card'          : {
+                'cards'         : {
                     firstItemId     : null,
                     lastItemId      : null
                 },
-                'connection'    : {
+                'connections'   : {
                     firstItemId     : null,
                     lastItemId      : null
                 },
-                'container'     : {
+                'containers'    : {
                     firstItemId     : null,
                     lastItemId      : null
                 },
-                'deck'          : {
+                'decks'         : {
                     firstItemId     : null,
                     lastItemId      : null
                 },
-                'field'         : {
+                'fields'        : {
                     firstItemId     : null,
                     lastItemId      : null
                 },
-                'custom_deck'   : {
+                'customDecks'   : {
                     firstItemId     : null,
                     lastItemId      : null
                 },
-                'custom_card'   : {
+                'customCards'   : {
                     firstItemId     : null,
                     lastItemId      : null
                 }
@@ -848,10 +771,10 @@ define( ['jquery', 'require'],
                 }
 
                 // TODO: Handle with param (also not role ready)
-                if(prefix === 'card') {
+                if(prefix === 'cards') {
                     newItemData.size            = 'medium';
                 }
-                if(prefix === 'connection') {
+                if(prefix === 'connections') {
                     newItemData.newConnection   = true;
                 }
                 $(window).trigger('widget:' + prefix + ':view:add', [newItemData]);
@@ -919,10 +842,10 @@ define( ['jquery', 'require'],
 
 
                 // TODO: Handle with param (also not role ready)
-                if(prefix === 'card') {
+                if(prefix === 'cards') {
                     newItemData.size            = 'medium';
                 }
-                if(prefix === 'connection') {
+                if(prefix === 'connections') {
                     newItemData.newConnection   = true;
                 }
 
@@ -1009,10 +932,10 @@ define( ['jquery', 'require'],
                 for(i = 0; i < newItemDataArr.length; i++) {
 
                     // TODO: Handle with param (also not role ready)
-                    if(prefix === 'card') {
+                    if(prefix === 'cards') {
                         newItemDataArr[i].size          = 'medium';
                     }
-                    if(prefix === 'connection') {
+                    if(prefix === 'connections') {
                         newItemDataArr[i].newConnection = true;
                     }
 
@@ -1092,7 +1015,7 @@ define( ['jquery', 'require'],
                     }
 
                     // Card-specific 'special' extra fields
-                    if(prefix === 'card') {
+                    if(prefix === 'cards') {
                         var deck        = canvasStorage.util.getData(prefix + '_' + itemData.data.id + '_deck');
                         var cardType    = canvasStorage.util.getData(prefix + '_' + itemData.data.id + '_cardtype');
                         var cardExtraFields = decks.getHandler(deck).getExtraFields(cardType);
@@ -1149,7 +1072,7 @@ define( ['jquery', 'require'],
 
 
                         // Card-specific 'special' extra fields
-                        if(prefix === 'card') {
+                        if(prefix === 'cards') {
                             var deck        = canvasStorage.util.getData(prefix + '_' + itemDataArr[i].data.id + '_deck');
                             var cardType    = canvasStorage.util.getData(prefix + '_' + itemDataArr[i].data.id + '_cardtype');
                             var cardExtraFields = decks.getHandler(deck).getExtraFields(cardType);
@@ -1161,6 +1084,8 @@ define( ['jquery', 'require'],
                             }
                         }
                     }
+
+                    canvasStorage.util.storeDelta(delta);
                 }
 
                 else if(canvasStorage.method === 'role') {

@@ -29,7 +29,7 @@ define( ['jquery', 'storage/canvasStorage'],
 
 
                 var card                =   $('<div></div>', {
-                                                'data-prefix':      'card',
+                                                'data-prefix':      'cards',
                                                 'data-template':    'selectable_prompts',
                                                 'data-carddeck':    this.deckName,
                                                 'data-cardtype':    cardType,
@@ -92,7 +92,7 @@ define( ['jquery', 'storage/canvasStorage'],
                     var activity_label;
                     activity_label      =   $('<label></label>', {
                                                 'class':            'user_activity_label',
-                                                'for':              'card_' + instanceId + '_activity'
+                                                'for':              'cards_' + instanceId + '_activity'
                                             });
                     // TODO: This should be variable on a per-card basis
                     activity_label.text('Activity:');
@@ -102,7 +102,7 @@ define( ['jquery', 'storage/canvasStorage'],
                     activity_input      =   $('<input>', {
                                                 'type':             'text',
                                                 'class':            'activity_entry text_input',
-                                                'id':               'card_' + instanceId + '_activity',
+                                                'id':               'cards_' + instanceId + '_activity',
                                                 'data-inputname':   'activity'
                                             });
 
@@ -164,7 +164,7 @@ define( ['jquery', 'storage/canvasStorage'],
                         for(itemIndex in this.deckData.cardTypes[cardType].details.items[headingIndex]) {
                             if(this.deckData.cardTypes[cardType].details.items[headingIndex].hasOwnProperty(itemIndex)) {
                                 itemElem                =   $('<li></li>', {
-                                                            'data-paired_slave':    'card_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex + '_paired'
+                                                            'data-paired_slave':    'cards_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex + '_paired'
                                                         });
                                 itemElem.appendTo(sectionList);
 
@@ -211,7 +211,7 @@ define( ['jquery', 'storage/canvasStorage'],
                                 if(size === 'large') {
                                     removeButton        =   $('<div></div>', {
                                         'class':                'remove remove_button_32x32',
-                                        'data-paired_master':   'card_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex + '_paired',
+                                        'data-paired_master':   'cards_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex + '_paired',
                                         'data-inputname':       'paired_' + headingIndex + ':' + itemIndex
                                     });
                                     removeButton.appendTo(itemElem);
@@ -330,7 +330,7 @@ define( ['jquery', 'storage/canvasStorage'],
                 'use strict';
 
                 return  $('<span></span>', {
-                    'data-prefix':      'deck',
+                    'data-prefix':      'decks',
                     'data-carddeck':    this.deckName,
                     'data-cardsize':    'small',
                     'data-template':    'selectable_prompts'

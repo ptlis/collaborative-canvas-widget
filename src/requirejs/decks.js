@@ -19,20 +19,20 @@ define(
 
         decks.init = function() {
             $(window)
-                .off(   'widget:deck:model:new')            .on('widget:deck:model:new',            decks.model.add)
-                .off(   'widget:deck:model:delete')         .on('widget:deck:model:delete',         decks.model.remove)
-                .off(   'widget:deck:model:remove_all')     .on('widget:deck:model:remove_all',     decks.model.removeAll)
+                .off(   'widget:decks:model:new')           .on('widget:decks:model:new',           decks.model.add)
+                .off(   'widget:decks:model:delete')        .on('widget:decks:model:delete',        decks.model.remove)
+                .off(   'widget:decks:model:remove_all')    .on('widget:decks:model:remove_all',    decks.model.removeAll)
 
-                .off(   'widget:deck:view:add')             .on('widget:deck:view:add',             decks.view.add)
-                .off(   'widget:deck:view:remove')          .on('widget:deck:view:remove',          decks.view.remove)
-                .off(   'widget:deck:view:remove_all')      .on('widget:deck:view:remove_all',      decks.view.removeAll)
-                .off(   'widget:deck:view:update')          .on('widget:deck:view:update',          decks.view.update)
-                .off(   'widget:deck:view:update_all')      .on('widget:deck:view:update_all',      decks.view.updateAll)
-                .off(   'widget:deck:view:tooltip_show')    .on('widget:deck:view:tooltip_show',    decks.view.tooltipShow)
-                .off(   'widget:deck:view:tooltip_hide')    .on('widget:deck:view:tooltip_hide',    decks.view.tooltipHide)
-                .off(   'widget:deck:view:hint_show')       .on('widget:deck:view:hint_show',       decks.view.hintShow)
-                .off(   'widget:deck:view:hint_hide')       .on('widget:deck:view:hint_hide',       decks.view.hintHide)
-                .off(   'widget:deck:view:create_dialog')   .on('widget:deck:view:create_dialog',   decks.view.createDialog);
+                .off(   'widget:decks:view:add')            .on('widget:decks:view:add',            decks.view.add)
+                .off(   'widget:decks:view:remove')         .on('widget:decks:view:remove',         decks.view.remove)
+                .off(   'widget:decks:view:remove_all')     .on('widget:decks:view:remove_all',     decks.view.removeAll)
+                .off(   'widget:decks:view:update')         .on('widget:decks:view:update',         decks.view.update)
+                .off(   'widget:decks:view:update_all')     .on('widget:decks:view:update_all',     decks.view.updateAll)
+                .off(   'widget:decks:view:tooltip_show')   .on('widget:decks:view:tooltip_show',   decks.view.tooltipShow)
+                .off(   'widget:decks:view:tooltip_hide')   .on('widget:decks:view:tooltip_hide',   decks.view.tooltipHide)
+                .off(   'widget:decks:view:hint_show')      .on('widget:decks:view:hint_show',      decks.view.hintShow)
+                .off(   'widget:decks:view:hint_hide')      .on('widget:decks:view:hint_hide',      decks.view.hintHide)
+                .off(   'widget:decks:view:create_dialog')  .on('widget:decks:view:create_dialog',  decks.view.createDialog);
         },
 
 
@@ -97,10 +97,10 @@ define(
             // Tooltips
             deckElem
                 .on('mouseenter',   function() {
-                    $(window).trigger('widget:deck:view:tooltip_show', [deckElem]);
+                    $(window).trigger('widget:decks:view:tooltip_show', [deckElem]);
                 })
                 .on('mouseleave',   function() {
-                    $(window).trigger('widget:deck:view:tooltip_hide', [deckElem]);
+                    $(window).trigger('widget:decks:view:tooltip_hide', [deckElem]);
                 });
 
             // Dragging
@@ -148,7 +148,7 @@ define(
 
 
         decks.view.removeAll = function() {
-            var deckElems   = $('#deck_selector [data-prefix="deck"]');
+            var deckElems   = $('#deck_selector [data-prefix="decks"]');
 
             for(var i = 0; i < deckElems.length; i++) {
                 $(deckElems[i]).remove();
@@ -165,7 +165,7 @@ define(
             var addedDeckIds    = [];
             var removedDecks  = [];
             var storedDecks     = decks.model.getAll();
-            var displayedDecks  = $('#deck_selector [data-prefix="deck"]');
+            var displayedDecks  = $('#deck_selector [data-prefix="decks"]');
             var deckData;
             var deckId;
             var i;
@@ -194,13 +194,13 @@ define(
 
             // Add deck
             for(i = 0; i < addedDeckIds.length; i++) {
-                $(window).trigger('widget:deck:view:add',       [addedDeckIds[i]]);
+                $(window).trigger('widget:decks:view:add',       [addedDeckIds[i]]);
             }
 
 
             // Remove decks
             for(i = 0; i < removedDecks.length; i++) {
-                $(window).trigger('widget:deck:view:remove',    [removedDecks[i]]);
+                $(window).trigger('widget:decks:view:remove',    [removedDecks[i]]);
             }
         };
 
@@ -360,15 +360,15 @@ define(
                 connectWith:    '.connected',
                 containment:    dialog,
                 receive : function(event, ui) {
-                    $(window).trigger('widget:deck:model:new', [ui.item.find('span').data('carddeck')]);
+                    $(window).trigger('widget:decks:model:new', [ui.item.find('span').data('carddeck')]);
                 },
                 remove : function(event, ui) {
-                    $(window).trigger('widget:deck:model:delete', [ui.item.find('span').data('carddeck')]);
+                    $(window).trigger('widget:decks:model:delete', [ui.item.find('span').data('carddeck')]);
                 }
             });
 
 
-            var selectedDecks           = $('#deck_bar [data-prefix="deck"]');
+            var selectedDecks           = $('#deck_bar [data-prefix="decks"]');
             var activeDecks             = {};
             var i;
             for(i = 0; i < selectedDecks.length; i++) {
@@ -377,11 +377,11 @@ define(
 
 
             var triggerShow = function(event) {
-                $(window).trigger('widget:deck:view:hint_show', [$(event.target)]);
+                $(window).trigger('widget:decks:view:hint_show', [$(event.target)]);
             };
 
             var triggerHide = function(event) {
-                $(window).trigger('widget:deck:view:hint_hide', [$(event.target)]);
+                $(window).trigger('widget:decks:view:hint_hide', [$(event.target)]);
             };
 
 
@@ -428,7 +428,7 @@ define(
                 nextButton
                     .off('click')
                     .on('click', function() {
-                        var deckElems   = $('#active_cards [data-prefix="deck"]');
+                        var deckElems   = $('#active_cards [data-prefix="decks"]');
 
                         if(deckElems.length) {
 
@@ -478,7 +478,7 @@ define(
             var extraFields     = decks.model.getFields();
             extraFields.id      = deckId;
 
-            canvasStorage.list.add('deck', extraFields);
+            canvasStorage.list.add('decks', extraFields);
         };
 
 
@@ -486,22 +486,22 @@ define(
             var extraFields     = decks.model.getFields();
             extraFields.id      = deckId;
 
-            canvasStorage.list.remove('deck', extraFields);
+            canvasStorage.list.remove('decks', extraFields);
         };
 
 
         decks.model.removeAll = function() {
-            canvasStorage.list.removeAll('deck', decks.model.getFields());
+            canvasStorage.list.removeAll('decks', decks.model.getFields());
         };
 
 
         decks.model.get = function(deckId) {
-            return canvasStorage.list.get('deck', deckId);
+            return canvasStorage.list.get('decks', deckId);
         };
 
 
         decks.model.getAll = function() {
-            return canvasStorage.list.getAll('deck');
+            return canvasStorage.list.getAll('decks');
         };
 
 

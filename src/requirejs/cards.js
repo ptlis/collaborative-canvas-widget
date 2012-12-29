@@ -31,24 +31,24 @@ define(
 
             // Handle events
             $(window)
-                .off(   'widget:card:model:new')            .on('widget:card:model:new',                cards.model.add)
-                .off(   'widget:card:model:delete')         .on('widget:card:model:delete',             cards.model.remove)
-                .off(   'widget:card:model:remove_all')     .on('widget:card:model:remove_all',         cards.model.removeAll)
-                .off(   'widget:card:model:move')           .on('widget:card:model:move',               cards.model.move)
-                .off(   'widget:card:model:change_type')    .on('widget:card:model:change_type',        cards.model.changeType)
-                .off(   'widget:card:model:to_front')       .on('widget:card:model:to_front',           cards.model.toFront)
+                .off(   'widget:cards:model:new')           .on('widget:cards:model:new',               cards.model.add)
+                .off(   'widget:cards:model:delete')        .on('widget:cards:model:delete',            cards.model.remove)
+                .off(   'widget:cards:model:remove_all')    .on('widget:cards:model:remove_all',        cards.model.removeAll)
+                .off(   'widget:cards:model:move')          .on('widget:cards:model:move',              cards.model.move)
+                .off(   'widget:cards:model:change_type')   .on('widget:cards:model:change_type',       cards.model.changeType)
+                .off(   'widget:cards:model:to_front')      .on('widget:cards:model:to_front',          cards.model.toFront)
 
-                .off(   'widget:card:view:add')             .on('widget:card:view:add',                 cards.view.add)
-                .off(   'widget:card:view:remove_request')  .on('widget:card:view:remove_request',      cards.removeRequest)
-                .off(   'widget:card:view:remove')          .on('widget:card:view:remove',              cards.view.remove)
-                .off(   'widget:card:view:remove_all')      .on('widget:card:view:remove_all',          cards.view.removeAll)
-                .off(   'widget:card:view:move')            .on('widget:card:view:move',                cards.view.move)
-                .off(   'widget:card:view:change_type')     .on('widget:card:view:change_type',         cards.view.changeType)
-                .off(   'widget:card:view:to_front')        .on('widget:card:view:to_front',            cards.view.toFront)
-                .off(   'widget:card:view:post_propagate')  .on('widget:card:view:post_propagate',      cards.view.postPropagate)
-                .off(   'widget:card:view:update')          .on('widget:card:view:update',              cards.view.update)
-                .off(   'widget:card:view:update_all')      .on('widget:card:view:update_all',          cards.view.updateAll)
-                .off(   'widget:card:view:edit')            .on('widget:card:view:edit',                cards.view.edit);
+                .off(   'widget:cards:view:add')            .on('widget:cards:view:add',                cards.view.add)
+                .off(   'widget:cards:view:remove_request') .on('widget:cards:view:remove_request',     cards.removeRequest)
+                .off(   'widget:cards:view:remove')         .on('widget:cards:view:remove',             cards.view.remove)
+                .off(   'widget:cards:view:remove_all')     .on('widget:cards:view:remove_all',         cards.view.removeAll)
+                .off(   'widget:cards:view:move')           .on('widget:cards:view:move',               cards.view.move)
+                .off(   'widget:cards:view:change_type')    .on('widget:cards:view:change_type',        cards.view.changeType)
+                .off(   'widget:cards:view:to_front')       .on('widget:cards:view:to_front',           cards.view.toFront)
+                .off(   'widget:cards:view:post_propagate') .on('widget:cards:view:post_propagate',     cards.view.postPropagate)
+                .off(   'widget:cards:view:update')         .on('widget:cards:view:update',             cards.view.update)
+                .off(   'widget:cards:view:update_all')     .on('widget:cards:view:update_all',         cards.view.updateAll)
+                .off(   'widget:cards:view:edit')           .on('widget:cards:view:edit',               cards.view.edit);
 
 
             // Zooming in
@@ -105,7 +105,7 @@ define(
 
         cards.removeRequest = function(event, cardId) {
             if(confirm('Are you sure you want to remove this card?')) {
-                $(window).trigger('widget:card:model:delete',  [cardId]);
+                $(window).trigger('widget:cards:model:delete',  [cardId]);
             }
         };
 
@@ -142,7 +142,7 @@ define(
                     callback:   function(key, options) {
                         switch(key) {
                             case 'edit':
-                                $(window).trigger('widget:card:view:edit', [cardElem.data('instanceid')]);
+                                $(window).trigger('widget:cards:view:edit', [cardElem.data('instanceid')]);
                                 break;
                             case 'copy':
                                 cards.handlers.copy(cardElem);
@@ -154,7 +154,7 @@ define(
                                 connections.handlers.connectionCreateStart(cardElem);
                                 break;
                             case 'delete':
-                                $(window).trigger('widget:card:view:remove_request',   [cardElem.data('instanceid')]);
+                                $(window).trigger('widget:cards:view:remove_request',   [cardElem.data('instanceid')]);
                                 break;
                         }
 
@@ -180,7 +180,7 @@ define(
                             'name':     'Create Connection',
                             'icon':     'create_connection',
                             'disabled': function(key, opt) {
-                                var cardElems       = $('#canvas [data-prefix="card"][data-cardsize="medium"]');
+                                var cardElems       = $('#canvas [data-prefix="cards"][data-cardsize="medium"]');
                                 var connectionsArr  = connections.model.getForCard(cardElem.data('instanceid'));
                                 var disabled        = true;
 
@@ -237,7 +237,7 @@ define(
                 // Bring card to front
                 cardElem
                     .on('click', function() {
-                        $(window).trigger('widget:card:model:to_front', [cardElem.data('instanceid')]);
+                        $(window).trigger('widget:cards:model:to_front', [cardElem.data('instanceid')]);
                     });
 
                 // Allow cards to be draggable
@@ -245,11 +245,11 @@ define(
                     'revert':   'invalid',
                     'cancel':   '.menu_icon, .context-menu-list *, .context-menu-layer *',
                     'drag':     function(event, ui) {
-                        $(window).trigger('widget:connection:view:move_for_card', [ui.helper.data('instanceid')]);
+                        $(window).trigger('widget:connections:view:move_for_card', [ui.helper.data('instanceid')]);
                     },
                     'stop':     function(event, ui) {
-                        $(window).trigger('widget:connection:view:move_for_card', [ui.helper.data('instanceid')]);
-                        $(window).trigger('widget:container:view:resize');
+                        $(window).trigger('widget:connections:view:move_for_card', [ui.helper.data('instanceid')]);
+                        $(window).trigger('widget:containers:view:resize');
                     }
                 });
             }
@@ -321,7 +321,7 @@ define(
 
 
         cards.propagateDataAll = function() {
-            var placedCards             = $('[data-prefix="card"]');
+            var placedCards             = $('[data-prefix="cards"]');
 
             for(var i = 0; i < placedCards.length; i++) {
                 cards.propagateData($(placedCards[i]));
@@ -418,11 +418,11 @@ define(
 
 
                 // Handle user inputs etc
-                $(window).trigger('widget:card:view:post_propagate', [cardElem]);
+                $(window).trigger('widget:cards:view:post_propagate', [cardElem]);
 
                 // Trigger updates
-                $(window).trigger('widget:card:view:move', [cardData.id, cardData.cell_id, cardData.pos_x, cardData.pos_y * cards.zoomFactor, cardData.z_index]);
-                $(window).trigger('widget:card:view:change_type', [cardData.id, cardData.cardtype]);
+                $(window).trigger('widget:cards:view:move', [cardData.id, cardData.cell_id, cardData.pos_x, cardData.pos_y * cards.zoomFactor, cardData.z_index]);
+                $(window).trigger('widget:cards:view:change_type', [cardData.id, cardData.cardtype]);
             }
         };
 
@@ -458,24 +458,24 @@ define(
 
             }
 
-            canvasStorage.list.add('card', extraFields);
+            canvasStorage.list.add('cards', extraFields);
         };
 
 
         cards.model.remove = function(event, cardId) {
-            $(window).trigger('widget:connection:model:delete_for_card', [cardId]);
+            $(window).trigger('widget:connections:model:delete_for_card', [cardId]);
 
             var extraFields     = cards.model.getFields();
             extraFields.id      = cardId;
 
-            canvasStorage.list.remove('card', extraFields);
+            canvasStorage.list.remove('cards', extraFields);
         };
 
 
         cards.model.removeAll = function() {
-            $(window).trigger('widget:connection:model:remove_all');
+            $(window).trigger('widget:connections:model:remove_all');
 
-            canvasStorage.list.removeAll('card', cards.model.getFields());
+            canvasStorage.list.removeAll('cards', cards.model.getFields());
         };
 
 
@@ -485,7 +485,7 @@ define(
                 'cardtype': cardType
             };
 
-            canvasStorage.list.update('card', extraFields);
+            canvasStorage.list.update('cards', extraFields);
         };
 
 
@@ -506,7 +506,7 @@ define(
                 extraFields.pos_y   = yPos.toString();
                 extraFields.z_index = zIndex;
 
-                canvasStorage.list.update('card', extraFields);
+                canvasStorage.list.update('cards', extraFields);
 
             }, canvasStorage.changeDelay * 1000);
         };
@@ -520,19 +520,19 @@ define(
                 'z_index':  nextZIndex
             };
 
-            canvasStorage.list.update('card', extraFields);
+            canvasStorage.list.update('cards', extraFields);
 
-            $(window).trigger('widget:card:view:to_front', [cardId, nextZIndex]);
+            $(window).trigger('widget:cards:view:to_front', [cardId, nextZIndex]);
         };
 
 
         cards.model.get = function(cardId) {
-            return canvasStorage.list.get('card', cardId);
+            return canvasStorage.list.get('cards', cardId);
         };
 
 
         cards.model.getAll = function() {
-            return canvasStorage.list.getAll('card');
+            return canvasStorage.list.getAll('cards');
         };
 
 
@@ -621,7 +621,7 @@ define(
 
             cards.addEvents(cardElem);
 
-            $(window).trigger('widget:card:view:post_propagate', [cardElem]);
+            $(window).trigger('widget:cards:view:post_propagate', [cardElem]);
         };
 
 
@@ -650,7 +650,7 @@ define(
 
 
         cards.view.removeAll = function() {
-            var cardElems   = $('[data-prefix="card"]');
+            var cardElems   = $('[data-prefix="cards"]');
             var cardElem;
 
             var remCallback = function() {
@@ -746,7 +746,7 @@ define(
             // Hide paired elems
             cardElems.find('.group li').css('display', 'none');
 
-            $(window).trigger('widget:card:view:move',
+            $(window).trigger('widget:cards:view:move',
                 [
                     cardData.id,
                     cardData.cell_id,
@@ -755,7 +755,7 @@ define(
                     cardData.z_index
                 ]);
 
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
 
             for(i = 0; i < cardElems.length; i++) {
                 cardElem    = $(cardElems[i]);
@@ -868,16 +868,16 @@ define(
             // Add cards
             for(i = 0; i < addedCards.length; i++) {
                 addedCards[i].size  = 'medium';
-                $(window).trigger('widget:card:view:add', [addedCards[i]]);
+                $(window).trigger('widget:cards:view:add', [addedCards[i]]);
             }
 
 
             // Remove cards
             for(i = 0; i < removedCards.length; i++) {
-                $(window).trigger('widget:card:view:remove', [removedCards[i]]);
+                $(window).trigger('widget:cards:view:remove', [removedCards[i]]);
             }
 
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
         };
 
 
@@ -906,10 +906,10 @@ define(
             }
             bgElem.attr('id', 'card_viewer');
 
-            var cardData        = canvasStorage.list.get('card', cardId);
+            var cardData        = canvasStorage.list.get('cards', cardId);
             cardData.size       = 'large';
 
-            $(window).trigger('widget:card:view:add', [cardData]);
+            $(window).trigger('widget:cards:view:add', [cardData]);
 
             if(newBg) {
                 bgElem.fadeIn(250,  function() {
@@ -920,7 +920,7 @@ define(
 
 
         cards.handlers.editDismiss = function(event) {
-            var medCard         = cards.getCardElem($(event.target).parents('[data-prefix="card"]').data('instanceid'));
+            var medCard         = cards.getCardElem($(event.target).parents('[data-prefix="cards"]').data('instanceid'));
 
             $('#card_viewer').fadeOut(
                 250,
@@ -928,7 +928,7 @@ define(
                     $('#card_viewer').remove();
                     cards.propagateData(medCard);
 
-                    $(window).trigger('widget:card:view:post_propagate', [medCard]);
+                    $(window).trigger('widget:cards:view:post_propagate', [medCard]);
                 });
         };
 
@@ -968,7 +968,7 @@ define(
                     }
                 }
 
-                $(window).trigger('widget:card:model:new', [
+                $(window).trigger('widget:cards:model:new', [
                     instanceId,
                     cellId,
                     leftOffsetPercent,
@@ -984,7 +984,7 @@ define(
             // If type was cut then clear clipboard
             else if(cards.clipboardData.method === 'cut') {
 
-                $(window).trigger('widget:card:model:move', [
+                $(window).trigger('widget:cards:model:move', [
                     cards.clipboardData.instanceId,
                     cellId,
                     leftOffsetPercent,
@@ -992,14 +992,14 @@ define(
                     nextZIndex
                 ]);
 
-                $(window).trigger('widget:card:view:move', [
+                $(window).trigger('widget:cards:view:move', [
                     cards.clipboardData.instanceId,
                     cellId,
                     leftOffsetPercent,
                     dropPosY,
                     nextZIndex]);
 
-                $(window).trigger('widget:container:view:resize');
+                $(window).trigger('widget:containers:view:resize');
 
                 cards.getCardElem(cards.clipboardData.instanceId).removeClass('to_cut');
 
@@ -1007,12 +1007,12 @@ define(
                 cards.clipboardData.instanceId  = '';
             }
 
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
         };
 
 
         cards.handlers.changeActiveDecks = function() {
-            $(window).trigger('widget:deck:view:create_dialog', [false]);
+            $(window).trigger('widget:decks:view:create_dialog', [false]);
         },
 
 
@@ -1022,41 +1022,41 @@ define(
                 case '0.25':
                     cards.zoomFactor    = '0.375';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.375':
                     cards.zoomFactor    = '0.5';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.5':
                     cards.zoomFactor    = '0.625';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.625':
                     cards.zoomFactor    = '0.75';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.75':
                     cards.zoomFactor    = '0.875';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.875':
                     cards.zoomFactor    = '1';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
             }
 
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
         };
 
 
@@ -1066,48 +1066,48 @@ define(
                 case '1':
                     cards.zoomFactor    = '0.875';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.875':
                     cards.zoomFactor    = '0.75';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.75':
                     cards.zoomFactor    = '0.625';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.625':
                     cards.zoomFactor    = '0.5';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.5':
                     cards.zoomFactor    = '0.375';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
 
                 case '0.375':
                     cards.zoomFactor    = '0.25';
                     cards.propagateDataAll();
-                    $(window).trigger('widget:connection:view:update_all_paths');
+                    $(window).trigger('widget:connections:view:update_all_paths');
                     break;
             }
 
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
         };
 
 
         cards.handlers.pairedElementDialog = function(event) {
             var decks       = require('decks'); // Pull in decks
 
-            var cardElem    = $(event.target).parents('[data-prefix="card"]');
+            var cardElem    = $(event.target).parents('[data-prefix="cards"]');
 
             var deck        = cardElem.data('carddeck');
             var cardType    = cardElem.data('cardtype');
@@ -1131,7 +1131,7 @@ define(
             var dialog              =   $('<div></div>', {
                 'class':            'dialog',
                 'data-instanceid':  instanceId,
-                'data-prefix':      'card'
+                'data-prefix':      'cards'
             });
             dialog.appendTo(innerCont);
 
@@ -1174,16 +1174,16 @@ define(
                         descElem.text(deckData.cardTypes[cardType].details.items[headingIndex][itemIndex].description);
 
                         input               =   $('<input>', {
-                            'id':                   'card_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex,
+                            'id':                   'cards_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex,
                             'type':                 'button',
                             'class':                'add add_button_32x32',
-                            'data-paired_master':   'card_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex + '_paired',
+                            'data-paired_master':   'cards_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex + '_paired',
                             'data-inputname':       'paired_' + headingIndex + ':' + itemIndex
                         });
                         input.appendTo(itemElem);
 
                         label               =   $('<label>', {
-                            'for':                  'card_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex
+                            'for':                  'cards_' + instanceId + '_paired_' + headingIndex + ':' + itemIndex
                         });
                         titleElem.appendTo(label);
                         descElem.appendTo(label);
@@ -1299,18 +1299,18 @@ define(
             var nextZIndex          = canvasStorage.util.getNextZIndex();
             var leftOffsetPercent   = (dropPosX / cell.width()) * 100;
 
-            $(window).trigger('widget:card:model:new', [instanceId, cellId, leftOffsetPercent.toString(), (dropPosY / cards.zoomFactor).toString(), deck, cardType, nextZIndex]);
+            $(window).trigger('widget:cards:model:new', [instanceId, cellId, leftOffsetPercent.toString(), (dropPosY / cards.zoomFactor).toString(), deck, cardType, nextZIndex]);
 
 
             var dialog  = $('.dialog');
             dialog.fadeOut( 250,
                 function() {
                     dialog.remove();
-                    $(window).trigger('widget:card:view:edit', [instanceId]);
+                    $(window).trigger('widget:cards:view:edit', [instanceId]);
                 });
 
 
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
         };
 
 

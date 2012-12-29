@@ -19,13 +19,13 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
         /*  Resource handles for ROLE. */
             var listResources = {
-                'card'          : null,
-                'connection'    : null,
-                'container'     : null,
-                'deck'          : null,
-                'field'         : null,
-                'custom_deck'   : null,
-                'custom_card'   : null
+                'cards'         : null,
+                'connections'   : null,
+                'containers'    : null,
+                'decks'         : null,
+                'fields'        : null,
+                'customDecks'   : null,
+                'customCards'   : null
             };
 
 
@@ -781,7 +781,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
 
 
-        /*  Recursively retrieve list resources, creating any that are missing.
+        /*  Retrieve list resource, create new resource if list does not exist.
          */
             var getListResource = function(prefix, collector) {
                 var type            = 'ptlis.net:' + prefix  + '_list';

@@ -14,20 +14,20 @@ define(
 
         containers.init = function() {
             $(window)
-                .off(   'widget:container:model:new')               .on('widget:container:model:new',               containers.model.add)
-                .off(   'widget:container:model:new_multi')         .on('widget:container:model:new_multi',         containers.model.addMulti)
-                .off(   'widget:container:model:new_positioned')    .on('widget:container:model:new_positioned',    containers.model.addPositioned)
-                .off(   'widget:container:model:delete')            .on('widget:container:model:delete',            containers.model.remove)
-                .off(   'widget:container:model:remove_all')        .on('widget:container:model:remove_all',        containers.model.removeAll)
-                .off(   'widget:container:model:change_title')      .on('widget:container:model:change_title',      containers.model.changeTitle)
+                .off(   'widget:containers:model:new')              .on('widget:containers:model:new',              containers.model.add)
+                .off(   'widget:containers:model:new_multi')        .on('widget:containers:model:new_multi',        containers.model.addMulti)
+                .off(   'widget:containers:model:new_positioned')   .on('widget:containers:model:new_positioned',   containers.model.addPositioned)
+                .off(   'widget:containers:model:delete')           .on('widget:containers:model:delete',           containers.model.remove)
+                .off(   'widget:containers:model:remove_all')       .on('widget:containers:model:remove_all',       containers.model.removeAll)
+                .off(   'widget:containers:model:change_title')     .on('widget:containers:model:change_title',     containers.model.changeTitle)
 
-                .off(   'widget:container:view:add')                .on('widget:container:view:add',                containers.view.add)
-                .off(   'widget:container:view:remove')             .on('widget:container:view:remove',             containers.view.remove)
-                .off(   'widget:container:view:remove_request')     .on('widget:container:view:remove_request',     containers.removeRequest)
-                .off(   'widget:container:view:resize')             .on('widget:container:view:resize',             containers.view.resizeAll)
-                .off(   'widget:container:view:remove_all')         .on('widget:container:view:remove_all',         containers.view.removeAll)
-                .off(   'widget:container:view:update')             .on('widget:container:view:update',             containers.view.update)
-                .off(   'widget:container:view:update_all')         .on('widget:container:view:update_all',         containers.view.updateAll);
+                .off(   'widget:containers:view:add')               .on('widget:containers:view:add',               containers.view.add)
+                .off(   'widget:containers:view:remove')            .on('widget:containers:view:remove',            containers.view.remove)
+                .off(   'widget:containers:view:remove_request')    .on('widget:containers:view:remove_request',    containers.removeRequest)
+                .off(   'widget:containers:view:resize')            .on('widget:containers:view:resize',            containers.view.resizeAll)
+                .off(   'widget:containers:view:remove_all')        .on('widget:containers:view:remove_all',        containers.view.removeAll)
+                .off(   'widget:containers:view:update')            .on('widget:containers:view:update',            containers.view.update)
+                .off(   'widget:containers:view:update_all')        .on('widget:containers:view:update_all',        containers.view.updateAll);
         };
 
 
@@ -36,7 +36,7 @@ define(
             var dropPosX;
             var cell    = $(this);
 
-            if(ui.draggable.data('prefix') === 'card') {
+            if(ui.draggable.data('prefix') === 'cards') {
                 var cardElem    = ui.draggable;
                 var cellId      = cell.parents('.cell_container').data('instanceid');
                 var oldCellId   = cardElem.parents('.cell_container').data('instanceid');
@@ -66,12 +66,12 @@ define(
 
                 var leftOffsetPercent   = (dropPosX / cell.width()) * 100;
 
-                $(window).trigger('widget:card:model:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY / cards.zoomFactor, cardElem.css('z-index')]);
-                $(window).trigger('widget:card:view:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY, cardElem.css('z-index')]);
+                $(window).trigger('widget:cards:model:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY / cards.zoomFactor, cardElem.css('z-index')]);
+                $(window).trigger('widget:cards:view:move', [cardElem.data('instanceid'), cellId, leftOffsetPercent, dropPosY, cardElem.css('z-index')]);
 
             }
 
-            else if(ui.draggable.data('prefix') === 'deck') {
+            else if(ui.draggable.data('prefix') === 'decks') {
 
                 var deck                = ui.draggable.data('carddeck');
 
@@ -181,13 +181,13 @@ define(
 
                 titleElem.val(titleVal);
 
-                $(window).trigger('widget:container:model:change_title', [instanceId, titleVal]);
+                $(window).trigger('widget:containers:model:change_title', [instanceId, titleVal]);
             };
 
             var remFunction     = function(event) {
                 var currentContainerId  = $(event.target).parents('li').attr('data-instanceid');
 
-                $(window).trigger('widget:container:model:delete',  [currentContainerId]);
+                $(window).trigger('widget:containers:model:delete',  [currentContainerId]);
 
                 $(event.target).parents('li').remove();
             };
@@ -196,12 +196,12 @@ define(
                 var containerId     = util.uidGenerator();
                 var defaultTitle    = '';
 
-                $(window).trigger('widget:container:model:new', [containerId, defaultTitle]);
+                $(window).trigger('widget:containers:model:new', [containerId, defaultTitle]);
 
                 // Add to this dialog
                 li              =   $('<li></li>', {
                                         'data-instanceid':      containerId,
-                                        'data-prefix':          'container'
+                                        'data-prefix':          'containers'
                                     });
 
                 var inputCont   =   $('<div></div>', {
@@ -238,7 +238,7 @@ define(
             var i;
             var containerArr    = containers.model.getAll();
 
-            $(window).trigger('widget:container:view:update_all', [containerArr]);
+            $(window).trigger('widget:containers:view:update_all', [containerArr]);
 
             var li;
             var input;
@@ -247,7 +247,7 @@ define(
 
                 li              =   $('<li></li>', {
                     'data-instanceid':      containerArr[i].id,
-                    'data-prefix':          'container'
+                    'data-prefix':          'containers'
                 });
                 li.appendTo(timePeriodList);
 
@@ -324,7 +324,7 @@ define(
                     dialog.fadeOut(250, function() {
                         dialog.remove();
 
-                        $(window).trigger('widget:field:view:create_dialog', [true]);
+                        $(window).trigger('widget:fields:view:create_dialog', [true]);
                     });
                 });
 
@@ -340,7 +340,7 @@ define(
                         dialog.fadeOut(250, function() {
                             dialog.remove();
 
-                            $(window).trigger('widget:deck:view:create_dialog', [true]);
+                            $(window).trigger('widget:decks:view:create_dialog', [true]);
                         });
                     }
                 });
@@ -382,15 +382,15 @@ define(
                             break;
 
                         case 'add_above':
-                            $(window).trigger('widget:container:model:new_positioned',  ['above', containerId]);
+                            $(window).trigger('widget:containers:model:new_positioned',  ['above', containerId]);
                             break;
 
                         case 'add_below':
-                            $(window).trigger('widget:container:model:new_positioned',  ['below', containerId]);
+                            $(window).trigger('widget:containers:model:new_positioned',  ['below', containerId]);
                             break;
 
                         case 'delete':
-                            $(window).trigger('widget:container:view:remove_request',   [containerId]);
+                            $(window).trigger('widget:containers:view:remove_request',   [containerId]);
                             break;
                     }
 
@@ -505,7 +505,7 @@ define(
             }
 
             else if(confirm('Are you sure you want to remove this container?')) {
-                $(window).trigger('widget:container:model:delete',  [containerId]);
+                $(window).trigger('widget:containers:model:delete',  [containerId]);
             }
         };
 
@@ -524,12 +524,12 @@ define(
             extraFields.id                  = containerId;
             extraFields.time_period_title   = containerTitle;
 
-            canvasStorage.list.add('container', extraFields);
+            canvasStorage.list.add('containers', extraFields);
         };
 
 
         containers.model.addMulti = function(event, containerDataArr) {
-            canvasStorage.list.addMulti('container', containerDataArr);
+            canvasStorage.list.addMulti('containers', containerDataArr);
         };
 
 
@@ -537,7 +537,7 @@ define(
             var extraFields     = containers.model.getFields();
             extraFields.id      = util.uidGenerator();
 
-            canvasStorage.list.addPositioned('container', extraFields, position, relativeToId);
+            canvasStorage.list.addPositioned('containers', extraFields, position, relativeToId);
         };
 
 
@@ -545,34 +545,34 @@ define(
             var extraFields     = containers.model.getFields();
             extraFields.id      = containerId;
 
-            canvasStorage.list.remove('container', extraFields);
+            canvasStorage.list.remove('containers', extraFields);
 
 
-            var cardElems   = $('[data-instanceid="' + containerId + '"]').find('[data-prefix="card"][data-instanceid]');
+            var cardElems   = $('[data-instanceid="' + containerId + '"]').find('[data-prefix="cards"][data-instanceid]');
 
             if(cardElems !== undefined && cardElems.length) {
                 // Remove cards from storage
                 for(var i = 0; i < cardElems.length; i++) {
-                    $(window).trigger('widget:card:model:delete', [$(cardElems[i]).data('instanceid')]);
+                    $(window).trigger('widget:cards:model:delete', [$(cardElems[i]).data('instanceid')]);
                 }
             }
         };
 
 
         containers.model.removeAll = function() {
-            canvasStorage.list.removeAll('container', containers.model.getFields());
+            canvasStorage.list.removeAll('containers', containers.model.getFields());
 
-            $(window).trigger('widget:card:model:remove_all');
+            $(window).trigger('widget:cards:model:remove_all');
         };
 
 
         containers.model.get = function(containerId) {
-            return canvasStorage.list.get('container', containerId);
+            return canvasStorage.list.get('containers', containerId);
         };
 
 
         containers.model.getAll = function() {
-            return canvasStorage.list.getAll('container');
+            return canvasStorage.list.getAll('containers');
         };
 
 
@@ -581,7 +581,7 @@ define(
             extraFields.id                  = containerId;
             extraFields.time_period_title   = containerTitle;
 
-            canvasStorage.list.update('container', extraFields);
+            canvasStorage.list.update('containers', extraFields);
         };
 
 
@@ -592,7 +592,7 @@ define(
             var containerElem   =   $('<div></div>', {
                 'class':            'cell_container',
                 'data-instanceid':  containerData.id,
-                'data-prefix':      'container'
+                'data-prefix':      'containers'
             });
 
             var labelContainerElem  =   $('<div></div>', {
@@ -637,7 +637,7 @@ define(
                 $('#contain_drag svg').after(containerElem);
             }
 
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
 
             containers.addEvents(containerElem);
         };
@@ -646,7 +646,7 @@ define(
         containers.view.remove = function(event, containerData) {
             $('[data-instanceid="' + containerData.id + '"]').remove();
 
-            $(window).trigger('widget:connection:view:update_all_paths');
+            $(window).trigger('widget:connections:view:update_all_paths');
         };
 
 
@@ -659,7 +659,7 @@ define(
             var cellInnerElem               = cellOuterElem.find('.cell_inner');
 
             var maxHeight   = 500 * cards.zoomFactor;
-            var cardElems   = cellInnerElem.find('[data-prefix="card"]');
+            var cardElems   = cellInnerElem.find('[data-prefix="cards"]');
             var cardElem;
             for(var i = 0; i < cardElems.length; i++) {
                 cardElem                    = $(cardElems[i]);
@@ -682,18 +682,19 @@ define(
             cellOuterElem.css('height', (maxHeight + 20) + 'px');
             cellInnerElem.css('height', (maxHeight + 20) + 'px');
 
-            $(window).trigger('widget:connection:view:update_all_paths');
+            $(window).trigger('widget:connections:view:update_all_paths');
         };
 
 
         containers.view.resizeAll = function() {
+
             // Iterate over cards in cells & see if any cell can be shrunk to still fit them
             var outerCells  = $('.cell_outer');
             for(var i = 0; i < outerCells.length; i++) {
                 containers.view.resize($(outerCells[i]));
             }
 
-            $(window).trigger('widget:connection:view:update_all_paths');
+            $(window).trigger('widget:connections:view:update_all_paths');
         };
 
 
@@ -739,17 +740,17 @@ define(
 
             // Remove containers
             for(i = 0; i < removedContainers.length; i++) {
-                $(window).trigger('widget:container:view:remove', [removedContainers[i]]);
+                $(window).trigger('widget:containers:view:remove', [removedContainers[i]]);
             }
 
 
             // Add containers
             for(i = 0; i < addedContainers.length; i++) {
-                $(window).trigger('widget:container:view:add', [addedContainers[i]]);
+                $(window).trigger('widget:containers:view:add', [addedContainers[i]]);
             }
 
             // Trigger resize
-            $(window).trigger('widget:container:view:resize');
+            $(window).trigger('widget:containers:view:resize');
         };
 
 

@@ -34,19 +34,19 @@ define(
             // Zoom out
             zoomInElem
                 .off(   'mouseenter').on(   'mouseenter',   function(event) {
-                    $(window).trigger('widget:deck:view:tooltip_show', [zoomInElem]);
+                    $(window).trigger('widget:decks:view:tooltip_show', [zoomInElem]);
                 })
                 .off(   'mouseleave').on(   'mouseleave',   function(event) {
-                    $(window).trigger('widget:deck:view:tooltip_hide', [zoomInElem]);
+                    $(window).trigger('widget:decks:view:tooltip_hide', [zoomInElem]);
                 });
 
             // Zooming out
             zoomOutElem
             .off(   'mouseenter').on(   'mouseenter',   function(event) {
-                $(window).trigger('widget:deck:view:tooltip_show', [zoomOutElem]);
+                $(window).trigger('widget:decks:view:tooltip_show', [zoomOutElem]);
             })
             .off(   'mouseleave').on(   'mouseleave',   function(event) {
-                $(window).trigger('widget:deck:view:tooltip_hide', [zoomOutElem]);
+                $(window).trigger('widget:decks:view:tooltip_hide', [zoomOutElem]);
             });
 
             // Event handlers
@@ -314,7 +314,7 @@ define(
                                             if(confirm('Are you sure you with to import data? Doing so clears existing data.')) {
 
                                                 try {
-                                                    clearData();
+                                                    canvasStorage.clear();
 
                                                     canvasStorage.importData(processedData);
                                                     canvasStorage.standardPropagate();

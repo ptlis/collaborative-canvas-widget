@@ -89,7 +89,7 @@ require(
                             break;
 
                         case 'change_header':
-                            $(window).trigger('widget:field:view:create_dialog', [false]);
+                            $(window).trigger('widget:fields:view:create_dialog', [false]);
                             break;
 
                         case 'export':

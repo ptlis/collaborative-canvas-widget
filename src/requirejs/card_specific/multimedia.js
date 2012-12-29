@@ -25,7 +25,7 @@ define( ['jquery', 'decks', 'storage/canvasStorage', 'util'],
 
                     var card                =   $('<div></div>', {
                                                     'data-carddeck':    'multimedia',
-                                                    'data-prefix':      'card',
+                                                    'data-prefix':      'cards',
                                                     'data-cardtype':    cardType,
                                                     'data-cardsize':    size,
                                                     'data-instanceid':  instanceId
@@ -931,7 +931,7 @@ define( ['jquery', 'decks', 'storage/canvasStorage', 'util'],
                         imgElems
                             .off('load')
                             .on('load', function(event) {
-                                var contCard        = $(event.target).parents('[data-prefix="card"]');
+                                var contCard        = $(event.target).parents('[data-prefix="cards"]');
 
                                 var imageScaled     = multimedia.scaledDimensions($(event.target).width(), $(event.target).height(), contCard.find('.image_block').width(), contCard.find('.image_block').height());
 
@@ -954,7 +954,7 @@ define( ['jquery', 'decks', 'storage/canvasStorage', 'util'],
                             'image':        data.upload.image.hash
                         };
 
-                        canvasStorage.list.update('card', extraFields);
+                        canvasStorage.list.update('cards', extraFields);
                     };
 
                     var error       = function(dropElem, errorMsg) {

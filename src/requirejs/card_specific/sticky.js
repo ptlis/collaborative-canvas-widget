@@ -9,7 +9,7 @@ define( ['jquery', 'decks', 'storage/canvasStorage'],
 
                 createCard      : function(cardType, instanceId, size, cell) {
                     var card            =   $('<div></div>', {
-                                                'data-prefix':      'card',
+                                                'data-prefix':      'cards',
                                                 'data-carddeck':    'sticky',
                                                 'data-cardtype':    cardType,
                                                 'data-cardsize':    size,
@@ -152,7 +152,7 @@ define( ['jquery', 'decks', 'storage/canvasStorage'],
 
                 createDeckIcon : function() {
                     return  $('<span></span>', {
-                                'data-prefix':      'deck',
+                                'data-prefix':      'decks',
                                 'data-carddeck':    'sticky',
                                 'data-cardsize':    'small'
                             });
@@ -253,8 +253,8 @@ define( ['jquery', 'decks', 'storage/canvasStorage'],
                                 var newColour       = $(event.target).data('cardtype');
 
                                 // Update storage
-                                $(window).trigger('widget:card:model:change_type', [instanceId, newColour]);
-                                $(window).trigger('widget:card:view:change_type', [instanceId, newColour]);
+                                $(window).trigger('widget:cards:model:change_type', [instanceId, newColour]);
+                                $(window).trigger('widget:cards:view:change_type', [instanceId, newColour]);
 
                                 // Close colour selector
                                 selectorDialog.fadeOut(  250,

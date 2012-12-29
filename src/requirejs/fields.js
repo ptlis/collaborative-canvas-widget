@@ -20,18 +20,18 @@ define(
         /*  Fields initialisation. */
         fields.init = function() {
             $(window)
-                .off(   'widget:field:model:new')           .on('widget:field:model:new',              fields.model.add)
-                .off(   'widget:field:model:new_multi')     .on('widget:field:model:new_multi',        fields.model.addMulti)
-                .off(   'widget:field:model:delete')        .on('widget:field:model:delete',           fields.model.remove)
-                .off(   'widget:field:model:remove_all')    .on('widget:field:model:remove_all',       fields.model.removeAll)
-                .off(   'widget:field:model:change_title')  .on('widget:field:model:change_title',     fields.model.changeTitle)
+                .off(   'widget:fields:model:new')          .on('widget:fields:model:new',             fields.model.add)
+                .off(   'widget:fields:model:new_multi')    .on('widget:fields:model:new_multi',       fields.model.addMulti)
+                .off(   'widget:fields:model:delete')       .on('widget:fields:model:delete',          fields.model.remove)
+                .off(   'widget:fields:model:remove_all')   .on('widget:fields:model:remove_all',      fields.model.removeAll)
+                .off(   'widget:fields:model:change_title') .on('widget:fields:model:change_title',    fields.model.changeTitle)
 
-                .off(   'widget:field:view:add')            .on('widget:field:view:add',               fields.view.add)
-                .off(   'widget:field:view:remove')         .on('widget:field:view:remove',            fields.view.remove)
-                .off(   'widget:field:view:remove_all')     .on('widget:field:view:remove_all',        fields.view.removeAll)
-                .off(   'widget:field:view:update')         .on('widget:field:view:update',            fields.view.update)
-                .off(   'widget:field:view:update_all')     .on('widget:field:view:update_all',        fields.view.updateAll)
-                .off(   'widget:field:view:create_dialog')  .on('widget:field:view:create_dialog',     fields.view.createDialog);
+                .off(   'widget:fields:view:add')           .on('widget:fields:view:add',              fields.view.add)
+                .off(   'widget:fields:view:remove')        .on('widget:fields:view:remove',           fields.view.remove)
+                .off(   'widget:fields:view:remove_all')    .on('widget:fields:view:remove_all',       fields.view.removeAll)
+                .off(   'widget:fields:view:update')        .on('widget:fields:view:update',           fields.view.update)
+                .off(   'widget:fields:view:update_all')    .on('widget:fields:view:update_all',       fields.view.updateAll)
+                .off(   'widget:fields:view:create_dialog') .on('widget:fields:view:create_dialog',    fields.view.createDialog);
         };
 
 
@@ -49,7 +49,7 @@ define(
         fields.view.add = function(event, fieldData) {
             var li      =       $('<li></li>', {
                                     'data-instanceid':      fieldData.id,
-                                    'data-prefix':          'field'
+                                    'data-prefix':          'fields'
                                 });
 
             var labelCont   =   $('<div></div>', {
@@ -146,19 +146,19 @@ define(
 
             // Remove fields
             for(i = 0; i < removedFields.length; i++) {
-                $(window).trigger('widget:field:view:remove', [removedFields[i]]);
+                $(window).trigger('widget:fields:view:remove', [removedFields[i]]);
             }
 
 
             // Update titles
             for(i = 0; i < fieldsData.length; i++) {
-                $(window).trigger('widget:field:view:update',     [fieldsData[i]]);
+                $(window).trigger('widget:fields:view:update',     [fieldsData[i]]);
             }
 
 
             // Add fields
             for(i = 0; i < addedFields.length; i++) {
-                $(window).trigger('widget:field:view:add', [addedFields[i]]);
+                $(window).trigger('widget:fields:view:add', [addedFields[i]]);
             }
         };
 
@@ -219,13 +219,13 @@ define(
 
                 labelElem.text(labelVal + ':');
 
-                $(window).trigger('widget:field:model:change_title', [instanceId, labelVal]);
+                $(window).trigger('widget:fields:model:change_title', [instanceId, labelVal]);
             };
 
             var remFunction     = function(event) {
                 var currentFieldId  = $(event.target).parents('li').attr('data-instanceid');
 
-                $(window).trigger('widget:field:model:delete',  [currentFieldId]);
+                $(window).trigger('widget:fields:model:delete',  [currentFieldId]);
 
                 $(event.target).parents('li').remove();
             };
@@ -234,12 +234,12 @@ define(
                 var fieldId         = util.uidGenerator();
                 var defaultTitle    = 'new field';
 
-                $(window).trigger('widget:field:model:new', [fieldId, defaultTitle]);
+                $(window).trigger('widget:fields:model:new', [fieldId, defaultTitle]);
 
                 // Add to this dialog
                 li              =   $('<li></li>', {
                     'data-instanceid':      fieldId,
-                    'data-prefix':          'field'
+                    'data-prefix':          'fields'
                 });
                 li.appendTo(fieldList);
 
@@ -286,11 +286,11 @@ define(
                                     'title':    fields.defaultFields[i]});
                 }
 
-                $(window).trigger('widget:field:model:new_multi', [fieldArr]);
+                $(window).trigger('widget:fields:model:new_multi', [fieldArr]);
             }
 
             else {
-                $(window).trigger('widget:field:view:update_all', [fieldArr]);
+                $(window).trigger('widget:fields:view:update_all', [fieldArr]);
             }
 
             var li;
@@ -300,7 +300,7 @@ define(
 
                 li              =   $('<li></li>', {
                                         'data-instanceid':      fieldArr[i].id,
-                                        'data-prefix':          'field'
+                                        'data-prefix':          'fields'
                                     });
                 li.appendTo(fieldList);
 
@@ -391,7 +391,7 @@ define(
                         else {
                             dialog.fadeOut(250, function() {
                                 dialog.remove();
-                                $(window).trigger('widget:field:view:update_all');
+                                $(window).trigger('widget:fields:view:update_all');
 
                                 containers.createDialog(firstRun);
                             });
@@ -421,7 +421,7 @@ define(
                         else {
                             dialog.fadeOut(250, function() {
                                 bgElem.remove();
-                                $(window).trigger('widget:field:view:update_all');
+                                $(window).trigger('widget:fields:view:update_all');
                             });
                         }
                     });
@@ -444,12 +444,12 @@ define(
             extraFields.id      = fieldId;
             extraFields.title   = fieldTitle;
 
-            canvasStorage.list.add('field', extraFields);
+            canvasStorage.list.add('fields', extraFields);
         };
 
 
         fields.model.addMulti = function(event, fieldDataArr) {
-            canvasStorage.list.addMulti('field', fieldDataArr);
+            canvasStorage.list.addMulti('fields', fieldDataArr);
         };
 
 
@@ -457,12 +457,12 @@ define(
             var extraFields     = fields.model.getFields();
             extraFields.id      = fieldId;
 
-            canvasStorage.list.remove('field', extraFields);
+            canvasStorage.list.remove('fields', extraFields);
         };
 
 
         fields.model.removeAll = function() {
-            canvasStorage.list.removeAll('field', fields.model.getFields());
+            canvasStorage.list.removeAll('fields', fields.model.getFields());
         };
 
 
@@ -471,17 +471,17 @@ define(
             extraFields.id      = fieldId;
             extraFields.title   = fieldTitle;
 
-            canvasStorage.list.update('field', extraFields);
+            canvasStorage.list.update('fields', extraFields);
         };
 
 
         fields.model.get = function(fieldId) {
-            return canvasStorage.list.get('field', fieldId);
+            return canvasStorage.list.get('fields', fieldId);
         };
 
 
         fields.model.getAll = function() {
-            return canvasStorage.list.getAll('field');
+            return canvasStorage.list.getAll('fields');
         };
 
 

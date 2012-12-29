@@ -81,25 +81,25 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                         // Get extra fields ontop of standard id, prev & next
                         var extraFields = {};
                         switch(prefix) {
-                            case 'card':
+                            case 'cards':
                                 extraFields = cards.model.getFields();
                                 break;
-                            case 'connection':
+                            case 'connections':
                                 extraFields = connections.model.getFields();
                                 break;
-                            case 'container':
+                            case 'containers':
                                 extraFields = containers.model.getFields();
                                 break;
-                            case 'deck':
+                            case 'decks':
                                 extraFields = decks.model.getFields();
                                 break;
-                            case 'field':
+                            case 'fields':
                                 extraFields = fields.model.getFields();
                                 break;
-                            case 'custom_card':
+                            case 'customCards':
                                 extraFields = customCards.model.getFields();
                                 break;
-                            case 'custom_deck':
+                            case 'customDecks':
                                 extraFields = customDecks.model.getFields();
                                 break;
                         }
@@ -113,7 +113,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                         }
 
                         // Card-specific 'special' extra fields
-                        if(prefix === 'card') {
+                        if(prefix === 'cards') {
 
                             var cardExtraFields = decks.getHandler(itemData.deck).getExtraFields(itemData.cardtype);
 
