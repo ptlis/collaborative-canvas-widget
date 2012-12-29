@@ -11,6 +11,9 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
         /*  ROLE user space. */
             var user            = null;
 
+        /*  ROLE IWC client. */
+            var iwcClient       = null;
+
         /*  Base resource for application. */
             var baseResource    = null;
 
@@ -36,15 +39,14 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
                 space       = new openapp.oo.Resource(openapp.param.space());
                 user        = new openapp.oo.Resource(openapp.param.user());
+                iwcClient   = new iwc.Client(['*']);
+                iwcClient.connect(roleStorage.uiUpdate);
 
                 // Called when cache has been initialised
                 var initComplete    = function() {
                     canvasStorage.ready             = true;
                     canvasStorage.standardPropagate();
                     canvas.hideLoadingDialog();
-
-                    roleStorage.iwcClient   = new iwc.Client(['*']);
-                    roleStorage.iwcClient.connect(roleStorage.uiUpdate);
                 };
 
                 // Setup base resource
@@ -69,10 +71,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                                         canvasStorage.cachedZIndex      = representation.z_index;
                                     }
 
-                                    var collector   = util.collector(canvasStorage.storedLists.length, initComplete);
-                                    for(var index in canvasStorage.storedLists) {
-                                        getListResource(canvasStorage.storedLists[index], collector);
-                                    }
+                                    roleStorage.initialiseAllCaches(initComplete);
                                 });
                         }
 
@@ -83,14 +82,9 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                                 type:           'ptlis.net:base',
                                 representation: JSON.stringify({}),
                                 callback: function(subResource) {
-
                                     baseResource    = new openapp.oo.Resource(subResource.getURI());
 
-                                    var collector   = util.collector(canvasStorage.storedLists.length, initComplete);
-
-                                    for(var index in canvasStorage.storedLists) {
-                                        createListResource(canvasStorage.storedLists[index], collector);
-                                    }
+                                    roleStorage.initialiseAllCaches(initComplete);
                                 }
                             });
                         }
@@ -207,6 +201,15 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
                 addNotification('UPDATE_Z_INDEX', data, 'ptlis.net:base');
                 publishNotifications();
+            };
+
+
+        /*  Initialise all storage caches. */
+            roleStorage.initialiseAllCaches = function(completeCallback) {
+                var collector   = util.collector(canvasStorage.storedLists.length, completeCallback);
+                for(var index in canvasStorage.storedLists) {
+                    getListResource(canvasStorage.storedLists[index], collector);
+                }
             };
 
 
@@ -699,7 +702,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 };
 
                 if(iwc.util.validateIntent(intent)) {
-                    roleStorage.iwcClient.publish(intent);
+                    iwcClient.publish(intent);
 
                     queuedNotifications = [];
                 }

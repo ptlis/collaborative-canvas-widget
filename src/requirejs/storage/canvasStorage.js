@@ -301,11 +301,11 @@ define( ['jquery', 'require'],
                     canvasStorage.util.storeDelta(processedData);
 
 
-                    canvasStorage.list.cache.initialise('container');
-                    canvasStorage.list.cache.initialise('card');
-                    canvasStorage.list.cache.initialise('connection');
-                    canvasStorage.list.cache.initialise('deck');
-                    canvasStorage.list.cache.initialise('field');
+
+                    // Initialisation of cache
+                    canvasStorage.storageModule.initialiseAllCaches(function() {
+                        canvasStorage.standardPropagate();
+                    });
                 }
 
                 else if(canvasStorage.method === 'role') {
@@ -340,12 +340,11 @@ define( ['jquery', 'require'],
                             canvasStorage.runningVersion    = canvasStorage.util.getData('data_version');
 
                             // Initialisation of cache
-                            for(var i = 0; i < canvasStorage.storedLists.length; i++) {
-                                canvasStorage.list.cache.initialise(canvasStorage.storedLists[i]);
-                            }
-
-                            canvasStorage.firstRunFunc();
-                            canvas.hideLoadingDialog();
+                            canvasStorage.storageModule.initialiseAllCaches(function() {
+                                canvasStorage.firstRunFunc();
+                                canvas.hideLoadingDialog();
+                                canvasStorage.standardPropagate();
+                            });
                         }
                     });
                 }
@@ -704,24 +703,6 @@ define( ['jquery', 'require'],
                     firstItemId     : null,
                     lastItemId      : null
                 }
-            };
-
-
-        /*  Initialise cache from storage medium */
-            canvasStorage.list.cache.initialise = function(prefix, completeCallback) {
-                var cards               = require('cards');
-                var connections         = require('connections');
-                var containers          = require('containers');
-                var decks               = require('decks');
-                var fields              = require('fields');
-
-                if(!canvasStorage.ready) {
-                    throw 'canvasStorage not initialised';
-                }
-
-                if(canvasStorage.method === 'wave' || canvasStorage.method === 'localStorage') {
-                }
-
             };
 
 
