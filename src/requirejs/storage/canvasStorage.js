@@ -125,30 +125,8 @@ define( ['jquery', 'require'],
                 }
 
                 else if(canvasStorage.method === 'role') {
-                    canvasStorage.roleResources.base.getRepresentation(
-                        'rdfjson',
-                        function(representation) {
-
-                            var data    = {
-                                'data_version': canvasStorage.version,
-                                'z_index':      canvasStorage.cachedZIndex
-                            };
-
-                            if('z_index' in representation && representation.hasOwnProperty('z_index')) {
-                                data.z_index                = representation.z_index;
-                                canvasStorage.cachedZIndex  = representation.z_index;
-                            }
-
-                            canvasStorage.roleResources.base.setRepresentation(
-                                data,
-                                'application/json'
-                            );
-
-                        }
-                    );
+                    canvasStorage.storageModule.setRunningVersion();
                 }
-
-                canvasStorage.runningVersion    = canvasStorage.version;
             };
 
 
@@ -628,23 +606,7 @@ define( ['jquery', 'require'],
                 }
 
                 else if(canvasStorage.method === 'role') {
-                    canvasStorage.cachedZIndex      = parseInt(canvasStorage.cachedZIndex, 10) + 1;
-
-                    var data    = {
-                        'data_version': canvasStorage.version,
-                        'z_index':      nextZIndex
-                    };
-
-                    canvasStorage.roleResources.base.setRepresentation(
-                        data,
-                        'application/json',
-                        function() {
-
-                        }
-                    );
-
-                    canvasStorage.list.notifications.add('UPDATE_Z_INDEX', data, 'ptlis.net:base');
-                    canvasStorage.list.notifications.publish();
+                    canvasStorage.storageModule.setNextZIndex(nextZIndex);
                 }
 
                 return nextZIndex;
@@ -772,7 +734,7 @@ define( ['jquery', 'require'],
                 if(typeof(uri) !== 'undefined') {
                     data.uri    = uri;
                 }
-console.log('cache item')
+
                 canvasStorage.list.cache.data[prefix][itemData.id]  = data;
             };
 

@@ -47,8 +47,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                     roleStorage.iwcClient.connect(roleStorage.uiUpdate);
                 };
 
-
-
+                // Setup base resource
                 roleStorage.space.getSubResources({
                     'relation': openapp.ns.role + 'data',
                     'type':     'ptlis.net:base',
@@ -163,6 +162,51 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
                     }
                 }
+            };
+
+
+        /*  Retrieve & store the API version */
+            roleStorage.setRunningVersion = function() {
+                roleStorage.resources.base.getRepresentation(
+                    'rdfjson',
+                    function(representation) {
+                        var data    = {
+                            'data_version': canvasStorage.version,
+                            'z_index':      canvasStorage.cachedZIndex
+                        };
+
+                        if('z_index' in representation && representation.hasOwnProperty('z_index')) {
+                            data.z_index                = representation.z_index;
+                            canvasStorage.cachedZIndex  = representation.z_index;
+                        }
+
+                        roleStorage.resources.base.setRepresentation(
+                            data,
+                            'application/json'
+                        );
+                    }
+                );
+
+                canvasStorage.runningVersion    = canvasStorage.version;
+            };
+
+
+        /* Set the next z index. */
+            roleStorage.setNextZIndex = function(nextZIndex) {
+                canvasStorage.cachedZIndex      = nextZIndex;
+
+                var data    = {
+                    'data_version': canvasStorage.version,
+                    'z_index':      nextZIndex
+                };
+
+                roleStorage.resources.base.setRepresentation(
+                    data,
+                    'application/json'
+                );
+
+                addNotification('UPDATE_Z_INDEX', data, 'ptlis.net:base');
+                publishNotifications();
             };
 
 
