@@ -317,7 +317,6 @@ define(
                                                     canvasStorage.clear();
 
                                                     canvasStorage.importData(processedData);
-                                                    canvasStorage.standardPropagate();
 
                                                     bgElem.fadeOut( 250,
                                                         function() {

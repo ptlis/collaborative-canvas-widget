@@ -141,14 +141,14 @@ define(
 
 
         decks.view.remove = function(event, deckData) {
-            var deckElem    = $('#deck_selector [data-carddeck="' + deckData.id + '"]');
+            var deckElem    = $('#deck_selector [data-carddeck="' + deckData.id + '"]').parent();
 
             deckElem.parents('li').remove();
         };
 
 
         decks.view.removeAll = function() {
-            var deckElems   = $('#deck_selector [data-prefix="decks"]');
+            var deckElems   = $('#deck_selector li');
 
             for(var i = 0; i < deckElems.length; i++) {
                 $(deckElems[i]).remove();
@@ -163,7 +163,7 @@ define(
 
         decks.view.updateAll = function() {
             var addedDeckIds    = [];
-            var removedDecks  = [];
+            var removedDecks    = [];
             var storedDecks     = decks.model.getAll();
             var displayedDecks  = $('#deck_selector [data-prefix="decks"]');
             var deckData;
