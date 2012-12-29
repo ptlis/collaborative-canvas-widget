@@ -39,14 +39,27 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
                 space       = new openapp.oo.Resource(openapp.param.space());
                 user        = new openapp.oo.Resource(openapp.param.user());
-                iwcClient   = new iwc.Client(['*']);
-                iwcClient.connect(roleStorage.uiUpdate);
+
+                // Delete base resource
+/*                space.getSubResources({
+                    'relation': openapp.ns.role + 'data',
+                    'type':     'ptlis.net:base',
+                    'onAll':    function(baseArr) {
+                        baseArr[0].del(function() {
+                            alert('deleted');
+                        });
+                    }
+                });
+                return;*/
 
                 // Called when cache has been initialised
                 var initComplete    = function() {
                     canvasStorage.ready             = true;
                     canvasStorage.standardPropagate();
                     canvas.hideLoadingDialog();
+
+                    iwcClient   = new iwc.Client(['*']);
+                    iwcClient.connect(roleStorage.uiUpdate);
                 };
 
                 // Setup base resource
@@ -54,7 +67,6 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                     'relation': openapp.ns.role + 'data',
                     'type':     'ptlis.net:base',
                     'onAll':    function(baseArr) {
-
                         // Resource already exists, store
                         if(baseArr.length) {
                             // There should only ever be 1 base resource
@@ -77,7 +89,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
                         // First run, create empty resource & sub-resources
                         else {
-                            canvasStorage.space.create({
+                            space.create({
                                 relation:       openapp.ns.role + 'data',
                                 type:           'ptlis.net:base',
                                 representation: JSON.stringify({}),
@@ -766,8 +778,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
             var createListResource = function(prefix, collector) {
                 var type            = 'ptlis.net:' + prefix  + '_list';
 
-                baseResource.refresh();
-                baseResourcee.create({
+                baseResource.create({
                     relation:       openapp.ns.role + 'data',
                     type:           type,
                     representation: JSON.stringify({}),
@@ -786,7 +797,6 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
             var getListResource = function(prefix, collector) {
                 var type            = 'ptlis.net:' + prefix  + '_list';
 
-                baseResource.refresh();
                 baseResource.getSubResources({
                     'relation': openapp.ns.role + 'data',
                     'type':     type,

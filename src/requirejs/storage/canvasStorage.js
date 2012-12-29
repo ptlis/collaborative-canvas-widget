@@ -66,6 +66,7 @@ define( ['jquery', 'require'],
                 storageModule.init();
             };
 
+            
         /*  Remove all data */
             canvasStorage.clear = function() {
                 var prefix;
