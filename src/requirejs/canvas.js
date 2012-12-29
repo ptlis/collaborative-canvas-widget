@@ -119,7 +119,7 @@ define(
                 $('#loading_dialog').fadeOut(
                     250,
                     function() {
-                        canvasStorage.firstRunFunc();
+                        canvasStorage.firstRun();
                         $('#loading_dialog').remove();
                     }
                 );

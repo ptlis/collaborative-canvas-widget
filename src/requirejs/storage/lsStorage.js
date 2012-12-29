@@ -10,12 +10,11 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
         /*  Initialisation */
             lsStorage.init = function() {
+                var canvas          = require('canvas');
+
                 canvasStorage.ready             = true;
                 canvasStorage.runningVersion    = canvasStorage.util.getData('data_version');
                 canvasStorage.cachedZIndex      = canvasStorage.util.getData('z_index');
-
-
-                var canvas          = require('canvas');
 
                 // Called when cache has been initialised
                 var initComplete    = function() {
@@ -29,10 +28,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 };
 
                 // Initialisation of cache
-                var collector   = util.collector(canvasStorage.storedLists.length, initComplete);
-                for(var i = 0; i < canvasStorage.storedLists.length; i++) {
-                    initialiseCache(canvasStorage.storedLists[i], collector());
-                }
+                lsStorage.initialiseAllCaches(initComplete);
             };
 
 
@@ -42,6 +38,21 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 // Only fire when changed_element is updated (performance optimisation)
                 if(typeof(event) === 'undefined' || event.originalEvent.key === 'changed_element') {
                     canvasStorage.standardPropagate();
+                }
+            };
+
+
+        /*  Retrieve & store the API version */
+            lsStorage.setRunningVersion = function() {
+                canvasStorage.util.storeDelta({'data_version': canvasStorage.version});
+            };
+
+
+        /*  Initialise all storage caches. */
+            lsStorage.initialiseAllCaches = function(completeCallback) {
+                var collector   = util.collector(canvasStorage.storedLists.length, completeCallback);
+                for(var index in canvasStorage.storedLists) {
+                    initialiseCache(canvasStorage.storedLists[index], collector);
                 }
             };
 
@@ -68,7 +79,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                     if(itemData.prev !== null || itemData.next !== null || itemData.id === canvasStorage.list.cache.getFirstItemId(prefix)) {
 
                         // Get extra fields ontop of standard id, prev & next
-                        var extraFields;
+                        var extraFields = {};
                         switch(prefix) {
                             case 'card':
                                 extraFields = cards.model.getFields();

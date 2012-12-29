@@ -57,7 +57,7 @@ require(
 
         function windowLoadFunc() {
 
-            // TODO: This should probably be elsewhere
+            // TODO: This should probably be in the canvas module
             var options = {
                 zIndex:     999999999,
                 className:  'menu_large',
@@ -142,10 +142,11 @@ require(
             };
             $.contextMenu(options);
 
-            canvasStorage.init(storageMethod, storageModule, firstRun);
-            canvasStorage.setWaveUIUpdateFunc(wavePropagate);
-            canvasStorage.setWaveParticipantUpdateFunc(waveParticipantUpdate);
+            // Initialise storage
+            canvasStorage.init(storageMethod, storageModule);
 
+            // Handle window resizing (update positions & spawn dialog if window
+            // is made too small
             $(window)
                 .off('resize')
                 .on('resize', function() {
@@ -159,45 +160,6 @@ require(
                         labelDialog.css('left', leftOffset);
                     }
                 });
-        }
-
-        function firstRun() {
-
-            // Detect data storage version
-            var lsDataVersion   = canvasStorage.getRunningVersion();
-
-            // First run
-            if(lsDataVersion === null) {
-                $(window).trigger('widget:field:view:create_dialog', [true]);
-            }
-
-            // Older version found, offer to clear
-            else if(lsDataVersion !== canvasStorage.version) {
-                if(confirm('Data from an incompatible version of this app exists. Do you wish to clear it?')) {
-                    clearData();
-
-                    $(window).trigger('widget:field:view:create_dialog', [true]);
-                }
-
-            }
-
-            canvas.dimensionsCheck();
-        }
-
-
-
-
-
-
-        function waveParticipantUpdate() {
-
-            // Dummy, not currently used.
-        }
-
-
-        function wavePropagate() {
-
-            canvasStorage.standardPropagate();
         }
     }
 );

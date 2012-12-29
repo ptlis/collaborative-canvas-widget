@@ -32,9 +32,6 @@ define( ['jquery', 'require'],
         /*  Deferred data to append to delta on next submit. */
             canvasStorage.deferredDelta     = {};
 
-        /*  The startup function */
-            canvasStorage.firstRunFunc      = undefined;
-
         /*  The list of data stored. */
             canvasStorage.storedLists       = [
                 'card',
@@ -62,12 +59,37 @@ define( ['jquery', 'require'],
 
 
         /*  Initialisation function. */
-            canvasStorage.init = function(storageMethod, storageModule, firstRunFunc) {
+            canvasStorage.init = function(storageMethod, storageModule) {
                 canvasStorage.method        = storageMethod;
                 canvasStorage.storageModule = storageModule;
-                canvasStorage.firstRunFunc  = firstRunFunc;
 
                 storageModule.init();
+            };
+
+
+        /*  The startup function */
+            canvasStorage.firstRun          = function() {
+                var canvas      = require('canvas');
+
+                // Detect data storage version
+                var lsDataVersion   = canvasStorage.getRunningVersion();
+
+                // First run
+                if(lsDataVersion === null) {
+                    $(window).trigger('widget:field:view:create_dialog', [true]);
+                }
+
+                // Older version found, offer to clear
+                else if(lsDataVersion !== canvasStorage.version) {
+                    if(confirm('Data from an incompatible version of this app exists. Do you wish to clear it?')) {
+                        clearData();
+
+                        $(window).trigger('widget:field:view:create_dialog', [true]);
+                    }
+
+                }
+
+                canvas.dimensionsCheck();
             };
 
 
@@ -120,11 +142,11 @@ define( ['jquery', 'require'],
 
         /*  Retrieve & store the API version */
             canvasStorage.setRunningVersion = function() {
-                if(canvasStorage.method === 'wave' || canvasStorage.method === 'localStorage') {
+                if(canvasStorage.method === 'wave') {
                     canvasStorage.util.storeDelta({'data_version': canvasStorage.version});
                 }
 
-                else if(canvasStorage.method === 'role') {
+                else {
                     canvasStorage.storageModule.setRunningVersion();
                 }
             };
@@ -139,29 +161,13 @@ define( ['jquery', 'require'],
                 var fields              = require('fields');
 
                 var allData             = {};
-
-                if(canvasStorage.method === 'wave' || canvasStorage.method === 'localStorage') {
-
-                    allData.data_version    = canvasStorage.getRunningVersion();
-                    allData.z_index         = canvasStorage.cachedZIndex;
-                    allData.change_id       = canvasStorage.util.getData('change_id');
-                    allData.cards           = cards.model.getAll();
-                    allData.connections     = connections.model.getAll();
-                    allData.containers      = containers.model.getAll();
-                    allData.decks           = decks.model.getAll();
-                    allData.fields          = fields.model.getAll();
-                }
-
-                else if(canvasStorage.method === 'role') {
-
-                    allData.data_version    = canvasStorage.getRunningVersion();
-                    allData.z_index         = canvasStorage.cachedZIndex;
-                    allData.cards           = cards.model.getAll();
-                    allData.connections     = connections.model.getAll();
-                    allData.containers      = containers.model.getAll();
-                    allData.decks           = decks.model.getAll();
-                    allData.fields          = fields.model.getAll();
-                }
+                allData.data_version    = canvasStorage.getRunningVersion();
+                allData.z_index         = canvasStorage.cachedZIndex;
+                allData.cards           = cards.model.getAll();
+                allData.connections     = connections.model.getAll();
+                allData.containers      = containers.model.getAll();
+                allData.decks           = decks.model.getAll();
+                allData.fields          = fields.model.getAll();
 
                 return allData;
             };
@@ -309,6 +315,7 @@ define( ['jquery', 'require'],
                 }
 
                 else if(canvasStorage.method === 'role') {
+                    // TODO: Implement
                     throw "'importData' not implemented for ROLE";
                 }
             };
@@ -327,38 +334,6 @@ define( ['jquery', 'require'],
             };
 
 
-        /*  Sets the wave storage update function */
-            canvasStorage.setWaveUIUpdateFunc = function(uiUpdateFunction) {
-                var canvas  = require('canvas');
-
-                // Update this widget if changes are detected
-                if(canvasStorage.method === 'wave') {
-
-                    wave.setStateCallback(function() {
-                        if(!canvasStorage.ready) {
-                            canvasStorage.ready             = true;
-                            canvasStorage.runningVersion    = canvasStorage.util.getData('data_version');
-
-                            // Initialisation of cache
-                            canvasStorage.storageModule.initialiseAllCaches(function() {
-                                canvasStorage.firstRunFunc();
-                                canvas.hideLoadingDialog();
-                                canvasStorage.standardPropagate();
-                            });
-                        }
-                    });
-                }
-            };
-
-
-        /*  Sets the wave participant update function */
-            canvasStorage.setWaveParticipantUpdateFunc = function(participantUpdateFunction) {
-                if(canvasStorage.method === 'wave') {
-                    wave.setParticipantCallback(function() {
-                        participantUpdateFunction();
-                    });
-                }
-            };
 
 
 
