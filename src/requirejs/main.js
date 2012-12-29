@@ -1,33 +1,6 @@
 /*jshint jquery:true */
 
 
-requirejs.config({
-    shim: {
-        'jquery.base64': {
-            'deps':	    ['jquery']
-        },
-
-        'jquery.ui': {
-            'deps':     ['jquery']
-        },
-
-        'jquery.contextMenu': {
-            'deps':     ['jquery'],
-            'exports':  'jquery.fn.contextMenu'
-        },
-
-        'jquery.colorpicker': {
-            'deps':     ['jquery'],
-            'exports':  'jquery.fn.ColorPicker'
-        },
-
-        'jquery.imgurUpload': {
-            'deps':     ['jquery'],
-            'exports':  'jquery.fn.imgurUpload'
-        }
-    }
-});
-
 require(
     [   'jquery',
         'storage/canvasStorage',
@@ -35,9 +8,10 @@ require(
         'storage/roleStorage',
         'storage/waveStorage',
         'canvas',
-        'decks',
         'cards',
+        'decks',
         'containers',
+
         'customDecks',
         'customCards',
         'fields',
@@ -55,9 +29,10 @@ require(
         'lib/jquery.contextMenu',
         'lib/jquery.ui',
         'lib/jquery.colorpicker',
-        'lib/jquery.imgurUpload'],
+        'lib/jquery.imgurUpload',
+        'lib/jquery.base64'],
 
-    function($, canvasStorage, lsStorage, roleStorage, waveStorage, canvas, decks, cards, containers) {
+    function($, canvasStorage, lsStorage, roleStorage, waveStorage, canvas, cards) {
         var storageMethod;
         var storageModule;
 
@@ -168,7 +143,6 @@ require(
             $.contextMenu(options);
 
             canvasStorage.init(storageMethod, storageModule, firstRun);
-//            canvasStorage.setLocalStorageUIUpdateFunc(localStoragePropagate);
             canvasStorage.setWaveUIUpdateFunc(wavePropagate);
             canvasStorage.setWaveParticipantUpdateFunc(waveParticipantUpdate);
 
