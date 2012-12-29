@@ -142,17 +142,11 @@ define( ['jquery', 'require'],
 
         /*  Retrieve & store the API version */
             canvasStorage.setRunningVersion = function() {
-                if(canvasStorage.method === 'wave') {
-                    canvasStorage.util.storeDelta({'data_version': canvasStorage.version});
-                }
-
-                else {
-                    canvasStorage.storageModule.setRunningVersion();
-                }
+                canvasStorage.storageModule.setRunningVersion();
             };
 
 
-        /*  Generate JSON datastructe containing all data */
+        /*  Generate JSON data structure containing all data */
             canvasStorage.exportData = function() {
                 var cards               = require('cards');
                 var connections         = require('connections');
@@ -163,6 +157,7 @@ define( ['jquery', 'require'],
                 var allData             = {};
                 allData.data_version    = canvasStorage.getRunningVersion();
                 allData.z_index         = canvasStorage.cachedZIndex;
+
                 allData.cards           = cards.model.getAll();
                 allData.connections     = connections.model.getAll();
                 allData.containers      = containers.model.getAll();
@@ -173,7 +168,7 @@ define( ['jquery', 'require'],
             };
 
 
-            /*  Import JSON datastructure & overwrite current data. */
+        /*  Import JSON datastructure & overwrite current data. */
             canvasStorage.importData = function(importedData) {
                 if(importedData.data_version !== canvasStorage.version) {
                     throw 'Data version mismatch between import and application';

@@ -27,7 +27,7 @@ define( ['jquery'],
                         };
 
                         // Initialisation of cache
-                        canvasStorage.storageModule.initialiseAllCaches(initComplete);
+                        waveStorage.initialiseAllCaches(initComplete);
                     }
 
                     // Subsequent calls
@@ -41,8 +41,16 @@ define( ['jquery'],
                 });
             };
 
+
+        /*  Initialise all storage caches. */
             waveStorage.uiUpdate = function() {
                 canvasStorage.standardPropagate();
+            };
+
+
+        /*  Retrieve & store the API version */
+            waveStorage.setRunningVersion = function() {
+                canvasStorage.util.storeDelta({'data_version': canvasStorage.version});
             };
 
             return waveStorage;
