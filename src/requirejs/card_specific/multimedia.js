@@ -1028,7 +1028,7 @@ define( ['jquery', 'decks', 'storage/canvasStorage', 'util'],
 
                 createDeckIcon : function() {
                     return  $('<span></span>', {
-                                'data-prefix':      'deck',
+                                'data-prefix':      'decks',
                                 'data-carddeck':    'multimedia',
                                 'data-cardsize':    'small'
                             });
