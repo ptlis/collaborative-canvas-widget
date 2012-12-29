@@ -375,6 +375,8 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 newItemData.prev    = null;
 
                 // Items already exist in cache, find the last item
+                var lastItemId      = canvasStorage.list.cache.getLastItemId(prefix);
+                var lastItemData    = null;
                 if(lastItemId) {
                     lastItemData    = canvasStorage.list.cache.getCachedItemId(prefix, lastItemId);
                 }
@@ -432,13 +434,16 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                     throw 'canvasStorage not initialised';
                 }
 
-                var lastItemData    = null;
-                var lastItemId      = canvasStorage.list.cache.getLastItemId(prefix);
                 var listResource    = listResources[prefix];
 
                 // Items already exist, update last item's next value
+                var lastItemData    = null;
+                var lastItemId      = canvasStorage.list.cache.getLastItemId(prefix);
                 if(lastItemId) {
                     lastItemData    = canvasStorage.list.cache.getCachedItemId(prefix, lastItemId);
+                }
+
+                if(lastItemData) {
                     lastItemData.data.next      = newItemDataArr[0].id;
                     var lastItemResource    = new openapp.oo.Resource(lastItemData.uri);
 
