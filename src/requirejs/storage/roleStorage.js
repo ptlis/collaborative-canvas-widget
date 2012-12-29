@@ -5,37 +5,37 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
         function($, require, util, canvasStorage) {
             'use strict';
 
-            var roleStorage     = {};
-            roleStorage.list    = {};
-
         /*  ROLE shared space. */
-            roleStorage.space   = null;
+            var space           = null;
 
         /*  ROLE user space. */
-            roleStorage.user    = null;
+            var user            = null;
+
+        /*  Base resource for application. */
+            var baseResource    = null;
 
         /*  Resource handles for ROLE. */
-            roleStorage.resources = {
-                base            : null,
-                cardList        : null,
-                connectionList  : null,
-                containerList   : null,
-                deckList        : null,
-                fieldList       : null,
-                customDeckList  : null,
-                customCardList  : null
+            var listResources = {
+                'card'          : null,
+                'connection'    : null,
+                'container'     : null,
+                'deck'          : null,
+                'field'         : null,
+                'custom_deck'   : null,
+                'custom_card'   : null
             };
+
+
+            var roleStorage     = {};
+            roleStorage.list    = {};
 
 
         /*  Initialisation */
             roleStorage.init = function() {
-                var canvas          = require('canvas');
+                var canvas  = require('canvas');
 
-                roleStorage.space   = new openapp.oo.Resource(openapp.param.space());
-                roleStorage.user    = new openapp.oo.Resource(openapp.param.user());
-
-                // Get Base resource
-                roleStorage.resources.base  = null;
+                space       = new openapp.oo.Resource(openapp.param.space());
+                user        = new openapp.oo.Resource(openapp.param.user());
 
                 // Called when cache has been initialised
                 var initComplete    = function() {
@@ -48,7 +48,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 };
 
                 // Setup base resource
-                roleStorage.space.getSubResources({
+                space.getSubResources({
                     'relation': openapp.ns.role + 'data',
                     'type':     'ptlis.net:base',
                     'onAll':    function(baseArr) {
@@ -56,9 +56,9 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                         // Resource already exists, store
                         if(baseArr.length) {
                             // There should only ever be 1 base resource
-                            roleStorage.resources.base      = baseArr[0];
+                            baseResource    = baseArr[0];
 
-                            roleStorage.resources.base.getRepresentation(
+                            baseResource.getRepresentation(
                                 'rdfjson',
                                 function(representation) {
                                     if('data_version' in representation && representation.hasOwnProperty('data_version')) {
@@ -84,7 +84,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                                 representation: JSON.stringify({}),
                                 callback: function(subResource) {
 
-                                    roleStorage.resources.base      = new openapp.oo.Resource(subResource.getURI());
+                                    baseResource    = new openapp.oo.Resource(subResource.getURI());
 
                                     var collector   = util.collector(canvasStorage.storedLists.length, initComplete);
 
@@ -102,7 +102,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
         /*  Process intent & trigger events to update UI. */
             roleStorage.uiUpdate = function(intent) {
-                roleStorage.space.refresh();
+                space.refresh();
 
                 // Only update if the notification was published by a different user
                 if(intent.extras.user !== openapp.param.user()) {
@@ -167,7 +167,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
         /*  Retrieve & store the API version */
             roleStorage.setRunningVersion = function() {
-                roleStorage.resources.base.getRepresentation(
+                baseResource.getRepresentation(
                     'rdfjson',
                     function(representation) {
                         var data    = {
@@ -180,7 +180,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                             canvasStorage.cachedZIndex  = representation.z_index;
                         }
 
-                        roleStorage.resources.base.setRepresentation(
+                        baseResource.setRepresentation(
                             data,
                             'application/json'
                         );
@@ -200,7 +200,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                     'z_index':      nextZIndex
                 };
 
-                roleStorage.resources.base.setRepresentation(
+                baseResource.setRepresentation(
                     data,
                     'application/json'
                 );
@@ -208,6 +208,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 addNotification('UPDATE_Z_INDEX', data, 'ptlis.net:base');
                 publishNotifications();
             };
+
 
 
 
@@ -225,7 +226,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 var firstId             = canvasStorage.list.cache.getFirstItemId(prefix);
                 var relativeToItemData  = canvasStorage.list.cache.getCachedItemId(prefix, relativeToId);
                 var type                = 'ptlis.net:' + prefix;
-                var listResource        = roleStorage.resources[prefix + 'List'];
+                var listResource        = listResources[prefix];
                 var relativeToItemResource;
                 var prevItemData;
                 var nextItemData;
@@ -353,7 +354,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 }
 
 
-                var listResource    = roleStorage.resources[prefix + 'List'];
+                var listResource    = listResources[prefix];
 
                 newItemData.next    = null;
                 newItemData.prev    = null;
@@ -418,7 +419,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
 
                 var lastItemData    = null;
                 var lastItemId      = canvasStorage.list.cache.getLastItemId(prefix);
-                var listResource    = roleStorage.resources[prefix + 'List'];
+                var listResource    = listResources[prefix];
 
                 // Items already exist, update last item's next value
                 if(lastItemId) {
@@ -501,7 +502,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 var prevData;
                 var nextData;
 
-                var listResource    = roleStorage.resources[prefix + 'List'];
+                var listResource    = listResources[prefix];
                 var nextItemResource;
                 var prevItemResource;
                 var representation;
@@ -607,7 +608,7 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                     throw 'canvasStorage not initialised';
                 }
 
-                var listResource    = roleStorage.resources[prefix + 'List'];
+                var listResource    = listResources[prefix];
 
                 var type    = 'ptlis.net:' + prefix;
 
@@ -714,16 +715,16 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
     /* Resource functions. */
 
         /*  Cache initialisation. */
-            var initialiseCache = function(prefix, completeCallback) {
+            var initialiseCachePrefix = function(prefix, completeCallback) {
                 var type            = 'ptlis.net:' + prefix;
 
-                roleStorage.resources[prefix + 'List'].getRepresentation('rdfjson', function(listRepresentation) {
+                listResources[prefix].getRepresentation('rdfjson', function(listRepresentation) {
 
                     if('firstItemId' in listRepresentation && listRepresentation.hasOwnProperty('firstItemId')) {
                         canvasStorage.list.cache.setFirstItemId(prefix, listRepresentation.firstItemId);
                     }
 
-                    roleStorage.resources[prefix + 'List'].getSubResources({
+                    listResources[prefix].getSubResources({
                         'relation': openapp.ns.role + 'data',
                         'type':     type,
                         'onAll':    function(listResArr) {
@@ -762,15 +763,15 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
             var createListResource = function(prefix, collector) {
                 var type            = 'ptlis.net:' + prefix  + '_list';
 
-                roleStorage.resources.base.refresh();
-                roleStorage.resources.base.create({
+                baseResource.refresh();
+                baseResourcee.create({
                     relation:       openapp.ns.role + 'data',
                     type:           type,
                     representation: JSON.stringify({}),
                     callback: function(subResource) {
-                        roleStorage.resources[prefix + 'List']  = new openapp.oo.Resource(subResource.getURI());
+                        listResources[prefix]  = new openapp.oo.Resource(subResource.getURI());
 
-                        initialiseCache(prefix, collector);
+                        initialiseCachePrefix(prefix, collector);
                     }
                 });
             };
@@ -782,16 +783,16 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
             var getListResource = function(prefix, collector) {
                 var type            = 'ptlis.net:' + prefix  + '_list';
 
-                roleStorage.resources.base.refresh();
-                roleStorage.resources.base.getSubResources({
+                baseResource.refresh();
+                baseResource.getSubResources({
                     'relation': openapp.ns.role + 'data',
                     'type':     type,
                     'onAll':    function(listResArr) {
 
                         // Resource exists
                         if(listResArr.length) {
-                            roleStorage.resources[prefix + 'List']  = new openapp.oo.Resource(listResArr[0].getURI());
-                            initialiseCache(prefix, collector);
+                            listResources[prefix]  = new openapp.oo.Resource(listResArr[0].getURI());
+                            initialiseCachePrefix(prefix, collector);
                         }
 
                         // Resource doesn't exist
