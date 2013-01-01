@@ -225,6 +225,12 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
             };
 
 
+        /* Import data */
+            roleStorage.importData = function(importedData) {
+                throw '"importData" not implemented for ROLE';
+            };
+
+
 
 
     /*  List manipulation

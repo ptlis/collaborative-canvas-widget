@@ -602,11 +602,7 @@ define(
 
 
         cards.view.add = function(event, cardData) {
-            var decks       = require('decks'); // Pull in decks
-
-            if(!canvasStorage.ready) {
-                throw 'canvasStorage not initialised';
-            }
+            var decks       = require('decks'); // Pull in deck
 
             var parentElem;
             if(cardData.size === 'medium') {

@@ -1,11 +1,76 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
-        function($, require, util, canvasStorage) {
+define( ['jquery', 'storage/canvasStorage', 'storage/kvpStorage'],
+        function($,canvasStorage, kvpStorage) {
             'use strict';
 
             var lsStorage   = {};
+            lsStorage.list  = {};
+
+
+
+    /*  Storage functionality specific to localStorage. */
+            var deferredDelta   = {};
+
+            var storeDelta = function(delta, deferred) {
+                if(!canvasStorage.ready) {
+                    throw 'canvasStorage not initialised';
+                }
+
+                var key = null;
+
+                // Defer the storage action
+                if(deferred) {
+                    for(key in delta) {
+                        if(delta.hasOwnProperty(key)) {
+                            // Store delta
+                           deferredDelta[key]    = delta[key];
+                        }
+                    }
+                }
+
+                // Store delta combined with deferred delta
+                else {
+                    // Handle deferred data
+                    for(key in deferredDelta) {
+                        if(deferredDelta.hasOwnProperty(key)) {
+                            if(!(key in delta)) {
+                                delta[key]      = deferredDelta[key];
+                            }
+
+                        }
+                    }
+                    deferredDelta = {};
+
+                    for(key in delta) {
+                        if(delta.hasOwnProperty(key)) {
+                            if(typeof(delta[key]) !== 'undefined' && delta[key] !== null && delta[key].length) {
+                                localStorage.setItem(key, delta[key]);
+                            }
+                            else {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                    }
+                }
+            };
+
+
+            var getData = function(key) {
+                if(!canvasStorage.ready) {
+                    throw 'canvasStorage not initialised';
+                }
+
+                var data    = localStorage.getItem(key);
+                if(typeof(data) === 'string' && data.length < 1) {
+                    data        = null;
+                }
+                return data;
+            };
+
+
+
 
 
         /*  Initialisation */
@@ -13,8 +78,8 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
                 var canvas          = require('canvas');
 
                 canvasStorage.ready             = true;
-                canvasStorage.runningVersion    = canvasStorage.util.getData('data_version');
-                canvasStorage.cachedZIndex      = canvasStorage.util.getData('z_index');
+                canvasStorage.runningVersion    = getData('data_version');
+                canvasStorage.cachedZIndex      = getData('z_index');
 
                 // Called when cache has been initialised
                 var initComplete    = function() {
@@ -42,127 +107,70 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
             };
 
 
+        /* Set the next z index. */
+            lsStorage.setNextZIndex = function(nextZIndex) {
+                kvpStorage.setNextZIndex(nextZIndex, storeDelta);
+            };
+
+
         /*  Retrieve & store the API version */
             lsStorage.setRunningVersion = function() {
-                canvasStorage.util.storeDelta({'data_version': canvasStorage.version});
+                kvpStorage.setRunningVersion(storeDelta);
             };
 
 
         /*  Initialise all storage caches. */
             lsStorage.initialiseAllCaches = function(completeCallback) {
-                var collector   = util.collector(canvasStorage.storedLists.length, completeCallback);
-                for(var index in canvasStorage.storedLists) {
-                    initialiseCache(canvasStorage.storedLists[index], collector);
-                }
+                kvpStorage.initialiseAllCaches(getData, storeDelta, completeCallback);
+            };
+
+
+        /* Import data */
+            lsStorage.importData = function(importedData) {
+                kvpStorage.importData(importedData, storeDelta);
             };
 
 
 
-            /*  Cache initialisation. */
-            var initialiseCache = function(prefix, completeCallback) {
 
-                var cards               = require('cards');
-                var connections         = require('connections');
-                var containers          = require('containers');
-                var decks               = require('decks');
-                var fields              = require('fields');
-                var customCards         = require('customCards');
-                var customDecks         = require('customDecks');
+    /*  List manipulation
 
-                var getFunc = function(prefix, instanceId) {
+        Wrap standard doubly linked-list functionality. */
 
-                    var itemData    = {};
-                    itemData.id     = instanceId;
-                    itemData.prev   = canvasStorage.util.getData(prefix + '_' + itemData.id + '_prev');
-                    itemData.next   = canvasStorage.util.getData(prefix + '_' + itemData.id + '_next');
-
-                    if(itemData.prev !== null || itemData.next !== null || itemData.id === canvasStorage.list.cache.getFirstItemId(prefix)) {
-
-                        // Get extra fields ontop of standard id, prev & next
-                        var extraFields = {};
-                        switch(prefix) {
-                            case 'cards':
-                                extraFields = cards.model.getFields();
-                                break;
-                            case 'connections':
-                                extraFields = connections.model.getFields();
-                                break;
-                            case 'containers':
-                                extraFields = containers.model.getFields();
-                                break;
-                            case 'decks':
-                                extraFields = decks.model.getFields();
-                                break;
-                            case 'fields':
-                                extraFields = fields.model.getFields();
-                                break;
-                            case 'customCards':
-                                extraFields = customCards.model.getFields();
-                                break;
-                            case 'customDecks':
-                                extraFields = customDecks.model.getFields();
-                                break;
-                        }
+        /*  Add the item in the specified position in prefix relative to the
+            given item. */
+            lsStorage.list.addPositioned = function(prefix, newItemData, position, relativeToId) {
+                kvpStorage.list.addPositioned(prefix, newItemData, position, relativeToId, storeDelta);
+            };
 
 
-                        // Add data for extra fields
-                        for(var index in extraFields) {
-                            if(extraFields.hasOwnProperty(index)) {
-                                itemData[index]                         = canvasStorage.util.getData(prefix + '_' + itemData.id + '_' + index);
-                            }
-                        }
-
-                        // Card-specific 'special' extra fields
-                        if(prefix === 'cards') {
-
-                            var cardExtraFields = decks.getHandler(itemData.deck).getExtraFields(itemData.cardtype);
-
-                            for(index in cardExtraFields) {
-                                if(cardExtraFields.hasOwnProperty(index)) {
-                                    itemData[index]                         = canvasStorage.util.getData(prefix + '_' + itemData.id + '_' + index);
-
-                                    if(itemData[index] === null) {
-                                        delete itemData[index];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        itemData    = null;
-                    }
-
-                    return itemData;
-                };
+        /*  Add the item to the end of the prefix list. */
+            lsStorage.list.add = function(prefix, newItemData) {
+                kvpStorage.list.add(prefix, newItemData, storeDelta);
+            };
 
 
-
-                canvasStorage.list.cache.setFirstItemId(prefix, canvasStorage.util.getData(prefix + '_first'));
-                var currentId   = canvasStorage.list.cache.getFirstItemId(prefix);
-                var nextId;
-                var itemData;
-
-                if(currentId) {
-                    itemData        = getFunc(prefix, currentId);
-                    nextId          = itemData.next;
-                    canvasStorage.list.cache.cacheItem(prefix, itemData);
-
-                    while(nextId !== null && nextId.length > 0) {
-                        currentId       = nextId;
-                        itemData        = getFunc(prefix, currentId);
-                        nextId          = itemData.next;
-
-                        canvasStorage.list.cache.cacheItem(prefix, itemData);
-                    }
-
-                    canvasStorage.list.cache.setLastItemId(prefix, itemData.id);
-                }
+        /*  Bulk insert of several items into prefix. */
+            lsStorage.list.addMulti = function(prefix, newItemDataArr) {
+                kvpStorage.list.addMulti(prefix, newItemDataArr, storeDelta);
+            };
 
 
-                // If provided execute callback
-                if(typeof(completeCallback) !== 'undefined') {
-                    completeCallback();
-                }
+        /* Remove the item from the prefix list. */
+            lsStorage.list.remove = function(prefix, remItemData) {
+                kvpStorage.list.remove(prefix, remItemData, storeDelta);
+            };
+
+
+        /*  Remove all items from the prefix list. */
+            lsStorage.list.removeAll = function(prefix, remItemData) {
+                kvpStorage.list.removeAll(prefix, remItemData, storeDelta);
+            };
+
+
+        /*  Update item data in storage. */
+            lsStorage.list.update = function(prefix, itemData) {
+                kvpStorage.list.update(prefix, itemData, storeDelta);
             };
 
 

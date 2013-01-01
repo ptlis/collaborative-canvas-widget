@@ -18,6 +18,8 @@ require(
         'connections',
         'customisation',
 
+        'storage/kvpStorage',
+
         'card_specific/assessment',
         'card_specific/hlm',
         'card_specific/information_skills',
@@ -33,24 +35,20 @@ require(
         'lib/jquery.base64'],
 
     function($, canvasStorage, lsStorage, roleStorage, waveStorage, canvas, cards) {
-        var storageMethod;
         var storageModule;
 
         // ROLE & iwc/openapp
         if (typeof(ROLE) !== 'undefined' && ROLE === true) {
-            storageMethod   = 'role';
             storageModule   = roleStorage;
             windowLoadFunc();
 
         // Wookie & wave
         } else if (typeof(WOOKIE) !== 'undefined' && WOOKIE === true) {
-            storageMethod   = 'wave';
             storageModule   = waveStorage;
             windowLoadFunc();
 
         // LocalStorage
         } else {
-            storageMethod   = 'localStorage';
             storageModule   = lsStorage;
             windowLoadFunc();
         }
@@ -143,7 +141,7 @@ require(
             $.contextMenu(options);
 
             // Initialise storage
-            canvasStorage.init(storageMethod, storageModule);
+            canvasStorage.init(storageModule);
 
             // Handle window resizing (update positions & spawn dialog if window
             // is made too small
