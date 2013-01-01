@@ -596,6 +596,11 @@ define(
         };
 
 
+        cards.cache.deleteAllCachedCardData = function() {
+            cards.cache.cachedCards     = {};
+        }
+
+
         cards.view.add = function(event, cardData) {
             var decks       = require('decks'); // Pull in decks
 
@@ -670,6 +675,8 @@ define(
 
                 cards.cache.deleteCachedCardData(cardElem.data('instanceid'));
             }
+
+            cards.cache.deleteAllCachedCardData();
         };
 
 
