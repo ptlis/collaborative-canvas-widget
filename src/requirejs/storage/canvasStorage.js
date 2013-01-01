@@ -26,9 +26,6 @@ define( ['jquery', 'require'],
         /*  Store of delay Ids for changing text elements */
             canvasStorage.delayIds          = [];
 
-        /*  Deferred data to append to delta on next submit. */
-            canvasStorage.deferredDelta     = {};
-
         /*  The list of data stored. */
             canvasStorage.storedLists       = [
                 'containers',
@@ -309,10 +306,6 @@ define( ['jquery', 'require'],
         /* Used so that we can always bring an element to the front of all
            others. */
             canvasStorage.util.getNextZIndex = function() {
-                if(!canvasStorage.ready) {
-                    throw 'canvasStorage not initialised';
-                }
-
                 var nextZIndex;
                 // No z-index stored
                 if(canvasStorage.cachedZIndex === null) {

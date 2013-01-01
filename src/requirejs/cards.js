@@ -598,7 +598,7 @@ define(
 
         cards.cache.deleteAllCachedCardData = function() {
             cards.cache.cachedCards     = {};
-        }
+        };
 
 
         cards.view.add = function(event, cardData) {
@@ -1365,45 +1365,44 @@ define(
 
 
             // Spin cards outwards from center
-            var startTime;
-            var animDuration = 0.25;    // how long should the animation last?
-            var updateCircle = function() {
+            var startTime       = Date.now();
+            var animDuration    = 0.25;    // how long should the animation last?
+            var updateCircle    = function() {
+                var timeDiff        = ((Date.now() - startTime) / 1000);
+                var scaledRadius    = (timeDiff / animDuration) * radius;
 
-            var timeDiff        = ((Date.now() - startTime) / 1000);
-            var scaledRadius    = (timeDiff / animDuration) * radius;
+                var angle;
+                for(var i = 0; i < cardIcons.length; i++) {
+                    angle   = 2 * Math.PI * i / cardIcons.length;
+                    angle   = angle-(2*Math.PI / 4);            // Rotate to the left by 1/4 rotation
 
-            var angle;
-            for(var i = 0; i < cardIcons.length; i++) {
-                angle   = 2 * Math.PI * i / cardIcons.length;
-                angle   = angle-(2*Math.PI / 4);            // Rotate to the left by 1/4 rotation
+                    if((radius - scaledRadius) > 0) {
+                        angle -= (radius - scaledRadius) / 90;
+                    }
+                    else {
+                        scaledRadius    = radius;
+                    }
 
-                if((radius - scaledRadius) > 0) {
-                    angle -= (radius - scaledRadius) / 90;
+                    // Calculate the basic position of cards on circle.
+                    x       = Math.round(scaledRadius * Math.cos(angle)) + radius;
+                    y       = Math.round(scaledRadius * Math.sin(angle)) + radius;
+
+                    // Offset by card dimensions
+                    x       -= Math.round((cardIcons[i].css('width').replace('px', '') / 2) + parseInt(cardIcons[i].css('border-left-width').replace('px', ''), 10));
+                    y       -= Math.round((cardIcons[i].css('height').replace('px', '') / 2) + parseInt(cardIcons[i].css('border-top-width').replace('px', ''), 10));
+
+                    cardIcons[i].parents('li').css('top',       y + 'px');
+                    cardIcons[i].parents('li').css('left',  x + 'px');
+                }
+
+
+                // Continue updating until time runs out
+                if(timeDiff < animDuration) {
+                    cardSelector.css('transform', 'scale(' + (timeDiff * (1 / animDuration)) +  ')');
+                    window.setTimeout(updateCircle, 33);
                 }
                 else {
-                    scaledRadius    = radius;
-                }
-
-                // Calculate the basic position of cards on circle.
-                x       = Math.round(scaledRadius * Math.cos(angle)) + radius;
-                y       = Math.round(scaledRadius * Math.sin(angle)) + radius;
-
-                // Offset by card dimensions
-                x       -= Math.round((cardIcons[i].css('width').replace('px', '') / 2) + parseInt(cardIcons[i].css('border-left-width').replace('px', ''), 10));
-                y       -= Math.round((cardIcons[i].css('height').replace('px', '') / 2) + parseInt(cardIcons[i].css('border-top-width').replace('px', ''), 10));
-
-                cardIcons[i].parents('li').css('top',       y + 'px');
-                cardIcons[i].parents('li').css('left',  x + 'px');
-            }
-
-
-            // Continue updating until time runs out
-            if(timeDiff < animDuration) {
-                cardSelector.css('transform', 'scale(' + (timeDiff * (1 / animDuration)) +  ')');
-                window.setTimeout(updateCircle, 33);
-            }
-            else {
-                cardSelector.css('transform', 'scale(1)');
+                    cardSelector.css('transform', 'scale(1)');
                     deckHint.appendTo(wheelContainer);
                 }
             };
