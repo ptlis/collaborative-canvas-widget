@@ -1,5 +1,6 @@
 /*jshint jquery:true */
 
+
 /*  Functionality that is required for the whole canvas. */
 define(
     ['jquery', 'storage/canvasStorage'],

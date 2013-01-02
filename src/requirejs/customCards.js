@@ -2,8 +2,8 @@
 
 
 define(
-    ['jquery', 'storage/canvasStorage', 'util'],
-    function($, canvasStorage, util) {
+    ['jquery', 'storage/canvasStorage'],
+    function($, canvasStorage) {
         'use strict';
 
         var customCards     = {};

@@ -27,7 +27,7 @@ require(
         'card_specific/multimedia',
         'card_specific/sticky',
 
-        // jQuery library shims
+        // jQuery plugins
         'lib/jquery.contextMenu',
         'lib/jquery.ui',
         'lib/jquery.colorpicker',
@@ -35,6 +35,8 @@ require(
         'lib/jquery.base64'],
 
     function($, canvasStorage, lsStorage, roleStorage, waveStorage, canvas, cards) {
+        'use strict';
+
         var storageModule;
 
         // ROLE & iwc/openapp

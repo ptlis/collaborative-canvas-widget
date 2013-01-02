@@ -65,9 +65,11 @@ define( ['jquery', 'require'],
                 var prefix;
                 var module;
                 for(var index in canvasStorage.storedLists) {
-                    prefix              = canvasStorage.storedLists[index];
-                    module              = require(prefix);
-                    module.model.removeAll();
+                    if(canvasStorage.storedLists.hasOwnProperty()) {
+                        prefix              = canvasStorage.storedLists[index];
+                        module              = require(prefix);
+                        module.model.removeAll();
+                    }
                 }
             };
 
@@ -160,9 +162,11 @@ define( ['jquery', 'require'],
                 var prefix;
                 var module;
                 for(var index in canvasStorage.storedLists) {
-                    prefix              = canvasStorage.storedLists[index];
-                    module              = require(prefix);
-                    allData[prefix]     = module.model.getAll();
+                    if(canvasStorage.storedLists.hasOwnProperty()) {
+                        prefix              = canvasStorage.storedLists[index];
+                        module              = require(prefix);
+                        allData[prefix]     = module.model.getAll();
+                    }
                 }
 
                 return allData;
@@ -181,8 +185,10 @@ define( ['jquery', 'require'],
             canvasStorage.standardPropagate = function() {
                 var prefix;
                 for(var index in canvasStorage.storedLists) {
-                    prefix          = canvasStorage.storedLists[index];
-                    $(window).trigger('widget:' + prefix + ':view:update_all');
+                    if(canvasStorage.storedLists.hasOwnProperty()) {
+                        prefix          = canvasStorage.storedLists[index];
+                        $(window).trigger('widget:' + prefix + ':view:update_all');
+                    }
                 }
 
                 // Handle container resizing

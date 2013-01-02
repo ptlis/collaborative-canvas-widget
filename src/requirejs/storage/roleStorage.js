@@ -220,7 +220,9 @@ define( ['jquery', 'require', 'util', 'storage/canvasStorage'],
             roleStorage.initialiseAllCaches = function(completeCallback) {
                 var collector   = util.collector(canvasStorage.storedLists.length, completeCallback);
                 for(var index in canvasStorage.storedLists) {
-                    getListResource(canvasStorage.storedLists[index], collector);
+                    if(canvasStorage.storedLists.hasOwnProperty(index)) {
+                        getListResource(canvasStorage.storedLists[index], collector);
+                    }
                 }
             };
 

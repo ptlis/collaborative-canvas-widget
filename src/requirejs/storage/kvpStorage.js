@@ -165,7 +165,9 @@ define( ['jquery', 'util', 'require', 'storage/canvasStorage'],
             kvpStorage.initialiseAllCaches = function(getData, storeDelta, completeCallback) {
                 var collector   = util.collector(canvasStorage.storedLists.length, completeCallback);
                 for(var index in canvasStorage.storedLists) {
-                    kvpStorage.initialiseCache(canvasStorage.storedLists[index], getData, storeDelta, collector);
+                    if(canvasStorage.storedLists.hasOwnProperty()) {
+                        kvpStorage.initialiseCache(canvasStorage.storedLists[index], getData, storeDelta, collector);
+                    }
                 }
             };
 
@@ -206,8 +208,10 @@ define( ['jquery', 'util', 'require', 'storage/canvasStorage'],
                 // Iterate over lists
                 var prefix;
                 for(var index in canvasStorage.storedLists) {
-                    prefix          = canvasStorage.storedLists[index];
-                    processedData   = processList(prefix, importedData[prefix], processedData);
+                    if(canvasStorage.storedLists.hasOwnProperty()) {
+                        prefix          = canvasStorage.storedLists[index];
+                        processedData   = processList(prefix, importedData[prefix], processedData);
+                    }
                 }
 
                 storeDelta(processedData);

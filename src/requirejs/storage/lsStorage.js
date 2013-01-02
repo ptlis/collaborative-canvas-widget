@@ -1,8 +1,8 @@
 /*jshint jquery:true */
 
 
-define( ['jquery', 'storage/canvasStorage', 'storage/kvpStorage'],
-        function($,canvasStorage, kvpStorage) {
+define( ['jquery', 'require', 'storage/canvasStorage', 'storage/kvpStorage'],
+        function($, require, canvasStorage, kvpStorage) {
             'use strict';
 
             var lsStorage   = {};

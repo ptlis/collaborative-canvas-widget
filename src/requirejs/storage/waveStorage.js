@@ -54,10 +54,11 @@ define( ['jquery', 'storage/canvasStorage', 'storage/kvpStorage'],
                     throw 'canvasStorage not initialised';
                 }
 
-                data    = wave.getState().get(key);
+                var data    = wave.getState().get(key);
                 if(typeof(data) === 'undefined' || data.length < 1) {
                     data    = null;
                 }
+                return data;
             };
 
 
@@ -118,7 +119,7 @@ define( ['jquery', 'storage/canvasStorage', 'storage/kvpStorage'],
 
         /*  Initialise all storage caches. */
             waveStorage.initialiseAllCaches = function(completeCallback) {
-                kvp.initialiseAllCaches(getData, storeDelta, completeCallback);
+                kvpStorage.initialiseAllCaches(getData, storeDelta, completeCallback);
             };
 
 
