@@ -14,8 +14,8 @@
 
 
 # Validate path
-	REGEX='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]/'
-	if [[ ! $WEB_PATH =~ $REGEX ]];then
+	URL_REGEX='(https?|ftp|file)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]/'
+	if [[ ! $WEB_PATH =~ $URL_REGEX ]];then
 	    echo "Absolute path not valid"
 	    exit
 	fi
@@ -54,17 +54,20 @@
 
 # Force absolute path on script elements
     sed -n 's|<script.*src="\(.*\)">.*</script>|\1|gp' role_widget/src/role_template.xml | while read line; do
-        sed "s|$line|$WEB_PATH$line|" role_widget/src/widget.xml > role_widget/src/temp
-
-        mv role_widget/src/temp role_widget/src/widget.xml
+		if [[ ! $line =~ $URL_REGEX ]];then
+		    sed "s|$line|$WEB_PATH$line|" role_widget/src/widget.xml > role_widget/src/temp
+		    mv role_widget/src/temp role_widget/src/widget.xml
+		fi
     done
 
 
 # Force absolute path on link elements
     sed -n 's|<link.*href="\(.*\)">|\1|gp' role_widget/src/role_template.xml | while read line; do
-        sed "s|$line|$WEB_PATH$line|" role_widget/src/widget.xml > role_widget/src/temp
+		if [[ ! $line =~ $URL_REGEX ]];then
+		    sed "s|$line|$WEB_PATH$line|" role_widget/src/widget.xml > role_widget/src/temp
 
-        mv role_widget/src/temp role_widget/src/widget.xml
+		    mv role_widget/src/temp role_widget/src/widget.xml
+		fi
     done
 
 
